@@ -47,8 +47,8 @@ class Feed(models.Model):
 
 class Tag(models.Model):
   '''item tag'''
+  tag_slug = models.CharField(max_length=50, primary_key=True)
   tag_name = models.CharField(max_length=30)
-  tag_slug = models.CharField(max_length=50)
   tag_count = models.IntegerField()
   
   tag_deleted = models.BooleanField(default=False)
@@ -61,8 +61,10 @@ class Item(models.Model):
   item_feed = models.ForeignKey(Feed)
   item_date = models.DateTimeField()
   item_title = models.CharField(max_length=255)
-  item_content = models.TextField()
-  item_author = models.CharField(max_length=255)
+  item_content = models.TextField(blank=True)
+  item_clean_content = models.TextField(blank=True)
+  item_author = models.CharField(max_length=255,blank=True)
+  item_permalink = models.CharField(max_length=1000)
   
   #Tag string used to save tags using django-tagging
   item_tags = models.ManyToManyField(Tag, blank=True)

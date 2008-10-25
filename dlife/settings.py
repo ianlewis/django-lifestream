@@ -84,5 +84,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'dlife.lifestream',
+    'dlife.lifestream.templatetags',
     'dlife.util'
 )

@@ -1,17 +1,21 @@
 {% extends "base.tpl" %}
+{% load truncate_chars %}
 {% block title %}{{lifestream.ls_title}}{% endblock %}
 {% block content %}
 <table>
+  {% if items.object_list %}
   <tbody>
+    {% for item in items.object_list %}
     <tr>
-     {% for item in items.object_list %}
       <td>
-        <h2>{{ item.item_title }}</h2>
-        {{ item.item_content }}
+        <h2><a href="{{item.item_permalink}}">{{ item.item_title }}</a></h2>
+        {{item.item_date}}
+        <p>{{ item.item_clean_content|truncate_chars:100 }}</p>
       </td>
-      {% endfor %}
     </tr>
+    {% endfor %}
   <tbody>
+  {% endif %}
 </table>
 <br/>
 <div class="pagination">

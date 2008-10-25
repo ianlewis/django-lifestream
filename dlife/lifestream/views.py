@@ -15,7 +15,7 @@ from models import *
 
 @allow_methods('GET')
 def main_page(request):
-  item_list = Item.objects.all()
+  item_list = Item.objects.order_by('-item_date')
   paginator = Paginator(item_list, 9) # Show 9 items per page
 
   # Make sure page request is an int. If not, deliver first page.
