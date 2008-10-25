@@ -1,0 +1,15 @@
+syntax: glob
+*.orig
+*.rej
+*~
+*.bak
+*.marks
+*.o
+*.pyc
+dlife.egg-info
+build
+temp
+dist
+
+syntax: regexp
+.*\#.*\#$ 
