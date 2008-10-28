@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Example:
     (r'^$', 'dlife.lifestream.views.main_page'),
+    (r'^page/(?P<page>\d+)$', 'dlife.lifestream.views.main_page'),
     
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:

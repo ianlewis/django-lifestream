@@ -14,14 +14,14 @@ from util.decorators import allow_methods
 from models import *
 
 @allow_methods('GET')
-def main_page(request):
+def main_page(request, page="1"):
   item_list = Item.objects.order_by('-item_date')
   paginator = Paginator(item_list, 9) # Show 9 items per page
 
   # Make sure page request is an int. If not, deliver first page.
   # TODO: make a better url for this like /page/1
   try:
-    page = int(request.GET.get('page', '1'))
+    page = int(page)
   except ValueError:
     page = 1
 
