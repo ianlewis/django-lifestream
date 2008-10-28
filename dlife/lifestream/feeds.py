@@ -47,9 +47,14 @@ def update_feeds():
         if items_count == 0:
           
           # Get the content string value from feed item content
-          feed_content = entry.get('content')[0]['value']
-          content = stripper.strip_tags(feed_content)
-          clean_content = stripper.strip_tags(feed_content, ())
+          feed_content = entry.get('content')
+          if feed_content is not None:
+            feed_content = feed_content[0]['value']
+            content = stripper.strip_tags(feed_content)
+            clean_content = stripper.strip_tags(feed_content, ())
+          else:
+            content = None
+            clean_content = None
           
           i = Item(item_feed = feed,
                    item_date = date_published,
@@ -62,16 +67,17 @@ def update_feeds():
           i.save()
           # Get tags
           tags = ()
-          for tag in entry['tags']:
-            slug = urlquote(tag.get('term').lower())
-            try:
-              tagobj = Tag.objects.get(tag_slug=slug)
-            except Tag.DoesNotExist:
-              tagobj = Tag(tag_name = tag['term'],
-                           tag_slug = slug,
-                           tag_count = 1)
-            i.item_tags.add(tagobj)
-          
-          i.save()
+          if 'tags' in entry:
+            for tag in entry['tags']:
+              slug = urlquote(tag.get('term').lower())
+              try:
+                tagobj = Tag.objects.get(tag_slug=slug)
+              except Tag.DoesNotExist:
+                tagobj = Tag(tag_name = tag['term'],
+                             tag_slug = slug,
+                             tag_count = 1)
+              i.item_tags.add(tagobj)
+            
+            i.save()
     except Exception, e:
       print e
