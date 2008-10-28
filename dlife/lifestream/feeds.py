@@ -77,8 +77,11 @@ def update_feeds():
                 tagobj = Tag(tag_name = tag['term'],
                              tag_slug = slug,
                              tag_count = 1)
+                #Add the tag object
+                tagobj.save()
               i.item_tags.add(tagobj)
             
+            # Save the tags relationships? Not sure I need this
             i.save()
     except Exception, e:
       print e
