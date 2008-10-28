@@ -10,7 +10,13 @@
       <td>
         <h2><a href="{{item.item_permalink}}">{{ item.item_title }}</a></h2>
         {{item.item_date}}
-        <p>{{ item.item_clean_content|truncate_chars:100 }}</p>
+        <p>
+          {% if item.item_clean_content %}
+            {{ item.item_clean_content|truncate_chars:100 }}
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </p>
       </td>
     </tr>
     {% endfor %}
