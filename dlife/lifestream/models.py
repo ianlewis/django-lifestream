@@ -4,6 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 from django.db import models
+from util import feedparser
 # from util import enum
 
 class User(models.Model):
@@ -41,6 +42,13 @@ class Feed(models.Model):
   feed_domain = models.CharField(max_length=255)
   
   feed_deleted = models.BooleanField(default=False)
+  
+  def _get_feeds(self):
+    if not self.feed_url:
+      return None
+    return feedparser.parse(self.feed_url)
+  
+  feeds = property(_get_feeds)
   
   def __unicode__(self):
     return self.feed_name
