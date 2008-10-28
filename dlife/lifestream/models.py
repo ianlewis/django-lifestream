@@ -22,7 +22,7 @@ class User(models.Model):
 class LifeStream(models.Model):
   '''A lifestream itself.'''
   ls_title = models.CharField(max_length=128)
-  ls_tagline = models.TextField(blank=True)
+  ls_tagline = models.TextField(null=True, blank=True)
   
   ls_baseurl = models.CharField(max_length=1000)
   
@@ -61,13 +61,13 @@ class Item(models.Model):
   item_feed = models.ForeignKey(Feed)
   item_date = models.DateTimeField()
   item_title = models.CharField(max_length=255)
-  item_content = models.TextField(blank=True)
-  item_clean_content = models.TextField(blank=True)
-  item_author = models.CharField(max_length=255,blank=True)
+  item_content = models.TextField(null=True, blank=True)
+  item_clean_content = models.TextField(null=True, blank=True)
+  item_author = models.CharField(max_length=255, null=True, blank=True)
   item_permalink = models.CharField(max_length=1000)
   
   #Tag string used to save tags using django-tagging
-  item_tags = models.ManyToManyField(Tag, blank=True)
+  item_tags = models.ManyToManyField(Tag, null=True, blank=True)
   
   item_published = models.BooleanField(default=True)
   item_deleted = models.BooleanField(default=False)
