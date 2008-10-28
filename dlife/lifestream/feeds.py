@@ -32,8 +32,10 @@ def update_feeds():
         else:
           permalink = urlquote(entry['link'])
         
-        #parse to an actual datetime object
+        # Parse to an actual datetime object
         date_published = dateutil.parser.parse(date_published)
+        # Change the date to UTC and remove timezone info since MySQL doesn't
+        # support it
         date_published = (date_published - date_published.utcoffset()).replace(tzinfo=None)
         
         # Find out if we have already imported this entry
