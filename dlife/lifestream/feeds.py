@@ -4,6 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 from util import stripper
+from util import feedparser
 from django.utils.http import urlquote
 from django.db.models import Q
 
@@ -16,7 +17,8 @@ def update_feeds():
   feeds = Feed.objects.filter(feed_deleted=False)
   for feed in feeds:
     try:
-      for entry in feed.feeds['entries']:
+      feed_items = feedparser.parse(feed.feed_url)
+      for entry in feed_items['entries']:
         
         # Get the date published
         date_published = entry.get('published', entry.get('updated'))
