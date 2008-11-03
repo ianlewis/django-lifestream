@@ -3,7 +3,7 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import RequestContext, Context, loader
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
@@ -33,3 +33,11 @@ def main_page(request, page="1"):
   
   return direct_to_template(request, "main.tpl", { "items": items })
   
+@allow_methods('GET')
+def item_page(request, item_id=None):
+  try:
+    item = Item.objects.get(id=item_id)
+    
+    return direct_to_template(request, "item.tpl", { "item": item })
+  except Item.DoesNotExist:
+    raise Http404

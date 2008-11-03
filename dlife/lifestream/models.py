@@ -72,5 +72,10 @@ class Item(models.Model):
   item_published = models.BooleanField(default=True)
   item_deleted = models.BooleanField(default=False)
   
+  def _get_item_link(self):
+    return self.item_feed.feed_lifestream.ls_baseurl + "item/" + str(self.id)
+  
+  item_link = property(_get_item_link)
+  
   def __unicode__(self):
     return self.item_title

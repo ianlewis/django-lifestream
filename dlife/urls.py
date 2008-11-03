@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     # Example:
     (r'^$', 'dlife.lifestream.views.main_page'),
     (r'^page/(?P<page>\d+)$', 'dlife.lifestream.views.main_page'),
+    (r'^item/(?P<item_id>\d+)$', 'dlife.lifestream.views.item_page'),
     
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
