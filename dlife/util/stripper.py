@@ -37,9 +37,9 @@ class StrippingParser(HTMLParser.HTMLParser):
             x = ''
         self.result = "%s&%s%s" % (self.result, name, x)
     
-    def unknown_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attrs):
         """ Delete all tags except for legal ones """
-        if tag in self.valid_tags:       
+        if tag in self.valid_tags:
             self.result = self.result + '<' + tag
             for k, v in attrs:
                 if string.lower(k[0:2]) != 'on' and string.lower(v[0:10]) != 'javascript':
@@ -48,7 +48,7 @@ class StrippingParser(HTMLParser.HTMLParser):
             self.endTagList.insert(0,endTag)    
             self.result = self.result + '>'
                 
-    def unknown_endtag(self, tag):
+    def handle_endtag(self, tag):
         if tag in self.valid_tags:
             self.result = "%s</%s>" % (self.result, tag)
             remTag = '</%s>' % tag

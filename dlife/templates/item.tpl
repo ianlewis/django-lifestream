@@ -6,7 +6,7 @@
 {{item.item_date}}
 <p>
   {% if item.item_content %}
-    {{ item.item_content }}
+    {{ item.item_content|safe }}
   {% else %}
     &nbsp;
   {% endif %}
