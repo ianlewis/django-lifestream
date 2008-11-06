@@ -19,7 +19,7 @@ class User(models.Model):
   def __unicode__(self):
     return self.user_name
   
-  def Meta:
+  class Meta:
     db_table="users"
 
 class LifeStream(models.Model):
@@ -80,7 +80,7 @@ class Item(models.Model):
   item_permalink = models.CharField(max_length=1000)
   
   #Tag string used to save tags using django-tagging
-  item_tags = models.ManyToManyField(Tag, null=True, blank=True)
+  item_tags = models.ManyToManyField(Tag, null=True, blank=True, db_table="item_tags")
   
   item_published = models.BooleanField(default=True)
   item_deleted = models.BooleanField(default=False)
