@@ -50,9 +50,10 @@ def update_feeds():
         if items_count == 0:
           
           # Get the content string value from feed item content
-          feed_content = entry.get('content')
-          if feed_content is not None:
-            feed_content = feed_content[0]['value']
+          feed_contents = entry.get('content')
+          if feed_contents is not None:
+            content_type = feed_contents[0]['type']
+            feed_content = feed_contents[0]['value']
             content = stripper.strip_tags(feed_content)
             clean_content = stripper.strip_tags(feed_content, ())
           else:
@@ -63,6 +64,7 @@ def update_feeds():
                    item_date = date_published,
                    item_title = entry.get('title'),
                    item_content = content,
+                   item_content_type = content_type,
                    item_clean_content = clean_content,
                    item_author = entry.get('author'),
                    item_permalink = permalink
@@ -72,11 +74,12 @@ def update_feeds():
           tags = ()
           if 'tags' in entry:
             for tag in entry['tags']:
-              slug = urlquote(tag.get('term').lower())
+              tag_name = tag.get('term')[:30]
+              slug = urlquote(tag_name.lower())
               try:
                 tagobj = Tag.objects.get(tag_slug=slug)
               except Tag.DoesNotExist:
-                tagobj = Tag(tag_name = tag['term'],
+                tagobj = Tag(tag_name = tag_name,
                              tag_slug = slug,
                              tag_count = 1)
                 #Add the tag object

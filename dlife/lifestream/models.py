@@ -60,6 +60,7 @@ class Item(models.Model):
   item_date = models.DateTimeField()
   item_title = models.CharField(max_length=255)
   item_content = models.TextField(null=True, blank=True)
+  item_content_type = models.CharField(max_length=255, null=True, blank=True)
   item_clean_content = models.TextField(null=True, blank=True)
   item_author = models.CharField(max_length=255, null=True, blank=True)
   item_permalink = models.CharField(max_length=1000)
