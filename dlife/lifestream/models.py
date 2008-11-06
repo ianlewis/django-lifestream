@@ -18,6 +18,9 @@ class User(models.Model):
   
   def __unicode__(self):
     return self.user_name
+  
+  def Meta:
+    db_table="users"
 
 class LifeStream(models.Model):
   '''A lifestream itself.'''
@@ -30,6 +33,9 @@ class LifeStream(models.Model):
   
   def __unicode__(self):
     return self.ls_title
+  
+  class Meta:
+    db_table="lifestream"
 
 class Feed(models.Model):
   '''A feed for gathering data.'''
@@ -44,6 +50,9 @@ class Feed(models.Model):
   
   def __unicode__(self):
     return self.feed_name
+    
+  class Meta:
+    db_table="feeds"
 
 class Tag(models.Model):
   '''item tag'''
@@ -55,6 +64,10 @@ class Tag(models.Model):
   
   def __unicode__(self):
     return self.tag_name
+  
+  class Meta:
+    db_table="tags"
+    ordering=["tag_count"]
 
 class Item(models.Model):
   '''A feed item'''
@@ -79,3 +92,7 @@ class Item(models.Model):
   
   def __unicode__(self):
     return self.item_title
+    
+  class Meta:
+    db_table="items"
+    ordering=["item_date", "item_feed"]
