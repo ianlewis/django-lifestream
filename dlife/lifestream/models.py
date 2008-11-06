@@ -4,25 +4,10 @@
 #:folding=explicit:collapseFolds=1:
 
 from django.db import models
+from django.contrib.auth.models import User
 # from util import enum
 
-class User(models.Model):
-  '''An admin user'''
-  user_name = models.CharField(max_length=255)
-  user_login = models.CharField(max_length=255)
-  
-  #TODO: Look for or create a password field for django
-  user_password = models.CharField(max_length=255)
-  
-  user_deleted = models.BooleanField(default=False)
-  
-  def __unicode__(self):
-    return self.user_name
-  
-  class Meta:
-    db_table="users"
-
-class LifeStream(models.Model):
+class Lifestream(models.Model):
   '''A lifestream itself.'''
   ls_title = models.CharField(max_length=128)
   ls_tagline = models.TextField(null=True, blank=True)
@@ -39,7 +24,7 @@ class LifeStream(models.Model):
 
 class Feed(models.Model):
   '''A feed for gathering data.'''
-  feed_lifestream = models.ForeignKey(LifeStream)
+  feed_lifestream = models.ForeignKey(Lifestream)
   
   feed_name = models.CharField(max_length=255)
   feed_url = models.CharField(max_length=1000)

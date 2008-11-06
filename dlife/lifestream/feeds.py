@@ -3,8 +3,8 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
-from util import stripper
-from util import feedparser
+from dlife.util import stripper
+from dlife.util import feedparser
 from django.utils.http import urlquote
 from django.db.models import Q
 

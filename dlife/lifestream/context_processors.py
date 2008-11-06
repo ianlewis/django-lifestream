@@ -4,7 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 from django.utils.translation import ugettext as _
-from models import LifeStream
+from dlife.lifestream.models import Lifestream
 
 def basic(request):
   basic_data = {}
@@ -25,8 +25,8 @@ def basic(request):
   
   #There will only be a single lifestream right now.
   try:
-    lifestream = LifeStream.objects.get(id=1)
-  except LifeStream.DoesNotExist:
+    lifestream = Lifestream.objects.get(id=1)
+  except Lifestream.DoesNotExist:
     lifestream = None
   
   return {

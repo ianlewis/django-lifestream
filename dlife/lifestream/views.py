@@ -9,9 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
-from util.decorators import allow_methods
+from dlife.util.decorators import allow_methods
 
-from models import *
+from dlife.lifestream.models import *
 
 @allow_methods('GET')
 def main_page(request, page="1"):
