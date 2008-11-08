@@ -26,10 +26,10 @@ class Feed(models.Model):
   '''A feed for gathering data.'''
   feed_lifestream = models.ForeignKey(Lifestream)
   
-  feed_name = models.CharField(max_length=255)
+  feed_name = models.CharField(max_length=255, editable=False)
   feed_url = models.CharField(max_length=1000)
   
-  feed_domain = models.CharField(max_length=255)
+  feed_domain = models.CharField(max_length=255, editable=False)
   
   feed_deleted = models.BooleanField(default=False)
   
@@ -41,7 +41,7 @@ class Feed(models.Model):
 
 class Tag(models.Model):
   '''item tag'''
-  tag_slug = models.CharField(max_length=50, primary_key=True)
+  tag_slug = models.SlugField(primary_key=True)
   tag_name = models.CharField(max_length=30)
   tag_count = models.IntegerField()
   
@@ -61,7 +61,7 @@ class Item(models.Model):
   item_title = models.CharField(max_length=255)
   item_content = models.TextField(null=True, blank=True)
   item_content_type = models.CharField(max_length=255, null=True, blank=True)
-  item_clean_content = models.TextField(null=True, blank=True)
+  item_clean_content = models.TextField(null=True, blank=True, editable=False)
   item_author = models.CharField(max_length=255, null=True, blank=True)
   item_permalink = models.CharField(max_length=1000)
   
