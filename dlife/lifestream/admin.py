@@ -7,6 +7,7 @@ from dlife.lifestream.models import *
 from django.contrib import admin
 from django import forms
 from django.forms.util import ErrorList
+from django.contrib.contenttypes import generic
 
 from dlife.util import feedparser
 from dlife.util import get_url_domain
@@ -55,12 +56,28 @@ class FeedAdmin(admin.ModelAdmin):
 
 admin.site.register(Feed, FeedAdmin)
 
+# class CommentAdmin(admin.ModelAdmin):
+#   list_display    = ('comment_item', 'comment_name')
+#   exclude         = ['comment_item',]
+#   list_filter     = ('comment_user',)
+#   search_fields   = ('comment_name','comment_content')
+#   list_per_page   = 20
+
+# admin.site.register(Comment, CommentAdmin)
+
+class CommentInline(admin.StackedInline):
+  model           = Comment
+  max_num         = 1   #TODO: Fix this
+  exclude         = ['comment_item','content_type','object_id']
+
 class ItemAdmin(admin.ModelAdmin):
   list_display    = ('item_title', 'item_date')
   exclude         = ['item_clean_content',]
   list_filter     = ('item_feed',)
   search_fields   = ('item_title','item_clean_content')
   list_per_page   = 20
+  
+  inlines         = [CommentInline,]
 
 admin.site.register(Item, ItemAdmin)
 
