@@ -88,5 +88,6 @@ def update_feeds():
               tagobj.save()
               i.item_tags.add(tagobj)
             
-    except Exception, e:
-      print e
+    except:
+      from traceback import print_exc
+      print_exc()
