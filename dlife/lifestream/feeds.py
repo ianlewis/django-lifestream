@@ -54,7 +54,7 @@ def update_feeds():
             if feed_contents is not None:
               content_type = feed_contents[0]['type']
               feed_content = feed_contents[0]['value']
-              content = stripper.strip_tags(feed_content)
+              content = stripper.strip_tags(feed_content, ('b', 'a', 'i', 'br', 'p', 'img', 'object'))
               clean_content = stripper.strip_tags(feed_content, ())
             else:
               content = None
