@@ -78,12 +78,14 @@ def update_feeds():
               slug = urlquote(tag_name.lower())
               try:
                 tagobj = Tag.objects.get(tag_slug=slug)
+                tagobj.tag_count += 1
               except Tag.DoesNotExist:
+                #Add the tag object
                 tagobj = Tag(tag_name = tag_name,
                              tag_slug = slug,
                              tag_count = 1)
-                #Add the tag object
-                tagobj.save()
+              
+              tagobj.save()
               i.item_tags.add(tagobj)
             
     except Exception, e:
