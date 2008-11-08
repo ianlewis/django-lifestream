@@ -52,7 +52,7 @@ class Tag(models.Model):
   
   class Meta:
     db_table="tags"
-    ordering=["tag_count"]
+    ordering=["-tag_count"]
 
 class Item(models.Model):
   '''A feed item'''
@@ -61,7 +61,7 @@ class Item(models.Model):
   item_title = models.CharField(max_length=255)
   item_content = models.TextField(null=True, blank=True)
   item_content_type = models.CharField(max_length=255, null=True, blank=True)
-  item_clean_content = models.TextField(null=True, blank=True, editable=False)
+  item_clean_content = models.TextField(null=True, blank=True)
   item_author = models.CharField(max_length=255, null=True, blank=True)
   item_permalink = models.CharField(max_length=1000)
   
@@ -81,4 +81,4 @@ class Item(models.Model):
     
   class Meta:
     db_table="items"
-    ordering=["item_date", "item_feed"]
+    ordering=["-item_date", "item_feed"]
