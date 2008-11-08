@@ -8,5 +8,18 @@ from django.contrib import admin
 
 admin.site.register(Lifestream)
 admin.site.register(Feed)
-admin.site.register(Item)
-admin.site.register(Tag)
+
+class ItemAdmin(admin.ModelAdmin):
+  list_display    = ('item_title', 'item_date')
+  exclude         = ['item_clean_content',]
+  list_filter     = ('item_feed',)
+  search_fields   = ('item_title','item_clean_content')
+
+admin.site.register(Item, ItemAdmin)
+
+class TagAdmin(admin.ModelAdmin):
+  list_display   = ('tag_name', 'tag_count')
+  ordering       = ('-tag_count',)
+  search_fields  = ('tag_name',)
+
+admin.site.register(Tag, TagAdmin)
