@@ -14,6 +14,7 @@ class ItemAdmin(admin.ModelAdmin):
   exclude         = ['item_clean_content',]
   list_filter     = ('item_feed',)
   search_fields   = ('item_title','item_clean_content')
+  list_per_page   = 30
 
 admin.site.register(Item, ItemAdmin)
 
@@ -21,5 +22,6 @@ class TagAdmin(admin.ModelAdmin):
   list_display   = ('tag_name', 'tag_count')
   ordering       = ('-tag_count',)
   search_fields  = ('tag_name',)
+  list_per_page   = 30
 
 admin.site.register(Tag, TagAdmin)
