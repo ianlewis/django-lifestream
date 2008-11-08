@@ -5,7 +5,6 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-# from util import enum
 
 class Lifestream(models.Model):
   '''A lifestream itself.'''
@@ -26,10 +25,10 @@ class Feed(models.Model):
   '''A feed for gathering data.'''
   feed_lifestream = models.ForeignKey(Lifestream)
   
-  feed_name = models.CharField(max_length=255, editable=False)
-  feed_url = models.CharField(max_length=1000)
+  feed_name = models.CharField(max_length=255)
+  feed_url = models.URLField(verify_exists=True, max_length=1000)
   
-  feed_domain = models.CharField(max_length=255, editable=False)
+  feed_domain = models.CharField(max_length=255)
   
   feed_deleted = models.BooleanField(default=False)
   
