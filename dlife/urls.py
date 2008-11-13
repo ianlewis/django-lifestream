@@ -13,6 +13,9 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    
+    # Django comments
+    (r'^comments/', include('django.contrib.comments.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/update_feeds', 'dlife.lifestream.admin_views.admin_update_feeds', name='admin_update_feeds'),

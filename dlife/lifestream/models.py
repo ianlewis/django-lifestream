@@ -82,17 +82,3 @@ class Item(models.Model):
   class Meta:
     db_table="items"
     ordering=["-item_date", "item_feed"]
-
-class Comment(models.Model):
-  '''An item comment'''
-  comment_item = models.ForeignKey(Item)
-  comment_date = models.DateTimeField()
-  comment_user = models.ForeignKey(User, null=True, blank=True)
-  comment_name = models.CharField(max_length=30)
-  comment_email = models.EmailField()
-  comment_homepage = models.URLField(max_length=300)
-  comment_content = models.TextField(null=True, blank=True)
-  
-  class Meta:
-    db_table="comments"
-    ordering=["comment_item", "-comment_date"]
