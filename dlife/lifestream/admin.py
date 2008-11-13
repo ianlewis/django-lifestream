@@ -12,6 +12,7 @@ from django.contrib.comments.models import *
 from dlife.lifestream.models import *
 from dlife.util import feedparser
 from dlife.util import get_url_domain
+from dlife.lifestream.feeds import clean_item_content
 
 admin.site.register(Lifestream)
 
@@ -79,6 +80,11 @@ class ItemAdmin(admin.ModelAdmin):
   list_per_page   = 20
   
   # inlines         = [CommentInline,]
+  
+  def save_model(self, request, obj, form, change):
+    obj.item_content, obj.item_clean_content = clean_item_content(obj.item_content)
+    obj.save()
+
 
 admin.site.register(Item, ItemAdmin)
 

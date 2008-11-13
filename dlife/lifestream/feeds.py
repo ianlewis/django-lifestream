@@ -13,6 +13,11 @@ from models import *
 import datetime
 import dateutil.parser
 
+def clean_item_content(content):
+  semi_clean_content = stripper.strip_tags(content, ('b', 'a', 'i', 'br', 'p', 'img', 'object'))
+  clean_content = stripper.strip_tags(content, ())
+  return semi_clean_content, clean_content
+
 def update_feeds():
   feeds = Feed.objects.filter(feed_deleted=False)
   for feed in feeds:
@@ -54,8 +59,7 @@ def update_feeds():
             if feed_contents is not None:
               content_type = feed_contents[0]['type']
               feed_content = feed_contents[0]['value']
-              content = stripper.strip_tags(feed_content, ('b', 'a', 'i', 'br', 'p', 'img', 'object'))
-              clean_content = stripper.strip_tags(feed_content, ())
+              content, clean_content = clean_item_content(feed_content)
             else:
               content = None
               clean_content = None
