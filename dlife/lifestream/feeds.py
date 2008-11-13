@@ -9,12 +9,13 @@ from django.utils.http import urlquote
 from django.db.models import Q
 
 from models import *
+from dlife.settings import VALID_ITEM_TAGS
 
 import datetime
 import dateutil.parser
 
 def clean_item_content(content):
-  semi_clean_content = stripper.strip_tags(content, ('b', 'a', 'i', 'br', 'p', 'img', 'object'))
+  semi_clean_content = stripper.strip_tags(content, VALID_ITEM_TAGS)
   clean_content = stripper.strip_tags(content, ())
   return semi_clean_content, clean_content
 

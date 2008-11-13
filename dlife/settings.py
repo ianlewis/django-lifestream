@@ -89,3 +89,20 @@ INSTALLED_APPS = (
     'dlife.lifestream.templatetags',
     'dlife.util',
 )
+
+
+# dlife settings
+VALID_ITEM_TAGS = (
+  'b',
+  'a',
+  'i',
+  'br',
+  'p',
+  'table',
+  'tbody',
+  'th',
+  'td',
+  'tr',
+  'img',
+  'object'
+)
