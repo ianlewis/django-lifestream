@@ -98,11 +98,18 @@ VALID_ITEM_TAGS = (
   'i',
   'br',
   'p',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
   'table',
   'tbody',
   'th',
   'td',
   'tr',
   'img',
+  'font',
+  'span',
+  'div',
   'object'
 )
