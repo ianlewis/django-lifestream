@@ -3,12 +3,13 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
-from dlife.lifestream.models import *
 from django.contrib import admin
 from django import forms
 from django.forms.util import ErrorList
 from django.contrib.contenttypes import generic
+from django.contrib.comments.models import *
 
+from dlife.lifestream.models import *
 from dlife.util import feedparser
 from dlife.util import get_url_domain
 
@@ -65,10 +66,10 @@ admin.site.register(Feed, FeedAdmin)
 
 # admin.site.register(Comment, CommentAdmin)
 
-class CommentInline(admin.StackedInline):
-  model           = Comment
-  max_num         = 1   #TODO: Fix this
-  exclude         = ['comment_item','content_type','object_id']
+# class CommentInline(admin.StackedInline):
+#   model           = Comment
+#   max_num         = 1   #TODO: Fix this
+#   exclude         = ['comment_item','content_type','object_id']
 
 class ItemAdmin(admin.ModelAdmin):
   list_display    = ('item_title', 'item_date')
@@ -77,7 +78,7 @@ class ItemAdmin(admin.ModelAdmin):
   search_fields   = ('item_title','item_clean_content')
   list_per_page   = 20
   
-  inlines         = [CommentInline,]
+  # inlines         = [CommentInline,]
 
 admin.site.register(Item, ItemAdmin)
 
