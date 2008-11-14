@@ -14,7 +14,32 @@ from dlife.util import feedparser
 from dlife.util import get_url_domain
 from dlife.lifestream.feeds import clean_item_content
 
-admin.site.register(Lifestream)
+class LifestreamAdmin(admin.ModelAdmin):
+  list_display    = ('ls_title',)
+  exclude         = ['ls_user',]
+  list_per_page   = 20
+  
+  model = Lifestream
+  
+  def save_model(self, request, obj, form, change):
+    obj.ls_user = request.user
+    obj.save()
+    if not change:
+      # Create a new feed that is not editable
+      # so that the user can use it when adding
+      # items directly to the lifestream.
+      basic_feed = Feed()
+      basic_feed.feed_lifestream = obj
+      basic_feed.feed_name = obj.ls_title
+      
+      #This is ignored
+      basic_feed.feed_url = "http://localhost"
+      basic_feed.feed_domain = "Local"
+      basic_feed.feed_fetchable = False
+      basic_feed.feed_basic_feed = True
+      basic_feed.save()
+
+admin.site.register(Lifestream, LifestreamAdmin)
 
 class FeedAdminForm(forms.ModelForm):
   class Meta:
@@ -55,6 +80,11 @@ class FeedAdmin(admin.ModelAdmin):
   list_filter     = ('feed_domain',)
   
   form = FeedAdminForm
+  
+  model = Feed
+  
+  def queryset(self, request):
+    return self.model.objects.get_feeds()
 
 admin.site.register(Feed, FeedAdmin)
 
@@ -79,12 +109,13 @@ class ItemAdmin(admin.ModelAdmin):
   search_fields   = ('item_title','item_clean_content')
   list_per_page   = 20
   
+  model = Item
   # inlines         = [CommentInline,]
   
   def save_model(self, request, obj, form, change):
     obj.item_content, obj.item_clean_content = clean_item_content(obj.item_content)
     obj.save()
-
+    
 
 admin.site.register(Item, ItemAdmin)
 
@@ -93,5 +124,7 @@ class TagAdmin(admin.ModelAdmin):
   ordering       = ('-tag_count',)
   search_fields  = ('tag_name',)
   list_per_page   = 20
+  
+  model = Tag
 
 admin.site.register(Tag, TagAdmin)

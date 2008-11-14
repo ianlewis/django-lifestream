@@ -20,7 +20,7 @@ def clean_item_content(content):
   return semi_clean_content, clean_content
 
 def update_feeds():
-  feeds = Feed.objects.filter(feed_deleted=False)
+  feeds = Feed.objects.get_fetchable_feeds()
   for feed in feeds:
     try:
       feed_items = feedparser.parse(feed.feed_url)

@@ -22,16 +22,26 @@ class Lifestream(models.Model):
   class Meta:
     db_table="lifestream"
 
+class FeedManager(models.Manager):
+  ''' Query only normal feeds. '''
+  
+  def get_fetchable_feeds(self):
+    return super(FeedManager, self) \
+           .get_query_set().filter(feed_basic_feed=False, feed_fetchable=True)
+
 class Feed(models.Model):
   '''A feed for gathering data.'''
   feed_lifestream = models.ForeignKey(Lifestream)
   
   feed_name = models.CharField(max_length=255)
   feed_url = models.URLField(verify_exists=True, max_length=1000)
-  
   feed_domain = models.CharField(max_length=255)
+  feed_fetchable = models.BooleanField(default=True)
   
-  feed_deleted = models.BooleanField(default=False)
+  # Used for feeds that allow users to directly add to the lifestream.
+  feed_basic_feed = models.BooleanField(default=False)
+  
+  objects = FeedManager()
   
   def __unicode__(self):
     return self.feed_name
