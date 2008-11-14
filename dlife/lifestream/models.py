@@ -54,18 +54,18 @@ class Feed(models.Model):
 
 class Tag(models.Model):
   '''item tag'''
-  tag_slug = models.SlugField(primary_key=True)
   tag_name = models.CharField(max_length=30)
+  tag_slug = models.SlugField(primary_key=True)
   tag_count = models.IntegerField()
   
-  tag_deleted = models.BooleanField(default=False)
+  tag_visible = models.BooleanField(default=True)
   
   def __unicode__(self):
     return self.tag_name
   
   class Meta:
     db_table="tags"
-    ordering=["-tag_count"]
+    ordering=["-tag_visible", "-tag_count"]
 
 class Item(models.Model):
   '''A feed item'''
@@ -82,7 +82,6 @@ class Item(models.Model):
   item_tags = models.ManyToManyField(Tag, null=True, blank=True, db_table="item_tags")
   
   item_published = models.BooleanField(default=True)
-  item_deleted = models.BooleanField(default=False)
   
   def _get_item_link(self):
     return self.item_feed.feed_lifestream.ls_baseurl + "item/" + str(self.id)
