@@ -103,7 +103,7 @@ admin.site.register(Feed, FeedAdmin)
 #   exclude         = ['comment_item','content_type','object_id']
 
 class ItemAdmin(admin.ModelAdmin):
-  list_display    = ('item_title', 'item_date')
+  list_display    = ('item_title', 'item_date','item_published')
   exclude         = ['item_clean_content',]
   list_filter     = ('item_feed',)
   search_fields   = ('item_title','item_clean_content')
