@@ -75,7 +75,7 @@ class FeedAdminForm(forms.ModelForm):
     return cleaned_data
 
 class FeedAdmin(admin.ModelAdmin):
-  exclude         = ['feed_name', 'feed_domain']
+  exclude         = ['feed_name', 'feed_domain', 'feed_basic_feed']
   list_display    = ('feed_name', 'feed_domain')
   list_filter     = ('feed_domain',)
   

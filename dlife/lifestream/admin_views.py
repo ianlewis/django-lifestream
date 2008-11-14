@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 
 @staff_member_required
 def admin_update_feeds(request):
+  #TODO: Add better error handling
   update_feeds()
   # TODO: fix this redirect
   return HttpResponseRedirect("/admin/lifestream/item/")

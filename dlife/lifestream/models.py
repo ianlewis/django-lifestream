@@ -25,9 +25,12 @@ class Lifestream(models.Model):
 class FeedManager(models.Manager):
   ''' Query only normal feeds. '''
   
-  def get_fetchable_feeds(self):
+  def get_feeds(self):
     return super(FeedManager, self) \
-           .get_query_set().filter(feed_basic_feed=False, feed_fetchable=True)
+           .get_query_set().filter(feed_basic_feed=False)
+  
+  def get_fetchable_feeds(self):
+    return self.get_feeds().filter(feed_fetchable=True)
 
 class Feed(models.Model):
   '''A feed for gathering data.'''
