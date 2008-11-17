@@ -83,18 +83,22 @@ def update_feeds():
                 slug = urlquote(tag_name.lower())
                 try:
                   tagobj = Tag.objects.get(tag_slug=slug)
-                  tagobj.tag_count += 1
                 except Tag.DoesNotExist:
                   #Add the tag object
                   tagobj = Tag(tag_name = tag_name,
                                tag_slug = slug,
-                               tag_count = 1)
+                               tag_count = 0)
                 
                 tagobj.save()
                 i.item_tags.add(tagobj)
         except:
           from traceback import print_exc
           print_exc()
+      
+      # Update tag counts
+      for eachTag in Tag.objects.all():
+        eachTag.tag_count = eachTag.item_set.all().count()
+        eachTag.save()
     except:
       from traceback import print_exc
       print_exc()
