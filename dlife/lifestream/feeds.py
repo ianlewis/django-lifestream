@@ -14,6 +14,77 @@ from dlife.settings import VALID_ITEM_TAGS
 import datetime
 import dateutil.parser
 
+class FeedPlugin(object):
+  
+  def pre_process(entry):
+    '''
+    A hook is used to clean up feed entry data before it is processed.
+    This hook can be used to clean up dates and/or media data
+    before being processed.
+    '''
+    date_published = entry.get('published', entry.get('updated'))
+    if not date_published:
+      date_published = str(datetime.datetime.utcnow())
+    date_published = dateutil.parser.parse(date_published)
+    # Change the date to UTC and remove timezone info since MySQL doesn't
+    # support it.
+    date_published = (date_published - date_published.utcoffset()).replace(tzinfo=None)
+    
+    entry['published'] = date_published
+    
+    protocol_index = entry['link'].find("://")
+    if protocol_index != -1:
+      entry['link'] = entry['link'][:protocol_index+3] + urlquote(entry['link'][protocol_index+3:])
+    else:
+      entry['link'] = urlquote(entry['link'])
+  
+  def include_entry(entry):
+    '''
+    Return true if this entry should be added to the lifestream. Normally
+    this is a check for if the item has already been added or not.
+    '''
+    items_count = Item.objects.filter(
+      Q(item_date = entry['published']) | Q(item_permalink = entry['link'])
+    ).filter(
+      item_feed = feed
+    ).count()
+    
+    return items_count == 0
+    
+  def process(entries):
+    '''
+    Process a list of entries and return a list of Item models. This
+    hook could be overridden to create a single Item for a list of entries. For
+    example a last.fm stream where you don't want to include all songs
+    you listened to but rather a single item saying you listened to X number
+    of songs.
+    '''
+    item_list = []
+    for entry in entries:
+      feed_contents = entry.get('content')
+      if feed_contents is not None:
+        content_type = feed_contents[0]['type']
+        feed_content = feed_contents[0]['value']
+        content, clean_content = clean_item_content(feed_content)
+      else:
+        content_type = None
+        content = None
+        clean_content = None
+      
+      item_list.append(
+        Item(item_feed = feed,
+               item_date = entry.get('published'),
+               item_title = entry.get('title'),
+               item_content = content,
+               item_content_type = content_type,
+               item_clean_content = clean_content,
+               item_author = entry.get('author'),
+               item_permalink = entry.get('link')
+               )
+      )
+    
+    return item_list
+
 def clean_item_content(content):
   semi_clean_content = stripper.strip_tags(content, VALID_ITEM_TAGS)
   clean_content = stripper.strip_tags(content, ())
