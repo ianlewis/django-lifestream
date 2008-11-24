@@ -13,6 +13,16 @@ from dlife.settings import VALID_ITEM_TAGS
 
 import datetime
 import dateutil.parser
+import copy
+
+# Patch feedparser so we can get access to interesting parts of media
+# extentions.
+feedparser._StrictFeedParser_old = feedparser._StrictFeedParser
+class DlifeFeedParser(feedparser._StrictFeedParser_old):
+  
+  def _start_media_content(self, attrsD):
+    self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
+feedparser._StrictFeedParser = DlifeFeedParser
 
 def clean_item_content(content):
   semi_clean_content = stripper.strip_tags(content, VALID_ITEM_TAGS)
