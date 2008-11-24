@@ -62,6 +62,7 @@ def update_feeds():
               feed_content = feed_contents[0]['value']
               content, clean_content = clean_item_content(feed_content)
             else:
+              content_type = None
               content = None
               clean_content = None
             
