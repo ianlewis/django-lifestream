@@ -12,7 +12,7 @@ from django.contrib.comments.models import *
 from dlife.lifestream.models import *
 from dlife.util import feedparser
 from dlife.util import get_url_domain
-from dlife.lifestream.feeds import clean_item_content
+from dlife.util import clean_item_content
 
 class LifestreamAdmin(admin.ModelAdmin):
   list_display    = ('ls_title',)

@@ -3,6 +3,8 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
+from django.conf import settings
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -43,6 +45,9 @@ class Feed(models.Model):
   
   # Used for feeds that allow users to directly add to the lifestream.
   feed_basic_feed = models.BooleanField(default=False)
+  
+  # The feed plugin name used to process the incoming feed data.
+  feed_plugin_name = models.CharField(max_length=255, null=True, blank=True, choices=settings.PLUGINS)
   
   objects = FeedManager()
   
