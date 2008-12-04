@@ -39,7 +39,11 @@ def update_feeds():
             included_entries.append(entry)
             
       feed_plugin.process(included_entries)
-        
+      
+      # Update tag counts
+      for eachTag in Tag.objects.all():
+        eachTag.tag_count = eachTag.item_set.all().count()
+        eachTag.save()
     except:
       from traceback import print_exc
       print_exc()

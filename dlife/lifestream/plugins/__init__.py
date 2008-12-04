@@ -95,7 +95,6 @@ class FeedPlugin(object):
           slug = urlquote(tag_name.lower())
           try:
             tagobj = Tag.objects.get(tag_slug=slug)
-            tagobj.tag_count += 1
           except Tag.DoesNotExist:
             #Add the tag object
             tagobj = Tag(tag_name = tag_name,
