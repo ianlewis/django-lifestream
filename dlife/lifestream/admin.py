@@ -88,19 +88,13 @@ class FeedAdmin(admin.ModelAdmin):
 
 admin.site.register(Feed, FeedAdmin)
 
-# class CommentAdmin(admin.ModelAdmin):
-#   list_display    = ('comment_item', 'comment_name')
-#   exclude         = ['comment_item',]
-#   list_filter     = ('comment_user',)
-#   search_fields   = ('comment_name','comment_content')
-#   list_per_page   = 20
-
-# admin.site.register(Comment, CommentAdmin)
-
-# class CommentInline(admin.StackedInline):
-#   model           = Comment
-#   max_num         = 1   #TODO: Fix this
-#   exclude         = ['comment_item','content_type','object_id']
+class CommentInline(generic.GenericStackedInline):
+  model           = Comment
+  extra           = 0
+  ct_field        = "content_type"
+  ct_fk_field     = "object_pk"
+  # Exclude is currently ignored by GenericStackedInline
+  # exclude         = ['site','ip_address']
 
 class ItemAdmin(admin.ModelAdmin):
   list_display    = ('item_title', 'item_date','item_published')
@@ -110,7 +104,7 @@ class ItemAdmin(admin.ModelAdmin):
   list_per_page   = 20
   
   model = Item
-  # inlines         = [CommentInline,]
+  inlines         = [CommentInline,]
   
   def save_model(self, request, obj, form, change):
     obj.item_content, obj.item_clean_content = clean_item_content(obj.item_content)
