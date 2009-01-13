@@ -8,10 +8,12 @@ from django.template import RequestContext, Context, loader
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.urlresolvers import reverse
 
 from dlife.util.decorators import allow_methods
 
 from dlife.lifestream.models import *
+from dlife.lifestream.forms import *
 
 @allow_methods('GET')
 def main_page(request, page="1"):
@@ -33,11 +35,33 @@ def main_page(request, page="1"):
   
   return direct_to_template(request, "main.tpl", { "items": items })
   
-@allow_methods('GET')
+@allow_methods('GET', 'POST')
 def item_page(request, item_id=None):
   try:
     item = Item.objects.get(id=item_id)
-    
-    return direct_to_template(request, "item.tpl", { "item": item })
   except Item.DoesNotExist:
     raise Http404
+  
+  if request.method == 'POST':
+    form = CommentForm(request.POST)
+    if form.is_valid():
+      Comment.objects.create(item=item,
+        user_name = form.cleaned_data['user_name'],
+        user_email = form.cleaned_data['user_email'],
+        user_url = form.cleaned_data['user_url'],
+        content = form.cleaned_data['content'],
+      )
+      return HttpResponseRedirect(reverse('item_page', kwargs={'item_id':item.id}))
+  else:
+    form = CommentForm()
+    
+  comments = Comment.objects.filter(item=item)
+  form.action = reverse('item_page', kwargs={'item_id':item.id})
+  form.method = 'POST'
+  
+  return direct_to_template(request, "item.tpl", { 
+    "item": item,
+    "item_comments": comments,
+    "comment_form": form,
+  })
+  

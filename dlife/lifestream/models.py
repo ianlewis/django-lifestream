@@ -7,7 +7,7 @@ from django.conf import settings
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import ugettext_lazy as _
 
 class Lifestream(models.Model):
   '''A lifestream itself.'''
@@ -88,6 +88,13 @@ class Item(models.Model):
   
   item_published = models.BooleanField(default=True)
   
+  _comment_count = None
+  def _get_comment_count(self):
+    if self._comment_count is None:
+      self._comment_count = Comment.objects.filter(item=self).count()
+    return self._comment_count
+  comment_count = property(_get_comment_count)
+  
   def _get_item_link(self):
     return self.item_feed.feed_lifestream.ls_baseurl + "item/" + str(self.id)
   
@@ -99,3 +106,17 @@ class Item(models.Model):
   class Meta:
     db_table="items"
     ordering=["-item_date", "item_feed"]
+
+COMMENT_MAX_LENGTH = getattr(settings,'COMMENT_MAX_LENGTH',3000)
+
+class Comment(models.Model):
+  '''
+  A feed comment.
+  '''
+  item = models.ForeignKey(Item, verbose_name=_("Feed"))
+  user_name = models.CharField(_(u"User's Name"), max_length=50)
+  user_email = models.EmailField(_(u"User's Email Address"))
+  user_url = models.URLField(_(u"User's URL"), blank=True)
+  date = models.DateTimeField(_("Date/Time Submitted"), auto_now_add=True)
+  content = models.CharField(_("Comment"), max_length=COMMENT_MAX_LENGTH)
+  

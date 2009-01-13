@@ -1,6 +1,5 @@
 {% extends "base.tpl" %}
 {% load truncate_chars %}
-{% load comments %}
 
 {% block title %}{{lifestream.ls_title}}{% endblock %}
 {% block content %}
@@ -8,7 +7,6 @@
   {% if items.object_list %}
   <tbody>
     {% for item in items.object_list %}
-    {% get_comment_count for item as comment_count %}
     <tr>
       <td>
         <h2><a href="{{item.item_link}}">{{ item.item_title }}</a></h2>
@@ -20,7 +18,7 @@
             &nbsp;
           {% endif %}
         </p>
-        <p>{{ comment_count }} comments.</p>
+        <p>{{ item.comment_count }} comments.</p>
       </td>
     </tr>
     {% endfor %}
