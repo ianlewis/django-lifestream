@@ -120,5 +120,11 @@ class Comment(models.Model):
   user_email = models.EmailField(_(u"User's Email Address"))
   user_url = models.URLField(_(u"User's URL"), blank=True)
   date = models.DateTimeField(_("Date/Time Submitted"), auto_now_add=True)
-  content = models.CharField(_("Comment"), max_length=COMMENT_MAX_LENGTH)
+  content = models.TextField(_("Comment"), max_length=COMMENT_MAX_LENGTH)
   
+  def __unicode__(self):
+    return str(self.id)
+  
+  class Meta:
+    db_table="comments"
+    ordering=["-date", "item"]

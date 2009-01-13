@@ -7,7 +7,6 @@ from django.contrib import admin
 from django import forms
 from django.forms.util import ErrorList
 from django.contrib.contenttypes import generic
-from django.contrib.comments.models import *
 
 from dlife.lifestream.models import *
 from dlife.util import feedparser
@@ -88,11 +87,9 @@ class FeedAdmin(admin.ModelAdmin):
 
 admin.site.register(Feed, FeedAdmin)
 
-class CommentInline(generic.GenericStackedInline):
+class CommentInline(admin.StackedInline):
   model           = Comment
   extra           = 0
-  ct_field        = "content_type"
-  ct_fk_field     = "object_pk"
   # Exclude is currently ignored by GenericStackedInline
   # exclude         = ['site','ip_address']
 
@@ -129,3 +126,12 @@ class TagAdmin(admin.ModelAdmin):
     obj.save()
 
 admin.site.register(Tag, TagAdmin)
+
+class CommentAdmin(admin.ModelAdmin):
+  list_display   = ['user_name', 'date']
+  ordering       = ['-date',]
+  search_fields  = ['user_name','user_email', 'content']
+  # exclude        = ['date',]
+  list_per_page   = 20
+  
+admin.site.register(Comment, CommentAdmin)
