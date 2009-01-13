@@ -7,6 +7,7 @@ from django.conf import settings
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import permalink
 from django.utils.translation import ugettext_lazy as _
 
 class Lifestream(models.Model):
@@ -95,10 +96,11 @@ class Item(models.Model):
     return self._comment_count
   comment_count = property(_get_comment_count)
   
-  def _get_item_link(self):
-    return self.item_feed.feed_lifestream.ls_baseurl + "item/" + str(self.id)
-  
-  item_link = property(_get_item_link)
+  @permalink
+  def get_absolute_url(self):
+    return ('item_page', (), {
+      'item_id': self.id
+    })
   
   def __unicode__(self):
     return self.item_title

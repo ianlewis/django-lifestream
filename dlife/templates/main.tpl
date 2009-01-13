@@ -9,7 +9,7 @@
     {% for item in items.object_list %}
     <tr>
       <td>
-        <h2><a href="{{item.item_link}}">{{ item.item_title }}</a></h2>
+        <h2><a href="{{ item.get_absolute_url }}">{{ item.item_title }}</a></h2>
         {{item.item_date}}
         <p>
           {% if item.item_clean_content %}
