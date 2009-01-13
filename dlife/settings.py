@@ -115,10 +115,8 @@ VALID_ITEM_TAGS = (
 )
 
 PLUGINS = (
-    # ('youtube', 'Youtube'),
-    # ('vimeo', 'Vimeo'),
-    # ('lastfm', 'last.fm'),
+  ('FeedPlugin', 'Generic Feed'),
+  # ('youtube', 'Youtube'),
+  # ('vimeo', 'Vimeo'),
+  # ('lastfm', 'last.fm'),
 )
-
-PLUGINS_DICT = {
-}

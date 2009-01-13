@@ -13,12 +13,19 @@ from django.db.models import Q
 from dlife.util import clean_item_content
 from dlife.lifestream.models import *
 
+def get_feed_plugin(feed, plugin_class_name='FeedPlugin'):
+  plugin_class = getattr(dlife.lifestream.plugins, plugin_class_name)
+  return plugin_class(feed)
+
 class FeedPlugin(object):
   
   feed = None
   
   def __init__(self, feed):
     self.feed = feed
+  
+  def name(self):
+    return "Generic Feed"
   
   def pre_process(self, entry):
     '''
