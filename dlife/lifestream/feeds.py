@@ -37,7 +37,7 @@ def update_feeds():
       feed_items = feedparser.parse(feed.feed_url)
       
       # Get the required plugin
-      if feed.feed_plugin_name:
+      if feed.feed_plugin:
         plugin_mod, plugin_class = get_mod_class(feed.feed_plugin)
         if plugin_class != '':
           feed_plugin = getattr(__import__(plugin_mod, {}, {}, ['']), plugin_class)(feed)

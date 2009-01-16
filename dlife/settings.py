@@ -115,6 +115,7 @@ VALID_ITEM_TAGS = (
 
 PLUGINS = (
   ('dlife.lifestream.plugins.FeedPlugin', 'Generic Feed'),
+  ('dlife.lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
   # ('youtube', 'Youtube'),
   # ('vimeo', 'Vimeo'),
   # ('lastfm', 'last.fm'),
