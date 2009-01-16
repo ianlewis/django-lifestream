@@ -48,7 +48,7 @@ class Feed(models.Model):
   feed_basic_feed = models.BooleanField(default=False)
   
   # The feed plugin name used to process the incoming feed data.
-  feed_plugin_name = models.CharField(_("Plugin Name"), max_length=255, null=True, blank=True, choices=settings.PLUGINS)
+  feed_plugin = models.CharField(_("Plugin Name"), max_length=255, null=True, blank=True, choices=settings.PLUGINS)
   
   objects = FeedManager()
   

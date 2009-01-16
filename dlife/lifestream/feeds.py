@@ -3,12 +3,14 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
+import copy
+
 from django.conf import settings
 
 from dlife.util import feedparser
 
 from models import *
-from plugins import FeedPlugin
+import plugins
 
 # Patch feedparser so we can get access to interesting parts of media
 # extentions.
@@ -19,16 +21,31 @@ class DlifeFeedParser(feedparser._StrictFeedParser_old):
     self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
 feedparser._StrictFeedParser = DlifeFeedParser
 
+def get_mod_class(plugin):
+    # Converts 'dlife.lifestream.plugins.FeedPlugin' to
+    # ['dlife.lifestream.plugins', 'FeedPlugin']
+    try:
+        dot = plugin.rindex('.')
+    except ValueError:
+        return plugin, ''
+    return plugin[:dot], plugin[dot+1:]
+
 def update_feeds():
   feeds = Feed.objects.get_fetchable_feeds()
   for feed in feeds:
     try:
       feed_items = feedparser.parse(feed.feed_url)
       
+      # Get the required plugin
       if feed.feed_plugin_name:
-        feed_plugin = settings.PLUGINS_DICT[self.feed_plugin_name](feed)
+        plugin_mod, plugin_class = get_mod_class(feed.feed_plugin)
+        if plugin_class != '':
+          feed_plugin = getattr(__import__(plugin_mod, {}, {}, ['']), plugin_class)(feed)
+        else:
+          # TODO: log warning.
+          feed_plugin = plugins.FeedPlugin(feed)
       else:
-        feed_plugin = FeedPlugin(feed)
+        feed_plugin = plugins.FeedPlugin(feed)
       
       included_entries = []
       for entry in feed_items['entries']:

@@ -59,6 +59,7 @@ class FeedAdminForm(forms.ModelForm):
     # Check if the feed was not parsed correctly.
     if feed['bozo']:
       self._errors['feed_url'] = ErrorList(["This is not a valid feed: %s" % feed['bozo_exception']])
+      print feed['bozo_exception']
       # This field is no longer valid. Remove from cleaned_data
       del cleaned_data['feed_url']
       return
