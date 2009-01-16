@@ -12,10 +12,10 @@ from django.utils.translation import ugettext_lazy as _
 
 class Lifestream(models.Model):
   '''A lifestream itself.'''
-  ls_title = models.CharField(max_length=128)
-  ls_tagline = models.TextField(null=True, blank=True)
+  ls_title = models.CharField(_("Title"), max_length=128)
+  ls_tagline = models.TextField(_("Tagline"), null=True, blank=True)
   
-  ls_baseurl = models.CharField(max_length=1000)
+  ls_baseurl = models.CharField(_("Base Url"), max_length=1000)
   
   ls_user = models.ForeignKey(User)
   
@@ -37,18 +37,18 @@ class FeedManager(models.Manager):
 
 class Feed(models.Model):
   '''A feed for gathering data.'''
-  feed_lifestream = models.ForeignKey(Lifestream)
+  feed_lifestream = models.ForeignKey(Lifestream,verbose_name=_("Lifestream"))
   
-  feed_name = models.CharField(max_length=255)
-  feed_url = models.URLField(verify_exists=True, max_length=1000)
-  feed_domain = models.CharField(max_length=255)
-  feed_fetchable = models.BooleanField(default=True)
+  feed_name = models.CharField(_("Feed Name"), max_length=255)
+  feed_url = models.URLField(_("Feed Url"), verify_exists=True, max_length=1000)
+  feed_domain = models.CharField(_("Feed Domain"), max_length=255)
+  feed_fetchable = models.BooleanField(_("Fetchable"), default=True)
   
   # Used for feeds that allow users to directly add to the lifestream.
   feed_basic_feed = models.BooleanField(default=False)
   
   # The feed plugin name used to process the incoming feed data.
-  feed_plugin_name = models.CharField(max_length=255, null=True, blank=True, choices=settings.PLUGINS)
+  feed_plugin_name = models.CharField(_("Plugin Name"), max_length=255, null=True, blank=True, choices=settings.PLUGINS)
   
   objects = FeedManager()
   
@@ -60,9 +60,9 @@ class Feed(models.Model):
 
 class Tag(models.Model):
   '''item tag'''
-  tag_name = models.CharField(max_length=30)
-  tag_slug = models.SlugField(primary_key=True)
-  tag_count = models.IntegerField()
+  tag_name = models.CharField(_("Tag Name"), max_length=30)
+  tag_slug = models.SlugField(_("Slug"), primary_key=True)
+  tag_count = models.IntegerField(_("Count"))
   
   tag_visible = models.BooleanField(default=True)
   
@@ -75,19 +75,19 @@ class Tag(models.Model):
 
 class Item(models.Model):
   '''A feed item'''
-  item_feed = models.ForeignKey(Feed)
-  item_date = models.DateTimeField()
-  item_title = models.CharField(max_length=255)
-  item_content = models.TextField(null=True, blank=True)
-  item_content_type = models.CharField(max_length=255, null=True, blank=True)
+  item_feed = models.ForeignKey(Feed, verbose_name=_("Feed"))
+  item_date = models.DateTimeField(_("Date"))
+  item_title = models.CharField(_("Title"), max_length=255)
+  item_content = models.TextField(_("Content"), null=True, blank=True)
+  item_content_type = models.CharField(_("Content Type"), max_length=255, null=True, blank=True)
   item_clean_content = models.TextField(null=True, blank=True)
-  item_author = models.CharField(max_length=255, null=True, blank=True)
-  item_permalink = models.CharField(max_length=1000)
+  item_author = models.CharField(_("Author"), max_length=255, null=True, blank=True)
+  item_permalink = models.CharField(_("Permalink"), max_length=1000)
   
   #Tag string used to save tags using django-tagging
-  item_tags = models.ManyToManyField(Tag, null=True, blank=True, db_table="item_tags")
+  item_tags = models.ManyToManyField(Tag, verbose_name=_("Tags"), null=True, blank=True, db_table="item_tags")
   
-  item_published = models.BooleanField(default=True)
+  item_published = models.BooleanField(_("Published"), default=True)
   
   _comment_count = None
   def _get_comment_count(self):
