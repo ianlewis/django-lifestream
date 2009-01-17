@@ -17,6 +17,8 @@ class Lifestream(models.Model):
   
   ls_baseurl = models.CharField(_("Base Url"), max_length=1000)
   
+  items_per_page = models.IntegerField(_("Items Per Page"), default=10)
+  
   ls_user = models.ForeignKey(User)
   
   def __unicode__(self):
