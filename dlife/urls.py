@@ -5,11 +5,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-    (r'^$', 'dlife.lifestream.views.main_page'),
-    (r'^page/(?P<page>\d+)$', 'dlife.lifestream.views.main_page'),
-    url(r'^item/(?P<item_id>\d+)$', 'dlife.lifestream.views.item_page', name='item_page'),
-    
     
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
@@ -18,4 +13,6 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/update_feeds', 'dlife.lifestream.admin_views.admin_update_feeds', name='admin_update_feeds'),
     (r'^admin/(.*)', admin.site.root),
+    
+    (r'', include('lifestream.urls')),
 )
