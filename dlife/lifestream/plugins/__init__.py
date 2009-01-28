@@ -10,8 +10,9 @@ import copy
 from django.utils.http import urlquote
 from django.db.models import Q
 
-from dlife.util import clean_item_content
-from dlife.lifestream.models import *
+from util import clean_item_content
+from lifestream.models import *
+from tagging.models import *
 
 class FeedPlugin(object):
   
@@ -95,16 +96,6 @@ class FeedPlugin(object):
       if 'tags' in entry:
         for tag in entry['tags']:
           tag_name = tag.get('term')[:30]
-          slug = urlquote(tag_name.lower())
-          try:
-            tagobj = Tag.objects.get(tag_slug=slug)
-          except Tag.DoesNotExist:
-            #Add the tag object
-            tagobj = Tag(tag_name = tag_name,
-                         tag_slug = slug,
-                         tag_count = 1)
-          
-          tagobj.save()
-          i.item_tags.add(tagobj)
+          Tag.objects.add_tag(i, tag_name)
       item_list.append(i)
     return item_list

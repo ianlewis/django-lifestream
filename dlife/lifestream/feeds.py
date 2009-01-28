@@ -10,6 +10,7 @@ from django.conf import settings
 from dlife.util import feedparser
 
 from models import *
+from tagging.models import *
 import plugins
 
 # Patch feedparser so we can get access to interesting parts of media
@@ -62,5 +63,6 @@ def update_feeds():
         eachTag.tag_count = eachTag.item_set.all().count()
         eachTag.save()
     except:
+      print "Error in feed: %s" % feed
       from traceback import print_exc
       print_exc()

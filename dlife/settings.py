@@ -85,9 +85,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.humanize',
-    'dlife.lifestream',
-    'dlife.lifestream.templatetags',
-    'dlife.util',
+    'lifestream',
+    'tagging',
+    'util',
 )
 
 
@@ -121,3 +121,5 @@ PLUGINS = (
   # ('vimeo', 'Vimeo'),
   # ('lastfm', 'last.fm'),
 )
+
+FORCE_LOWERCASE_TAGS=True

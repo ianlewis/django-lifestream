@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.db.models import permalink
 from django.utils.translation import ugettext_lazy as _
 
+import tagging
+
 class Lifestream(models.Model):
   '''A lifestream itself.'''
   ls_title = models.CharField(_("Title"), max_length=128)
@@ -60,21 +62,6 @@ class Feed(models.Model):
   class Meta:
     db_table="feeds"
 
-class Tag(models.Model):
-  '''item tag'''
-  tag_name = models.CharField(_("Tag Name"), max_length=30)
-  tag_slug = models.SlugField(_("Slug"), primary_key=True)
-  tag_count = models.IntegerField(_("Count"))
-  
-  tag_visible = models.BooleanField(default=True)
-  
-  def __unicode__(self):
-    return self.tag_name
-  
-  class Meta:
-    db_table="tags"
-    ordering=["-tag_visible", "-tag_count"]
-
 class Item(models.Model):
   '''A feed item'''
   item_feed = models.ForeignKey(Feed, verbose_name=_("Feed"))
@@ -85,9 +72,6 @@ class Item(models.Model):
   item_clean_content = models.TextField(null=True, blank=True)
   item_author = models.CharField(_("Author"), max_length=255, null=True, blank=True)
   item_permalink = models.CharField(_("Permalink"), max_length=1000)
-  
-  #Tag string used to save tags using django-tagging
-  item_tags = models.ManyToManyField(Tag, verbose_name=_("Tags"), null=True, blank=True, db_table="item_tags")
   
   item_published = models.BooleanField(_("Published"), default=True)
   
@@ -103,3 +87,5 @@ class Item(models.Model):
   class Meta:
     db_table="items"
     ordering=["-item_date", "item_feed"]
+
+#tagging.register(Item)

@@ -101,22 +101,4 @@ class ItemAdmin(admin.ModelAdmin):
     obj.item_content, obj.item_clean_content = clean_item_content(obj.item_content)
     obj.save()
     
-
 admin.site.register(Item, ItemAdmin)
-
-class TagAdmin(admin.ModelAdmin):
-  list_display   = ['tag_name', 'tag_count','tag_visible']
-  ordering       = ['-tag_count',]
-  search_fields  = ['tag_name','tag_slug']
-  exclude        = ['tag_count',]
-  prepopulated_fields = {'tag_slug': ('tag_name',)}
-  list_per_page   = 20
-  
-  model = Tag
-  
-  def save_model(self, request, obj, form, change):
-    if not change:
-      obj.tag_count = 0
-    obj.save()
-
-admin.site.register(Tag, TagAdmin)
