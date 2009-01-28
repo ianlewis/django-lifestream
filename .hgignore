@@ -6,6 +6,7 @@ syntax: glob
 *.marks
 *.o
 *.pyc
+*.swp
 dlife.egg-info
 build
 temp
