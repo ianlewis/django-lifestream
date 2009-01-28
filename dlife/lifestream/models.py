@@ -42,7 +42,7 @@ class Feed(models.Model):
   feed_lifestream = models.ForeignKey(Lifestream,verbose_name=_("Lifestream"))
   
   feed_name = models.CharField(_("Feed Name"), max_length=255)
-  feed_url = models.URLField(_("Feed Url"), verify_exists=True, max_length=1000)
+  feed_url = models.URLField(_("Feed Url"), help_text=_("Must be a valid url"), verify_exists=True, max_length=1000)
   feed_domain = models.CharField(_("Feed Domain"), max_length=255)
   feed_fetchable = models.BooleanField(_("Fetchable"), default=True)
   
@@ -91,13 +91,6 @@ class Item(models.Model):
   
   item_published = models.BooleanField(_("Published"), default=True)
   
-  _comment_count = None
-  def _get_comment_count(self):
-    if self._comment_count is None:
-      self._comment_count = Comment.objects.filter(item=self).count()
-    return self._comment_count
-  comment_count = property(_get_comment_count)
-  
   @permalink
   def get_absolute_url(self):
     return ('item_page', (), {
@@ -110,23 +103,3 @@ class Item(models.Model):
   class Meta:
     db_table="items"
     ordering=["-item_date", "item_feed"]
-
-COMMENT_MAX_LENGTH = getattr(settings,'COMMENT_MAX_LENGTH',3000)
-
-class Comment(models.Model):
-  '''
-  A feed comment.
-  '''
-  item = models.ForeignKey(Item, verbose_name=_("Feed"))
-  user_name = models.CharField(_(u"User's Name"), max_length=50)
-  user_email = models.EmailField(_(u"User's Email Address"))
-  user_url = models.URLField(_(u"User's URL"), blank=True)
-  date = models.DateTimeField(_("Date/Time Submitted"), auto_now_add=True)
-  content = models.TextField(_("Comment"), max_length=COMMENT_MAX_LENGTH)
-  
-  def __unicode__(self):
-    return str(self.id)
-  
-  class Meta:
-    db_table="comments"
-    ordering=["-date", "item"]

@@ -13,7 +13,6 @@ from django.core.urlresolvers import reverse
 from dlife.util.decorators import allow_methods
 
 from dlife.lifestream.models import *
-from dlife.lifestream.forms import *
 
 @allow_methods('GET')
 def main_page(request, page="1"):
@@ -42,26 +41,7 @@ def item_page(request, item_id=None):
   except Item.DoesNotExist:
     raise Http404
   
-  if request.method == 'POST':
-    form = CommentForm(request.POST)
-    if form.is_valid():
-      Comment.objects.create(item=item,
-        user_name = form.cleaned_data['user_name'],
-        user_email = form.cleaned_data['user_email'],
-        user_url = form.cleaned_data['user_url'],
-        content = form.cleaned_data['content'],
-      )
-      return HttpResponseRedirect(reverse('item_page', kwargs={'item_id':item.id}))
-  else:
-    form = CommentForm()
-    
-  comments = Comment.objects.filter(item=item)
-  form.action = reverse('item_page', kwargs={'item_id':item.id})
-  form.method = 'POST'
-  
   return direct_to_template(request, "item.tpl", { 
     "item": item,
-    "item_comments": comments,
-    "comment_form": form,
   })
   

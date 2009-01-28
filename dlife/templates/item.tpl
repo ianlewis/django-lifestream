@@ -23,32 +23,4 @@
   {% endif %}
 </p>
 
-{% for comment in item_comments %}
-<p>
-<h4>{{ comment.date }} {% if comment.user_url %}<a href="{{ comment.user_url }}">{% endif %}{{ comment.user_name }}{% if comment.user_url %}</a>{% endif %}</h4>
-{{ comment.content }}
-</p>
-{% endfor %}
-
-<div class="comment-form">
-<form action="{{ comment_form.action }}" method="{{ comment_form.method }}">
-{% for field in comment_form %}
-  {% if field.is_hidden %}
-    {{ field }}
-  {% else %}
-    {% ifequal field.name "honeypot" %}
-      <div style="display:none;"><input type="text" name="honeypot" id="id_honeypot" /></div>
-    {% else %}
-      <div class="form-row">
-        <p>{{ field.label_tag }}</p>
-        {% if field.errors %}<p>{{ field.errors }}</p>{% endif %}
-        <p>{{ field }}</p>
-      </div>
-    {% endifequal %}
-  {% endif %}
-{% endfor %}
-<p class="comment-submit"><input type="submit" name="submit" class="submit-post" value="{% trans "Post" %}" /></p>
-</form>
-</div>
-
 {% endblock %}

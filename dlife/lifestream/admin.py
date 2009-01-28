@@ -88,12 +88,6 @@ class FeedAdmin(admin.ModelAdmin):
 
 admin.site.register(Feed, FeedAdmin)
 
-class CommentInline(admin.StackedInline):
-  model           = Comment
-  extra           = 0
-  # Exclude is currently ignored by GenericStackedInline
-  # exclude         = ['site','ip_address']
-
 class ItemAdmin(admin.ModelAdmin):
   list_display    = ('item_title', 'item_date','item_published')
   exclude         = ['item_clean_content',]
@@ -102,7 +96,6 @@ class ItemAdmin(admin.ModelAdmin):
   list_per_page   = 20
   
   model = Item
-  inlines         = [CommentInline,]
   
   def save_model(self, request, obj, form, change):
     obj.item_content, obj.item_clean_content = clean_item_content(obj.item_content)
@@ -127,12 +120,3 @@ class TagAdmin(admin.ModelAdmin):
     obj.save()
 
 admin.site.register(Tag, TagAdmin)
-
-class CommentAdmin(admin.ModelAdmin):
-  list_display   = ['user_name', 'date']
-  ordering       = ['-date',]
-  search_fields  = ['user_name','user_email', 'content']
-  # exclude        = ['date',]
-  list_per_page   = 20
-  
-admin.site.register(Comment, CommentAdmin)
