@@ -4,7 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 from django.contrib.admin.views.decorators import staff_member_required
-from dlife.lifestream.feeds import update_feeds
+from lifestream.feeds import update_feeds
 from django.http import HttpResponseRedirect
 
 @staff_member_required

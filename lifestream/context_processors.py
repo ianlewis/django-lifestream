@@ -4,7 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 from django.utils.translation import ugettext as _
-from dlife.lifestream.models import Lifestream
+from lifestream.models import Lifestream
 
 def basic(request):
   return {

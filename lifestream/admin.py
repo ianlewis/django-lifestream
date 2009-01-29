@@ -8,10 +8,10 @@ from django import forms
 from django.forms.util import ErrorList
 from django.contrib.contenttypes import generic
 
-from dlife.lifestream.models import *
-from dlife.util import feedparser
-from dlife.util import get_url_domain
-from dlife.util import clean_item_content
+from lifestream.models import *
+from lifestream.util import feedparser
+from lifestream.util import get_url_domain
+from lifestream.util import clean_item_content
 
 class LifestreamAdmin(admin.ModelAdmin):
   list_display    = ('ls_title',)

@@ -10,9 +10,9 @@ from django.views.generic.simple import direct_to_template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 
-from dlife.util.decorators import allow_methods
+from lifestream.util.decorators import allow_methods
 
-from dlife.lifestream.models import *
+from lifestream.models import *
 
 @allow_methods('GET')
 def main_page(request, page="1"):

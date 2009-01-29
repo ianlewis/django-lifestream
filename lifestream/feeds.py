@@ -7,7 +7,7 @@ import copy
 
 from django.conf import settings
 
-from dlife.util import feedparser
+from util import feedparser
 
 from models import *
 from tagging.models import *
@@ -23,8 +23,8 @@ class DlifeFeedParser(feedparser._StrictFeedParser_old):
 feedparser._StrictFeedParser = DlifeFeedParser
 
 def get_mod_class(plugin):
-    # Converts 'dlife.lifestream.plugins.FeedPlugin' to
-    # ['dlife.lifestream.plugins', 'FeedPlugin']
+    # Converts 'lifestream.plugins.FeedPlugin' to
+    # ['lifestream.plugins', 'FeedPlugin']
     try:
         dot = plugin.rindex('.')
     except ValueError:

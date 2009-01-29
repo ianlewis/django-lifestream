@@ -4,8 +4,8 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    (r'^$', 'dlife.lifestream.views.main_page'),
-    (r'^page/(?P<page>\d+)$', 'dlife.lifestream.views.main_page'),
-    url(r'^item/(?P<item_id>\d+)$', 'dlife.lifestream.views.item_page', name='item_page'),
+urlpatterns = patterns('lifestream.views',
+    url(r'^$', 'main_page', name='main_page'),
+    url(r'^page/(?P<page>\d+)$', 'main_page', name='main_page_paged'),
+    url(r'^item/(?P<item_id>\d+)$', 'item_page', name='item_page'),
 )
