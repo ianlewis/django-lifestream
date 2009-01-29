@@ -87,7 +87,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'lifestream',
     'tagging',
-    'util',
 )
 
 
@@ -115,8 +114,8 @@ VALID_ITEM_TAGS = (
 )
 
 PLUGINS = (
-  ('dlife.lifestream.plugins.FeedPlugin', 'Generic Feed'),
-  ('dlife.lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
+  ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
+  ('lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
   # ('youtube', 'Youtube'),
   # ('vimeo', 'Vimeo'),
   # ('lastfm', 'last.fm'),
