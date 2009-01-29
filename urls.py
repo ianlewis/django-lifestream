@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     
     # Uncomment the next line to enable the admin:
-    url(r'^admin/update_feeds', 'dlife.lifestream.admin_views.admin_update_feeds', name='admin_update_feeds'),
+    url(r'^admin/update_feeds', 'lifestream.admin_views.admin_update_feeds', name='admin_update_feeds'),
     (r'^admin/(.*)', admin.site.root),
     
     (r'', include('lifestream.urls')),

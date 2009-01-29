@@ -7,7 +7,7 @@ import copy
 
 from django.conf import settings
 
-from util import feedparser
+from lifestream.util import feedparser
 
 from models import *
 from tagging.models import *

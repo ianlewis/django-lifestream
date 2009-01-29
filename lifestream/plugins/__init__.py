@@ -10,7 +10,7 @@ import copy
 from django.utils.http import urlquote
 from django.db.models import Q
 
-from util import clean_item_content
+from lifestream.util import clean_item_content
 from lifestream.models import *
 from tagging.models import *
 
