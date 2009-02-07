@@ -74,6 +74,11 @@ class FeedPlugin(object):
       content = None
       clean_content = None
     
+    media_url = None
+    media_content_attrs = entry.get('media_content_attrs')
+    if media_content_attrs:
+      media_url = media_content_attrs.get('url')
+
     item = Item(item_feed = self.feed,
              item_date = entry.get('published'),
              item_title = entry.get('title'),
@@ -81,7 +86,8 @@ class FeedPlugin(object):
              item_content_type = content_type,
              item_clean_content = clean_content,
              item_author = entry.get('author'),
-             item_permalink = entry.get('link')
+             item_permalink = entry.get('link'),
+             item_media_url = media_url,
     )
     return item
 
