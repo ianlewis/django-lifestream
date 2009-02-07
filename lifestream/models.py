@@ -73,6 +73,9 @@ class Item(models.Model):
   item_author = models.CharField(_("Author"), max_length=255, null=True, blank=True)
   item_permalink = models.URLField(_("Permalink"),max_length=1000)
   item_media_url = models.URLField(_("Media URL"),max_length=1000, null=True, blank=True)
+  item_media_thumbnail_url = models.URLField(_("Media Thumbnail URL"), max_length=1000, null=True, blank=True)
+  item_media_description = models.TextField(_("Media Description"), null=True, blank=True)
+  item_media_description_type = models.CharField(_("Media Description Type"), max_length=50, null=True, blank=True)
 
   item_published = models.BooleanField(_("Published"), default=True)
   

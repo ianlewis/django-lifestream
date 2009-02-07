@@ -21,6 +21,9 @@
   {% else %}
     &nbsp;
   {% endif %}
+  {% ifequal item.item_feed.feed_domain "api.flickr.com" %}
+    <img src="{{ item.item_media_url }}" width="500" alt="{{ item.media_description|striptags }}" />
+  {% endifequal %}
 </p>
 
 {% endblock %}

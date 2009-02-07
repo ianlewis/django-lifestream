@@ -79,6 +79,16 @@ class FeedPlugin(object):
     if media_content_attrs:
       media_url = media_content_attrs.get('url')
 
+    thumbnail_url = None
+    media_thumbnail_attrs = entry.get('media_thumbnail_attrs')
+    if media_thumbnail_attrs:
+      thumbnail_url = media_thumbnail_attrs.get('url')
+
+    media_description_type = None
+    media_description_attrs = entry.get('media_description_attrs')
+    if media_description_attrs:
+      media_description_type = media_description_attrs.get('type')
+
     item = Item(item_feed = self.feed,
              item_date = entry.get('published'),
              item_title = entry.get('title'),
@@ -88,6 +98,9 @@ class FeedPlugin(object):
              item_author = entry.get('author'),
              item_permalink = entry.get('link'),
              item_media_url = media_url,
+             item_media_thumbnail_url = thumbnail_url,
+             item_media_description = entry.get("media_description"),
+             item_media_description_type = media_description_type,
     )
     return item
 
