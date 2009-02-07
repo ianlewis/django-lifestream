@@ -59,43 +59,34 @@ class FeedPlugin(object):
     
     return items_count == 0
     
-  def process(self, entries):
+  def process(self, entry):
     '''
-    Process a list of entries and return a list of Item models. This
-    hook could be overridden to create a single Item for a list of entries. For
-    example a last.fm stream where you don't want to include all songs
-    you listened to but rather a single item saying you listened to X number
-    of songs.
+    Process a single entry and return an item model.
+    '''
+
+    feed_contents = entry.get('content')
+    if feed_contents is not None:
+      content_type = feed_contents[0]['type']
+      feed_content = feed_contents[0]['value']
+      content, clean_content = clean_item_content(feed_content)
+    else:
+      content_type = None
+      content = None
+      clean_content = None
     
-    Items must be saved by this hook and tags must be updated.
+    item = Item(item_feed = self.feed,
+             item_date = entry.get('published'),
+             item_title = entry.get('title'),
+             item_content = content,
+             item_content_type = content_type,
+             item_clean_content = clean_content,
+             item_author = entry.get('author'),
+             item_permalink = entry.get('link')
+    )
+    return item
+
+  def post_process(self, item):
     '''
-    item_list = []
-    for entry in entries:
-      feed_contents = entry.get('content')
-      if feed_contents is not None:
-        content_type = feed_contents[0]['type']
-        feed_content = feed_contents[0]['value']
-        content, clean_content = clean_item_content(feed_content)
-      else:
-        content_type = None
-        content = None
-        clean_content = None
-      
-      i = Item(item_feed = self.feed,
-               item_date = entry.get('published'),
-               item_title = entry.get('title'),
-               item_content = content,
-               item_content_type = content_type,
-               item_clean_content = clean_content,
-               item_author = entry.get('author'),
-               item_permalink = entry.get('link')
-      )
-      i.save()
-      # Get tags
-      tags = ()
-      if 'tags' in entry:
-        for tag in entry['tags']:
-          tag_name = tag.get('term')[:30]
-          Tag.objects.add_tag(i, tag_name)
-      item_list.append(i)
-    return item_list
+    Allows plugins to process an item model before it is saved.
+    '''
+    return item

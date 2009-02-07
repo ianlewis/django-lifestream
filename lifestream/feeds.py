@@ -4,20 +4,19 @@
 #:folding=explicit:collapseFolds=1:
 
 import copy
+import logging
 
 from django.conf import settings
 
-from lifestream.util import feedparser
-
+from util import feedparser
 from models import *
 from tagging.models import *
 import plugins
 
-# Patch feedparser so we can get access to interesting parts of media
+# MonkeyPatch feedparser so we can get access to interesting parts of media
 # extentions.
 feedparser._StrictFeedParser_old = feedparser._StrictFeedParser
 class DlifeFeedParser(feedparser._StrictFeedParser_old):
-  
   def _start_media_content(self, attrsD):
     self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
 feedparser._StrictFeedParser = DlifeFeedParser
@@ -50,19 +49,25 @@ def update_feeds():
       
       included_entries = []
       for entry in feed_items['entries']:
+        feed_plugin.pre_process(entry)
         
-          feed_plugin.pre_process(entry)
-          
-          if feed_plugin.include_entry(entry):
-            included_entries.append(entry)
+        if feed_plugin.include_entry(entry):
+          included_entries.append(entry)
             
-      feed_plugin.process(included_entries)
-      
-      # Update tag counts
-      for eachTag in Tag.objects.all():
-        eachTag.tag_count = eachTag.item_set.all().count()
-        eachTag.save()
+      for entry in included_entries:
+        i = feed_plugin.process(entry)
+
+        feed_plugin.post_process(i) 
+
+        i.save()
+        # Get tags
+        tags = ()
+        if 'tags' in entry:
+          for tag in entry['tags']:
+            tag_name = tag.get('term')[:30]
+            Tag.objects.add_tag(i, tag_name)
     except:
+      #TODO: Make this work with standard python logging
       print "Error in feed: %s" % feed
       from traceback import print_exc
       print_exc()
