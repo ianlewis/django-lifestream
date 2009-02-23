@@ -62,6 +62,12 @@ class Feed(models.Model):
   class Meta:
     db_table="feeds"
 
+class ItemManager(models.Manager):
+  """Manager for querying Items"""
+
+  def published(self):
+    return self.filter(item_published=True).order_by("-item_date")
+
 class Item(models.Model):
   '''A feed item'''
   item_feed = models.ForeignKey(Feed, verbose_name=_("Feed"))
@@ -78,6 +84,8 @@ class Item(models.Model):
   item_media_description_type = models.CharField(_("Media Description Type"), max_length=50, null=True, blank=True)
 
   item_published = models.BooleanField(_("Published"), default=True)
+
+  objects = ItemManager()
   
   @permalink
   def get_absolute_url(self):
