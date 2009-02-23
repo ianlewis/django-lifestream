@@ -52,9 +52,9 @@ class FeedPlugin(object):
     this is a check for if the item has already been added or not.
     '''
     items_count = Item.objects.filter(
-      Q(item_date = entry['published']) | Q(item_permalink = entry['link'])
+      Q(date = entry['published']) | Q(permalink = entry['link'])
     ).filter(
-      item_feed = self.feed
+      feed = self.feed
     ).count()
     
     return items_count == 0
@@ -89,18 +89,18 @@ class FeedPlugin(object):
     if media_description_attrs:
       media_description_type = media_description_attrs.get('type')
 
-    item = Item(item_feed = self.feed,
-             item_date = entry.get('published'),
-             item_title = entry.get('title'),
-             item_content = content,
-             item_content_type = content_type,
-             item_clean_content = clean_content,
-             item_author = entry.get('author'),
-             item_permalink = entry.get('link'),
-             item_media_url = media_url,
-             item_media_thumbnail_url = thumbnail_url,
-             item_media_description = entry.get("media_description"),
-             item_media_description_type = media_description_type,
+    item = Item(feed = self.feed,
+             date = entry.get('published'),
+             title = entry.get('title'),
+             content = content,
+             content_type = content_type,
+             clean_content = clean_content,
+             author = entry.get('author'),
+             permalink = entry.get('link'),
+             media_url = media_url,
+             media_thumbnail_url = thumbnail_url,
+             media_description = entry.get("media_description"),
+             media_description_type = media_description_type,
     )
     return item
 

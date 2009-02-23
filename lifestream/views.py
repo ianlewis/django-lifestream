@@ -37,7 +37,7 @@ def main_page(request, page="1"):
 @allow_methods('GET', 'POST')
 def item_page(request, item_id=None):
   try:
-    item = Item.objects.get(id=item_id,item_published=True)
+    item = Item.objects.get(id=item_id,published=True)
   except Item.DoesNotExist:
     raise Http404
   

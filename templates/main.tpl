@@ -1,7 +1,7 @@
 {% extends "base.tpl" %}
 {% load truncate_chars %}
 
-{% block title %}{{lifestream.ls_title}}{% endblock %}
+{% block title %}{{lifestream.title}}{% endblock %}
 {% block content %}
 <table>
   {% if items.object_list %}
@@ -9,16 +9,15 @@
     {% for item in items.object_list %}
     <tr>
       <td>
-        <h2><a href="{{ item.get_absolute_url }}">{{ item.item_title }}</a></h2>
-        {{item.item_date}}
+        <h2><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h2>
+        {{item.date}}
         <p>
-          {% if item.item_clean_content %}
-            {{ item.item_clean_content|truncate_chars:100 }}
+          {% if item.clean_content %}
+            {{ item.clean_content|truncate_chars:100 }}
           {% else %}
             &nbsp;
           {% endif %}
         </p>
-        <p>{{ item.comment_count }} comments.</p>
       </td>
     </tr>
     {% endfor %}

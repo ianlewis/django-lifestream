@@ -3,26 +3,26 @@
 {% load humanize %}
 {% load i18n %}
 
-{% block title %}{{lifestream.ls_title}}{% endblock %}
+{% block title %}{{lifestream.title}}{% endblock %}
 {% block content %}
-<h2><a href="{{item.item_permalink}}">{{ item.item_title }}</a></h2>
-{{item.item_date}}
+<h2><a href="{{item.permalink}}">{{ item.title }}</a></h2>
+{{item.date}}
 <p>
-  {% if item.item_content %}
-    {% ifequal item.item_content_type "text/plain"  %}
-      {{ item.item_content|linebreaks }}
+  {% if item.content %}
+    {% ifequal item.content_type "text/plain"  %}
+      {{ item.content|linebreaks }}
     {% else %}
-      {% ifequal item.item_content_type "text/html"  %}
-        {{ item.item_content|safe }}
+      {% ifequal item.content_type "text/html"  %}
+        {{ item.content|safe }}
       {% else %}
-        {{ item.item_content }}
+        {{ item.content }}
       {% endifequal %}
     {% endifequal %}
   {% else %}
     &nbsp;
   {% endif %}
-  {% ifequal item.item_feed.feed_domain "api.flickr.com" %}
-    <img src="{{ item.item_media_url }}" width="500" alt="{{ item.media_description|striptags }}" />
+  {% ifequal item.feed.feed_domain "api.flickr.com" %}
+    <img src="{{ item.media_url }}" width="500" alt="{{ item.media_description|striptags }}" />
   {% endifequal %}
 </p>
 

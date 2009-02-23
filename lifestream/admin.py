@@ -14,28 +14,28 @@ from lifestream.util import get_url_domain
 from lifestream.util import clean_item_content
 
 class LifestreamAdmin(admin.ModelAdmin):
-  list_display    = ('ls_title',)
-  exclude         = ['ls_user',]
+  list_display    = ('title',)
+  exclude         = ['user',]
   list_per_page   = 20
   
   model = Lifestream
   
   def save_model(self, request, obj, form, change):
-    obj.ls_user = request.user
+    obj.user = request.user
     obj.save()
     if not change:
       # Create a new feed that is not editable
       # so that the user can use it when adding
       # items directly to the lifestream.
       basic_feed = Feed()
-      basic_feed.feed_lifestream = obj
-      basic_feed.feed_name = obj.ls_title
+      basic_feed.lifestream = obj
+      basic_feed.name = obj.title
       
-      #This is ignored
-      basic_feed.feed_url = "http://localhost"
-      basic_feed.feed_domain = "Local"
-      basic_feed.feed_fetchable = False
-      basic_feed.feed_basic_feed = True
+      #Feed url is ignored
+      basic_feed.url = "http://localhost"
+      basic_feed.domain = "Local"
+      basic_feed.fetchable = False
+      basic_feed.basic_feed = True
       basic_feed.save()
 
 admin.site.register(Lifestream, LifestreamAdmin)
@@ -50,7 +50,7 @@ class FeedAdminForm(forms.ModelForm):
     and domain.
     """
     cleaned_data = self.cleaned_data
-    feed_url = cleaned_data.get('feed_url')
+    feed_url = cleaned_data.get('url')
     if not feed_url:
       # Feed url was not validated by the field validator
       return
@@ -58,26 +58,26 @@ class FeedAdminForm(forms.ModelForm):
     
     # Check if the feed was not parsed correctly.
     if feed['bozo']:
-      self._errors['feed_url'] = ErrorList(["This is not a valid feed: %s" % feed['bozo_exception']])
+      self._errors['url'] = ErrorList(["This is not a valid feed: %s" % feed['bozo_exception']])
       print feed['bozo_exception']
       # This field is no longer valid. Remove from cleaned_data
-      del cleaned_data['feed_url']
+      del cleaned_data['url']
       return
     # Check if the feed has a title field
     feed_info = feed.get('feed')
     if not feed_info.get('title'):
-      self._errors['feed_url'] = ErrorList(["This is not a valid feed: The feed is empty"])
+      self._errors['url'] = ErrorList(["This is not a valid feed: The feed is empty"])
       # This field is no longer valid. Remove from cleaned_data
-      del cleaned_data['feed_url']
+      del cleaned_data['url']
       return
-    cleaned_data['feed_name'] = feed_info['title']
-    cleaned_data['feed_domain'] = get_url_domain(feed_url)
+    cleaned_data['name'] = feed_info['title']
+    cleaned_data['domain'] = get_url_domain(feed_url)
     return cleaned_data
 
 class FeedAdmin(admin.ModelAdmin):
-  exclude         = ['feed_name', 'feed_domain', 'feed_basic_feed']
-  list_display    = ('feed_name', 'feed_domain')
-  list_filter     = ('feed_domain',)
+  exclude         = ['name', 'domain', 'basic_feed']
+  list_display    = ('name', 'domain')
+  list_filter     = ('domain',)
   
   form = FeedAdminForm
   
@@ -89,10 +89,10 @@ class FeedAdmin(admin.ModelAdmin):
 admin.site.register(Feed, FeedAdmin)
 
 class ItemAdmin(admin.ModelAdmin):
-  list_display    = ('item_title', 'item_date','item_published')
-  exclude         = ['item_clean_content',]
-  list_filter     = ('item_feed',)
-  search_fields   = ('item_title','item_clean_content')
+  list_display    = ('title', 'date','published')
+  exclude         = ['clean_content',]
+  list_filter     = ('feed',)
+  search_fields   = ('title','clean_content')
   list_per_page   = 20
   
   model = Item

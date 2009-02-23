@@ -7,24 +7,24 @@ from django.conf import settings
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import permalink
+from django.db.models import permalink as model_permalink
 from django.utils.translation import ugettext_lazy as _
 
 import tagging
 
 class Lifestream(models.Model):
   '''A lifestream itself.'''
-  ls_title = models.CharField(_("Title"), max_length=128)
-  ls_tagline = models.TextField(_("Tagline"), null=True, blank=True)
+  title = models.CharField(_("Title"), max_length=128)
+  tagline = models.TextField(_("Tagline"), null=True, blank=True)
   
-  ls_baseurl = models.CharField(_("Base Url"), max_length=1000)
+  baseurl = models.CharField(_("Base Url"), max_length=1000)
   
   items_per_page = models.IntegerField(_("Items Per Page"), default=10)
   
-  ls_user = models.ForeignKey(User)
+  user = models.ForeignKey(User)
   
   def __unicode__(self):
-    return self.ls_title
+    return self.title
   
   class Meta:
     db_table="lifestream"
@@ -34,30 +34,30 @@ class FeedManager(models.Manager):
   
   def get_feeds(self):
     return super(FeedManager, self) \
-           .get_query_set().filter(feed_basic_feed=False)
+           .get_query_set().filter(basic_feed=False)
   
   def get_fetchable_feeds(self):
-    return self.get_feeds().filter(feed_fetchable=True)
+    return self.get_feeds().filter(fetchable=True)
 
 class Feed(models.Model):
   '''A feed for gathering data.'''
-  feed_lifestream = models.ForeignKey(Lifestream,verbose_name=_("Lifestream"))
+  lifestream = models.ForeignKey(Lifestream,verbose_name=_("Lifestream"))
   
-  feed_name = models.CharField(_("Feed Name"), max_length=255)
-  feed_url = models.URLField(_("Feed Url"), help_text=_("Must be a valid url"), verify_exists=True, max_length=1000)
-  feed_domain = models.CharField(_("Feed Domain"), max_length=255)
-  feed_fetchable = models.BooleanField(_("Fetchable"), default=True)
+  name = models.CharField(_("Feed Name"), max_length=255)
+  url = models.URLField(_("Feed Url"), help_text=_("Must be a valid url"), verify_exists=True, max_length=1000)
+  domain = models.CharField(_("Feed Domain"), max_length=255)
+  fetchable = models.BooleanField(_("Fetchable"), default=True)
   
   # Used for feeds that allow users to directly add to the lifestream.
-  feed_basic_feed = models.BooleanField(default=False)
+  basic_feed = models.BooleanField(default=False)
   
   # The feed plugin name used to process the incoming feed data.
-  feed_plugin = models.CharField(_("Plugin Name"), max_length=255, null=True, blank=True, choices=settings.PLUGINS)
+  plugin_class_name = models.CharField(_("Plugin Name"), max_length=255, null=True, blank=True, choices=settings.PLUGINS)
   
   objects = FeedManager()
   
   def __unicode__(self):
-    return self.feed_name
+    return self.name
     
   class Meta:
     db_table="feeds"
@@ -66,38 +66,38 @@ class ItemManager(models.Manager):
   """Manager for querying Items"""
 
   def published(self):
-    return self.filter(item_published=True).order_by("-item_date")
+    return self.filter(published=True).order_by("-date")
 
 class Item(models.Model):
   '''A feed item'''
-  item_feed = models.ForeignKey(Feed, verbose_name=_("Feed"))
-  item_date = models.DateTimeField(_("Date"))
-  item_title = models.CharField(_("Title"), max_length=255)
-  item_content = models.TextField(_("Content"), null=True, blank=True)
-  item_content_type = models.CharField(_("Content Type"), max_length=255, null=True, blank=True)
-  item_clean_content = models.TextField(null=True, blank=True)
-  item_author = models.CharField(_("Author"), max_length=255, null=True, blank=True)
-  item_permalink = models.URLField(_("Permalink"),max_length=1000)
-  item_media_url = models.URLField(_("Media URL"),max_length=1000, null=True, blank=True)
-  item_media_thumbnail_url = models.URLField(_("Media Thumbnail URL"), max_length=1000, null=True, blank=True)
-  item_media_description = models.TextField(_("Media Description"), null=True, blank=True)
-  item_media_description_type = models.CharField(_("Media Description Type"), max_length=50, null=True, blank=True)
+  feed = models.ForeignKey(Feed, verbose_name=_("Feed"))
+  date = models.DateTimeField(_("Date"))
+  title = models.CharField(_("Title"), max_length=255)
+  content = models.TextField(_("Content"), null=True, blank=True)
+  content_type = models.CharField(_("Content Type"), max_length=255, null=True, blank=True)
+  clean_content = models.TextField(null=True, blank=True)
+  author = models.CharField(_("Author"), max_length=255, null=True, blank=True)
+  permalink = models.URLField(_("Permalink"),max_length=1000)
+  media_url = models.URLField(_("Media URL"),max_length=1000, null=True, blank=True)
+  media_thumbnail_url = models.URLField(_("Media Thumbnail URL"), max_length=1000, null=True, blank=True)
+  media_description = models.TextField(_("Media Description"), null=True, blank=True)
+  media_description_type = models.CharField(_("Media Description Type"), max_length=50, null=True, blank=True)
 
-  item_published = models.BooleanField(_("Published"), default=True)
+  published = models.BooleanField(_("Published"), default=True)
 
   objects = ItemManager()
   
-  @permalink
+  @model_permalink
   def get_absolute_url(self):
     return ('item_page', (), {
       'item_id': self.id
     })
   
   def __unicode__(self):
-    return self.item_title
+    return self.title
     
   class Meta:
     db_table="items"
-    ordering=["-item_date", "item_feed"]
+    ordering=["-date", "feed"]
 
 #tagging.register(Item)

@@ -39,11 +39,11 @@ def update_feeds():
   feeds = Feed.objects.get_fetchable_feeds()
   for feed in feeds:
     try:
-      feed_items = feedparser.parse(feed.feed_url)
+      feed_items = feedparser.parse(feed.url)
       
       # Get the required plugin
-      if feed.feed_plugin:
-        plugin_mod, plugin_class = get_mod_class(feed.feed_plugin)
+      if feed.plugin_class_name:
+        plugin_mod, plugin_class = get_mod_class(feed.plugin_class_name)
         if plugin_class != '':
           feed_plugin = getattr(__import__(plugin_mod, {}, {}, ['']), plugin_class)(feed)
         else:
