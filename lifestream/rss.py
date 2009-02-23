@@ -29,7 +29,6 @@ from lifestream.models import *
 class RecentItemsFeed(SyndicationFeed):
   title = "Recent Items"
   description = "Recent Lifestream Items"
-  title_template="feed_title.tpl"
 
   def link(obj):
     return reverse('main_page')
