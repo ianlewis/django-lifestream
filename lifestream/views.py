@@ -20,7 +20,6 @@ def main_page(request, page="1"):
   paginator = Paginator(item_list, request.lifestream.items_per_page) 
 
   # Make sure page request is an int. If not, deliver first page.
-  # TODO: make a better url for this like /page/1
   try:
     page = int(page)
   except ValueError:
