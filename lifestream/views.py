@@ -31,7 +31,7 @@ def main_page(request, page="1"):
   except (EmptyPage, InvalidPage):
     items = paginator.page(paginator.num_pages)
   
-  return direct_to_template(request, "main.tpl", { "items": items })
+  return direct_to_template(request, "lifestream/main.html", { "items": items })
   
 @allow_methods('GET', 'POST')
 def item_page(request, item_id=None):
@@ -40,7 +40,7 @@ def item_page(request, item_id=None):
   except Item.DoesNotExist:
     raise Http404
   
-  return direct_to_template(request, "item.tpl", { 
+  return direct_to_template(request, "lifestream/item.html", { 
     "item": item,
   })
   
