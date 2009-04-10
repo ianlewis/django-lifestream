@@ -16,27 +16,21 @@ class Lifestream(models.Model):
   '''A lifestream itself.'''
   title = models.CharField(_("Title"), max_length=128)
   tagline = models.TextField(_("Tagline"), null=True, blank=True)
-  
   baseurl = models.CharField(_("Base Url"), max_length=1000)
-  
   items_per_page = models.IntegerField(_("Items Per Page"), default=10)
-  
   user = models.ForeignKey(User)
   
   def __unicode__(self):
     return self.title
   
-  class Meta:
-    db_table="lifestream"
-
 class FeedManager(models.Manager):
   ''' Query only normal feeds. '''
   
-  def get_feeds(self):
+  def feeds(self):
     return super(FeedManager, self) \
            .get_query_set().filter(basic_feed=False)
   
-  def get_fetchable_feeds(self):
+  def fetchable(self):
     return self.get_feeds().filter(fetchable=True)
 
 class Feed(models.Model):
@@ -59,9 +53,6 @@ class Feed(models.Model):
   def __unicode__(self):
     return self.name
     
-  class Meta:
-    db_table="feeds"
-
 class ItemManager(models.Manager):
   """Manager for querying Items"""
 
@@ -97,7 +88,6 @@ class Item(models.Model):
     return self.title
     
   class Meta:
-    db_table="items"
     ordering=["-date", "feed"]
 
 #tagging.register(Item)
