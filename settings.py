@@ -61,15 +61,13 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'lifestream.middleware.LifestreamMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
   'django.core.context_processors.auth',
-  'dlife.lifestream.context_processors.basic'
 )
 
-ROOT_URLCONF = 'dlife.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
   'templates/',
@@ -123,3 +121,8 @@ PLUGINS = (
 )
 
 FORCE_LOWERCASE_TAGS=True
+
+try:
+    from settings_local import *
+except ImportError:
+    pass

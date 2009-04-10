@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load i18n %}
 
-{% block title %}{{lifestream.title}}{% endblock %}
+{% block title %}{{item.title}}{% endblock %}
 {% block content %}
 <h2><a href="{{item.permalink}}">{{ item.title }}</a></h2>
 {{item.date}}

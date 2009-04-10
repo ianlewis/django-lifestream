@@ -13,32 +13,30 @@ from lifestream.util import feedparser
 from lifestream.util import get_url_domain
 from lifestream.util import clean_item_content
 
-class LifestreamAdmin(admin.ModelAdmin):
-  list_display    = ('title',)
-  exclude         = ['user',]
-  list_per_page   = 20
-  
-  model = Lifestream
-  
-  def save_model(self, request, obj, form, change):
-    obj.user = request.user
-    obj.save()
-    if not change:
-      # Create a new feed that is not editable
-      # so that the user can use it when adding
-      # items directly to the lifestream.
-      basic_feed = Feed()
-      basic_feed.lifestream = obj
-      basic_feed.name = obj.title
-      
-      #Feed url is ignored
-      basic_feed.url = "http://localhost"
-      basic_feed.domain = "Local"
-      basic_feed.fetchable = False
-      basic_feed.basic_feed = True
-      basic_feed.save()
-
-admin.site.register(Lifestream, LifestreamAdmin)
+#class LifestreamAdmin(admin.ModelAdmin):
+#  list_display    = ('title',)
+#  exclude         = ['user',]
+#  list_per_page   = 20
+#  
+#  model = Lifestream
+#  
+#  def save_model(self, request, obj, form, change):
+#    obj.user = request.user
+#    obj.save()
+#    if not change:
+#      # Create a new feed that is not editable
+#      # so that the user can use it when adding
+#      # items directly to the lifestream.
+#      basic_feed = Feed()
+#      basic_feed.lifestream = obj
+#      basic_feed.name = obj.title
+#      
+#      #Feed url is ignored
+#      basic_feed.url = "http://localhost"
+#      basic_feed.domain = "Local"
+#      basic_feed.fetchable = False
+#      basic_feed.basic_feed = True
+#      basic_feed.save()
 
 class FeedAdminForm(forms.ModelForm):
   class Meta:

@@ -9,15 +9,18 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from lifestream.util.decorators import allow_methods
 
 from lifestream.models import *
 
+ITEMS_PER_PAGE = getattr(settings,"LIFESTREAM_ITEMS_PER_PAGE",10)
+
 @allow_methods('GET')
 def main_page(request, page="1"):
   item_list = Item.objects.published()
-  paginator = Paginator(item_list, request.lifestream.items_per_page) 
+  paginator = Paginator(item_list, ITEMS_PER_PAGE)
 
   # Make sure page request is an int. If not, deliver first page.
   try:
