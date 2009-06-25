@@ -6,8 +6,6 @@
 import copy
 import logging
 
-from django.conf import settings
-
 from util import feedparser
 from models import *
 from tagging.models import *
