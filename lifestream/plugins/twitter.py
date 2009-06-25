@@ -3,7 +3,7 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
-from dlife.lifestream.plugins import FeedPlugin
+from lifestream.plugins import FeedPlugin
 
 class TwitterPlugin(FeedPlugin):
   

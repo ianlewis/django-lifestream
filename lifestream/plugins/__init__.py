@@ -36,7 +36,10 @@ class FeedPlugin(object):
     date_published = dateutil.parser.parse(date_published)
     # Change the date to UTC and remove timezone info since MySQL doesn't
     # support it.
-    date_published = (date_published - date_published.utcoffset()).replace(tzinfo=None)
+    utcoffset = date_published.utcoffset()
+    if utcoffset:
+        date_published = date_published - utcoffset 
+    date_published = date_published.replace(tzinfo=None)
     
     entry['published'] = date_published
     
@@ -65,10 +68,14 @@ class FeedPlugin(object):
     '''
 
     feed_contents = entry.get('content')
-    if feed_contents is not None:
-      content_type = feed_contents[0]['type']
-      feed_content = feed_contents[0]['value']
-      content, clean_content = clean_item_content(feed_content)
+    feed_description = entry.get('description')
+    if feed_contents:
+        content_type = feed_contents[0]['type']
+        feed_content = feed_contents[0]['value']
+        content, clean_content = clean_item_content(feed_content)
+    elif feed_description:
+        content_type = "text/html"
+        content, clean_content = clean_item_content(feed_description)
     else:
       content_type = None
       content = None
@@ -88,6 +95,10 @@ class FeedPlugin(object):
     media_description_attrs = entry.get('media_description_attrs')
     if media_description_attrs:
       media_description_type = media_description_attrs.get('type')
+    media_player_url = None
+    media_player_attrs = entry.get('media_player_attrs')
+    if media_player_attrs:
+      media_player_url = media_player_attrs.get('url')
 
     item = Item(feed = self.feed,
              date = entry.get('published'),
@@ -99,6 +110,7 @@ class FeedPlugin(object):
              permalink = entry.get('link'),
              media_url = media_url,
              media_thumbnail_url = thumbnail_url,
+             media_player_url = media_player_url,
              media_description = entry.get("media_description"),
              media_description_type = media_description_type,
     )

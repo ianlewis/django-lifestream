@@ -12,6 +12,7 @@ from util import feedparser
 from models import *
 from tagging.models import *
 import plugins
+import re
 
 # MonkeyPatch feedparser so we can get access to interesting parts of media
 # extentions.
@@ -24,6 +25,8 @@ class DlifeFeedParser(feedparser._StrictFeedParser_old):
   def _start_media_description(self, attrsD):
     self.push('media_description', 1)
     self.entries[-1]['media_description_attrs'] = copy.deepcopy(attrsD)
+  def _start_media_player(self, attrsD):
+    self.entries[-1]['media_player_attrs'] = copy.deepcopy(attrsD)
 feedparser._StrictFeedParser = DlifeFeedParser
 
 def get_mod_class(plugin):
@@ -36,7 +39,7 @@ def get_mod_class(plugin):
     return plugin[:dot], plugin[dot+1:]
 
 def update_feeds():
-  feeds = Feed.objects.get_fetchable_feeds()
+  feeds = Feed.objects.fetchable()
   for feed in feeds:
     try:
       feed_items = feedparser.parse(feed.url)
@@ -70,7 +73,7 @@ def update_feeds():
         if 'tags' in entry:
           for tag in entry['tags']:
             tag_name = tag.get('term')[:30]
-            Tag.objects.add_tag(i, tag_name)
+            Tag.objects.add_tag(i, re.sub(r"[ ,]+", "_", tag_name))
     except:
       #TODO: Make this work with standard python logging
       print "Error in feed: %s" % feed

@@ -1,0 +1,26 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block after_field_sets %}
+
+{% trans "Enter a feed url and plugin." %}
+
+<fieldset class="module aligned">
+
+<div class="form-row">
+  {{ form.url.errors }}
+  {# TODO: get required class on label_tag #}
+  <label for="id_url" class="required">{% trans 'Feed url' %}:</label> <input type="text" id="id_url" maxlength="1000" class="vURLField" value="{% if form.url.data %}{{ form.url.data }}{% endif %}" name="url"/>{#{{ form.url }}#}
+  <p class="help">{{ form.url.help_text }}</p>
+</div>
+
+<div class="form-row">
+  {{ form.plugin_class_name.errors }}
+  {# TODO: get required class on label_tag #}
+  <label for="id_plugin_class_name" class="required">{% trans 'Plugin name' %}:</label> {{ form.plugin_class_name }}
+</div>
+
+<script type="text/javascript">document.getElementById("id_url").focus();</script>
+
+</fieldset>
+{% endblock %}

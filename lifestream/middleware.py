@@ -4,7 +4,7 @@
 #:noTabs=true:folding=explicit:collapseFolds=1:
 
 # This file written by Ian Lewis (IanLewis@member.fsf.org)
-# Copyright 2009 by Ian Lewis
+# Copyright 2008 by Ian Lewis
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,24 +22,12 @@
 # Optionally, you may find a copy of the GNU General Public License
 # from http://www.fsf.org/copyleft/gpl.txt
 
-from django.contrib.syndication.feeds import Feed as SyndicationFeed
-from django.core.urlresolvers import reverse
-from lifestream.models import *
+from models import Lifestream
 
-class RecentItemsFeed(SyndicationFeed):
-  title = "Recent Items"
-  description = "Recent Lifestream Items"
-
-  def link(obj):
-    return reverse('main_page')
-
-  def items(self):
-    return Item.objects.published()[:10]
-
-  def item_pubdate(self, item):
-      return item.date
-
-  def item_categories(self, item):
-      def item_categories(self, item):
-        return [tag.name for tag in item.tag_set]
-  
+class LifestreamMiddleware(object):
+  def process_request(self, request):
+    try:
+      request.lifestream = Lifestream.objects.get(id=1)
+    except Lifestream.DoesNotExist:
+      request.lifestream = None
+    return None

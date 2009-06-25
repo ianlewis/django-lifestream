@@ -7,8 +7,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('lifestream.views',
     url(r'^$', 'main_page', name='main_page'),
-    url(r'^page/(?P<page>\d+)$', 'main_page', name='main_page_paged'),
-    url(r'^item/(?P<item_id>\d+)$', 'item_page', name='item_page'),
+    url(r'^items/view/(?P<item_id>\d+)$', 'item_page', name='item_page'),
+    url(r'^items/tag/(?P<tag>.+)$', 'tag_page', name='tag_page'),
+    url(r'^items/site/(?P<domain>.+)$', 'domain_page', name='domain_page'),
 )
 
 feeds = {

@@ -3,6 +3,8 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
+from django.http import HttpResponseNotAllowed
+
 def allow_methods(*methods):
     def _func(func):
         def __func(request, *argv, **kwargv):

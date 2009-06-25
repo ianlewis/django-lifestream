@@ -13,7 +13,7 @@ def get_url_domain(url):
   sub_url = url[protocol_index:slash_index]
   parts = sub_url.split('.')
   
-  if len(parts) > 2 and parts[0] in ('feeds','www','feedproxy','rss'):
+  if len(parts) > 2 and parts[0] in ('feeds','www','feedproxy','rss','gdata','api'):
     return '.'.join(parts[1:])
   else:
     return sub_url

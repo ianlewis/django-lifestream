@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import RequestContext, Context, loader
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.views.generic.list_detail import object_list,object_detail
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -15,35 +15,33 @@ from lifestream.util.decorators import allow_methods
 
 from lifestream.models import *
 
-ITEMS_PER_PAGE = getattr(settings,"LIFESTREAM_ITEMS_PER_PAGE",10)
+@allow_methods('GET')
+def main_page(request):
+  return object_list(request, 
+      queryset = Item.objects.published(), 
+      template_name = "lifestream/main.html",
+  )
 
 @allow_methods('GET')
-def main_page(request, page="1"):
-  item_list = Item.objects.published()
-  paginator = Paginator(item_list, ITEMS_PER_PAGE)
+def tag_page(request, tag):
+    from tagging.views import tagged_object_list
+    return tagged_object_list(
+        request,
+        queryset_or_model=Item.objects.published(),
+        tag=tag,
+    )
 
-  # Make sure page request is an int. If not, deliver first page.
-  try:
-    page = int(page)
-  except ValueError:
-    page = 1
+@allow_methods('GET')
+def domain_page(request, domain):
+    return object_list(
+        request,
+        queryset=Item.objects.published().filter(feed__domain=domain),
+    )
 
-  # If page request (9999) is out of range, deliver last page of results.
-  try:
-    items = paginator.page(page)
-  except (EmptyPage, InvalidPage):
-    items = paginator.page(paginator.num_pages)
-  
-  return direct_to_template(request, "lifestream/main.html", { "items": items })
-  
 @allow_methods('GET', 'POST')
-def item_page(request, item_id=None):
-  try:
-    item = Item.objects.get(id=item_id,published=True)
-  except Item.DoesNotExist:
-    raise Http404
-  
-  return direct_to_template(request, "lifestream/item.html", { 
-    "item": item,
-  })
-  
+def item_page(request, item_id):
+  return object_detail(
+        request,
+        queryset=Item.objects.published(),
+        object_id=item_id,    
+    )

@@ -723,6 +723,11 @@ class _FeedParserMixin:
             return 0
         if self.contentparams['type'].endswith('/xml'):
             return 0
+
+        # Hack to make the type field on media:description for
+        # the yahoo media extension work.
+        if self.contentparams['type'] == 'plain':
+            return 0
         return 1
 
     def _itsAnHrefDamnIt(self, attrsD):
