@@ -1,0 +1,26 @@
+{% extends "lifestream/base.html" %}
+{% load truncate_chars %}
+{% load humanize %}
+{% load i18n %}
+
+{% block title %}{{ object.title }}{% endblock %}
+{% block content %}
+<h2><a href="{{ object.permalink }}">{{ object.title }}</a></h2>
+{{ object.date }}
+<p>
+  {% if object.content %}
+    {% ifequal object.content_type "text/plain"  %}
+      {{ object.content|linebreaks }}
+    {% else %}
+      {% ifequal object.content_type "text/html"  %}
+        {{ object.content|safe }}
+      {% else %}
+        {{ object.content }}
+      {% endifequal %}
+    {% endifequal %}
+  {% else %}
+    &nbsp;
+  {% endif %}
+</p>
+
+{% endblock %}

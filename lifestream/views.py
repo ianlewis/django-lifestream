@@ -18,8 +18,7 @@ from lifestream.models import *
 @allow_methods('GET')
 def main_page(request):
   return object_list(request, 
-      queryset = Item.objects.published(), 
-      template_name = "lifestream/main.html",
+      queryset = Item.objects.published(),
   )
 
 @allow_methods('GET')
