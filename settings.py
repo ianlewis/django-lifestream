@@ -88,38 +88,6 @@ INSTALLED_APPS = (
     'tagging',
 )
 
-
-# dlife settings
-VALID_ITEM_TAGS = (
-  'b',
-  'a',
-  'i',
-  'br',
-  'p',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'table',
-  'tbody',
-  'th',
-  'td',
-  'tr',
-  'img',
-  'font',
-  'span',
-  'div',
-  'object'
-)
-
-PLUGINS = (
-  ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
-  ('lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
-  # ('youtube', 'Youtube'),
-  # ('vimeo', 'Vimeo'),
-  # ('lastfm', 'last.fm'),
-)
-
 FORCE_LOWERCASE_TAGS=True
 
 try:

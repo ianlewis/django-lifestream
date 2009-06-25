@@ -6,6 +6,29 @@
 from django.conf import settings
 import stripper
 
+# default settings
+VALID_ITEM_TAGS = (
+  'b',
+  'a',
+  'i',
+  'br',
+  'p',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'table',
+  'tbody',
+  'th',
+  'td',
+  'tr',
+  'img',
+  'font',
+  'span',
+  'div',
+  'object'
+)
+
 def get_url_domain(url):
   protocol_index = url.find('://')+3 if url.find('://')!=-1 else 0
   slash_index = url.find('/', protocol_index) if url.find('/', protocol_index)!=-1 else len(url)
@@ -19,6 +42,6 @@ def get_url_domain(url):
     return sub_url
 
 def clean_item_content(content):
-  semi_clean_content = stripper.strip_tags(content, settings.VALID_ITEM_TAGS)
+  semi_clean_content = stripper.strip_tags(content, getattr(settings, "VALID_ITEM_TAGS", VALID_ITEM_TAGS))
   clean_content = stripper.strip_tags(content, ())
   return semi_clean_content, clean_content

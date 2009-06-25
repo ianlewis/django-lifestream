@@ -12,6 +12,13 @@ from django.utils.translation import ugettext_lazy as _
 
 import tagging
 
+PLUGINS = (
+  ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
+  ('lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
+  ('lifestream.plugins.youtube.YoutubePlugin', 'Youtube Plugin'),
+  ('lifestream.plugins.flickr.FlickrPlugin', 'Flickr Plugin'),
+)
+
 class FeedManager(models.Manager):
   ''' Query only normal feeds. '''
   
@@ -29,7 +36,7 @@ class Feed(models.Model):
   fetchable = models.BooleanField(_("Fetchable"), default=True)
   
   # The feed plugin name used to process the incoming feed data.
-  plugin_class_name = models.CharField(_("Plugin Name"), max_length=255, null=True, blank=True, choices=settings.PLUGINS)
+  plugin_class_name = models.CharField(_("Plugin Name"), max_length=255, null=True, blank=True, choices=getattr(settings, "PLUGINS", PLUGINS))
   
   objects = FeedManager()
   
