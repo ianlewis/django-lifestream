@@ -4,6 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 import datetime
+# TODO: make this a pip requirement
 import dateutil.parser
 import copy
 
@@ -12,7 +13,6 @@ from django.db.models import Q
 
 from lifestream.util import clean_item_content
 from lifestream.models import *
-from tagging.models import *
 
 class FeedPlugin(object):
   

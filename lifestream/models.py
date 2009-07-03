@@ -10,8 +10,6 @@ from django.contrib.auth.models import User
 from django.db.models import permalink as model_permalink
 from django.utils.translation import ugettext_lazy as _
 
-import tagging
-
 PLUGINS = (
   ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
   ('lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
@@ -80,5 +78,3 @@ class Item(models.Model):
     
   class Meta:
     ordering=["-date", "feed"]
-
-#tagging.register(Item)

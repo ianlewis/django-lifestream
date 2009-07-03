@@ -6,9 +6,11 @@
 import copy
 import logging
 
+from django.conf import settings
+
+# TODO: make this a pip requirement
 from util import feedparser
 from models import *
-from tagging.models import *
 import plugins
 import re
 
@@ -66,12 +68,15 @@ def update_feeds():
         feed_plugin.post_process(i) 
 
         i.save()
+        
         # Get tags
-        tags = ()
-        if 'tags' in entry:
-          for tag in entry['tags']:
-            tag_name = tag.get('term')[:30]
-            Tag.objects.add_tag(i, re.sub(r"[ ,]+", "_", tag_name))
+        if 'tagging' in settings.INSTALLED_APPS:
+            from tagging.models import Tag
+            tags = ()
+            if 'tags' in entry:
+              for tag in entry['tags']:
+                tag_name = tag.get('term')[:30]
+                Tag.objects.add_tag(i, re.sub(r"[ ,]+", "_", tag_name))
     except:
       #TODO: Make this work with standard python logging
       print "Error in feed: %s" % feed

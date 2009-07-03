@@ -22,15 +22,6 @@ def main_page(request):
   )
 
 @allow_methods('GET')
-def tag_page(request, tag):
-    from tagging.views import tagged_object_list
-    return tagged_object_list(
-        request,
-        queryset_or_model=Item.objects.published(),
-        tag=tag,
-    )
-
-@allow_methods('GET')
 def domain_page(request, domain):
     return object_list(
         request,
