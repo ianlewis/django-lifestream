@@ -11,7 +11,16 @@ import HTMLParser, string
 class StrippingParser(HTMLParser.HTMLParser):
 
     # These are the HTML tags that we will leave intact
-    valid_tags = ('b', 'a', 'i', 'br', 'p')
+    # This spec is a dictionary of tag names to
+    # a list of attributes that may remain in the tag
+    # If the list is None, then all attributes are ok.
+    valid_tags = {
+        'b': (),
+        'a': ('href', 'title'),
+        'i': (),
+        'br': (),
+        'p': (),
+    }
 
     from htmlentitydefs import entitydefs # replace entitydefs from sgmllib
     
@@ -20,7 +29,7 @@ class StrippingParser(HTMLParser.HTMLParser):
         self.result = ""
         self.endTagList = []
         if valid_tags is not None:
-          self.valid_tags = valid_tags
+            self.valid_tags = valid_tags
         
     def handle_data(self, data):
         if data:
@@ -42,7 +51,12 @@ class StrippingParser(HTMLParser.HTMLParser):
         if tag in self.valid_tags:
             self.result = self.result + '<' + tag
             for k, v in attrs:
-                if string.lower(k[0:2]) != 'on' and string.lower(v[0:10]) != 'javascript':
+                valid_attrs = self.valid_tags[tag]
+
+                # Drop disallowed attributes.
+                # Make sure we don't include some javascript hrefs
+                if (valid_attrs is None or k in valid_attrs) and \
+                   string.lower(k[0:2]) != 'on' and string.lower(v[0:10]) != 'javascript':
                     self.result = '%s %s="%s"' % (self.result, k, v)
             endTag = '</%s>' % tag
             self.endTagList.insert(0,endTag)    
