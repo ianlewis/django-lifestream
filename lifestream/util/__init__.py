@@ -24,10 +24,7 @@ VALID_ITEM_TAGS = (
   'td',
   'tr',
   'img',
-  'font',
   'span',
-  'div',
-  'object'
 )
 
 def get_url_domain(url):
