@@ -8,8 +8,7 @@ import logging
 
 from django.conf import settings
 
-# TODO: make this a pip requirement
-from util import feedparser
+import feedparser
 from models import *
 import plugins
 import re

@@ -13,9 +13,10 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.http import HttpResponseRedirect
 
 from lifestream.models import *
-from lifestream.util import feedparser
 from lifestream.util import get_url_domain
 from lifestream.util import clean_item_content
+
+import feedparser
 
 class FeedCreationForm(forms.ModelForm):
     class Meta:
