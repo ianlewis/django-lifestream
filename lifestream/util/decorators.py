@@ -8,6 +8,7 @@ from django.http import HttpResponseNotAllowed
 def allow_methods(*methods):
     def _func(func):
         def __func(request, *argv, **kwargv):
+            # TODO: fix for head requests
             if request.method in methods:
                 return func(request, *argv, **kwargv)
             return HttpResponseNotAllowed(methods)
