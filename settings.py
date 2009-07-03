@@ -85,7 +85,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.humanize',
     'lifestream',
-    'tagging',
+    #'tagging',
 )
 
 FORCE_LOWERCASE_TAGS=True
