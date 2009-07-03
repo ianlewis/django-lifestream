@@ -35,19 +35,49 @@ feedparser._StrictFeedParser = DlifeFeedParser
 feedparser._sanitizeHTML = sanitize_html
 
 def get_mod_class(plugin):
-    # Converts 'lifestream.plugins.FeedPlugin' to
-    # ['lifestream.plugins', 'FeedPlugin']
+    """
+    Converts 'lifestream.plugins.FeedPlugin' to
+    ['lifestream.plugins', 'FeedPlugin']
+    """
     try:
         dot = plugin.rindex('.')
     except ValueError:
         return plugin, ''
     return plugin[:dot], plugin[dot+1:]
 
+class CacheStorage(object):
+    """
+    A class implementing python's dictionary API
+    for use as a storage backend for feedcache.
+    
+    Uses django's cache framework for the backend
+    of the cache.
+
+    TODO: Implement the dictionary API
+    """
+    pass
+
+try:
+    from feedcache import Cache
+    # TODO: Use a cache storage object.
+    feed_cache = Cache({})
+    def parse_feed(url):
+        """
+        Parses a feed. Uses feedcache if it is available
+        using django's cache framework as storage for
+        feedcache.
+        """
+        return feed_cache.fetch(url)
+except ImportError:
+    # Fall back to using feedparser
+    def parse_feed(url):
+        return feedparser.parse(url)
+
 def update_feeds():
   feeds = Feed.objects.fetchable()
   for feed in feeds:
     try:
-      feed_items = feedparser.parse(feed.url)
+      feed_items = parse_feed(feed.url)
       
       # Get the required plugin
       if feed.plugin_class_name:
