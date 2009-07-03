@@ -15,16 +15,26 @@ import stripper
 # An empty list specifies that no attributes are allowed.
 VALID_TAGS = {
     'b': (),
-    'a': ('href', 'title'),
+    'blockquote': (),
+    'em': (),
+    'strong': (),
+    'strike': (),
+    'a': ('href', 'title', 'rel'),
     'i': (),
     'br': (),
+    'ul': (),
+    'ol': (),
+    'li': (),
+    'u': (),
     'p': (),
     'h1': (),
     'h2': (),
     'h3': (),
     'h4': (),
     'table': (),
+    'thead': (),
     'tbody': (),
+    'tfoot': (),
     'th': (),
     'td': ('colspan',),
     'tr': ('rowspan',),
@@ -49,25 +59,38 @@ def get_url_domain(url):
     else:
         return sub_url
 
-def clean_item_content(content):
+def sanitize_html(htmlSource, encoding=None):
     """
     Clean bad html content. Currently this simply strips tags that
     are not in the VALID_TAGS setting.
-  
-    Returns two strings. One is semi_clean content which is html content
-    with tags and attributes stripped out that are not in the VALID_TAGS setting.
+    
+    This function is used as a replacement for feedparser's _sanitizeHTML
+    and fixes problems like unclosed tags and gives finer grained control
+    over what attributes can appear in what tags.
 
-    The other is a content that has been fully stripped of tags. 
+    Returns the sanitized html content.
     """
     valid_tags = getattr(settings, "LIFESTREAM_VALID_TAGS", VALID_TAGS)
 
     # Sanitize html with BeautifulSoup
-    soup = BeautifulSoup(content)
+    if encoding:
+        soup = BeautifulSoup(htmlSource, fromEncoding=encoding)
+    else:
+        soup = BeautifulSoup(htmlSource)
     
-    # Strip disallowed tags.
-    semi_clean_content = stripper.strip_tags(unicode(soup), valid_tags)
-    
-    # Strip all tags
-    clean_content = stripper.strip_tags(unicode(soup), {})
 
-    return semi_clean_content, clean_content
+    def entities(text):
+        return text.replace('<','&lt;')\
+                   .replace('>', '&gt;')\
+                   .replace('"', '&quot;')\
+                   .replace("'", '&apos;')
+
+    
+    # Sanitize html text by changing bad text to entities.
+    # BeautifulSoup will do this for href and src attributes
+    # on anchors and image tags but not for text.
+    for text in soup.findAll(text=True):
+        text.replaceWith(entities(text))
+     
+    # Strip disallowed tags and attributes.
+    return stripper.strip_tags(unicode(soup), valid_tags)

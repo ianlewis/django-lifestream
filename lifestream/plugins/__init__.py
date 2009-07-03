@@ -10,8 +10,8 @@ import copy
 
 from django.utils.http import urlquote
 from django.db.models import Q
+from django.utils.html import strip_tags
 
-from lifestream.util import clean_item_content
 from lifestream.models import *
 
 class FeedPlugin(object):
@@ -71,11 +71,12 @@ class FeedPlugin(object):
     feed_description = entry.get('description')
     if feed_contents:
         content_type = feed_contents[0]['type']
-        feed_content = feed_contents[0]['value']
-        content, clean_content = clean_item_content(feed_content)
+        content = feed_contents[0]['value']
+        clean_content = strip_tags(content)
     elif feed_description:
         content_type = "text/html"
-        content, clean_content = clean_item_content(feed_description)
+        content = feed_description
+        clean_content = strip_tags(feed_description)
     else:
       content_type = None
       content = None

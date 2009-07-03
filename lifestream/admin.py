@@ -10,11 +10,11 @@ from django.forms.util import ErrorList
 from django.contrib.contenttypes import generic
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.html import strip_tags
 from django.http import HttpResponseRedirect
 
 from lifestream.models import *
 from lifestream.util import get_url_domain
-from lifestream.util import clean_item_content
 
 import feedparser
 
@@ -113,7 +113,7 @@ class ItemAdmin(admin.ModelAdmin):
     model = Item
   
     def save_model(self, request, obj, form, change):
-        obj.content, obj.clean_content = clean_item_content(obj.content)
+        obj.clean_content = strip_tags(obj.content)
         obj.save()
     
 admin.site.register(Item, ItemAdmin)

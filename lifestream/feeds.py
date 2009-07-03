@@ -8,9 +8,11 @@ import logging
 
 from django.conf import settings
 
-import feedparser
+from util import sanitize_html
 from models import *
 import plugins
+
+import feedparser
 import re
 
 # MonkeyPatch feedparser so we can get access to interesting parts of media
@@ -27,6 +29,10 @@ class DlifeFeedParser(feedparser._StrictFeedParser_old):
   def _start_media_player(self, attrsD):
     self.entries[-1]['media_player_attrs'] = copy.deepcopy(attrsD)
 feedparser._StrictFeedParser = DlifeFeedParser
+
+# Change out feedparser's html sanitizer for our own based
+# on BeautifulSoup and our own tag/attribute stripper.
+feedparser._sanitizeHTML = sanitize_html
 
 def get_mod_class(plugin):
     # Converts 'lifestream.plugins.FeedPlugin' to
