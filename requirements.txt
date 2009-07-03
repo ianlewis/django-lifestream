@@ -1,0 +1,2 @@
+feedparser==4.1
+BeautifulSoup==3.1.0.1
