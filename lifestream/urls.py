@@ -6,9 +6,9 @@ from lifestream.rss import *
 admin.autodiscover()
 
 urlpatterns = patterns('lifestream.views',
-    url(r'^$', 'main_page', name='main_page'),
-    url(r'^items/view/(?P<item_id>\d+)$', 'item_page', name='item_page'),
-    url(r'^items/site/(?P<domain>.+)$', 'domain_page', name='domain_page'),
+    url(r'^$', 'main_page', name='lifestream_main_page'),
+    url(r'^items/view/(?P<item_id>\d+)$', 'item_page', name='lifestream_item_page'),
+    url(r'^items/site/(?P<domain>.+)$', 'domain_page', name='lifestream_domain_page'),
 )
 
 feeds = {
