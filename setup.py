@@ -1,6 +1,8 @@
-from distutils.core import setup, find_packages
+#!/usr/bin/env python
+
+from setuptools import setup, find_packages
  
-setup(
+setup (
     name='django-lifestream',
     version='0.1',
     description='A lifestream application for Django.',
