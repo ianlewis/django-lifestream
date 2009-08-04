@@ -73,7 +73,7 @@ django-lifestream.
 
 Tags
 -----------------------------
-django-lifstream includes support for automatically importing
+django-lifestream includes support for automatically importing
 tags from feeds and saving them using dango-tagging. This support
 is optional and is only turned on if you include 'tagging' in your
 INSTALLED_APPS.
@@ -89,7 +89,7 @@ for commonly used sites. These may or may not work well with the
 feeds you are using and it's recommended that you write your own.
 
 Plugins can be registered with the application by adding them to the
-PLUGINS list in your site's setttings.py. The PLUGINS is a two tuple
+PLUGINS list in your site's settings.py. The PLUGINS is a two tuple
 which contains the module path to the plugin class and the plugin name.
 
 Updating Your Lifestream
