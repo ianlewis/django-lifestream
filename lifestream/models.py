@@ -69,7 +69,7 @@ class Item(models.Model):
   
   @model_permalink
   def get_absolute_url(self):
-    return ('item_page', (), {
+    return ('lifestream_item_page', (), {
       'item_id': str(self.id),
     })
  
