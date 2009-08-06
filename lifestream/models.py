@@ -70,7 +70,7 @@ class Item(models.Model):
   @model_permalink
   def get_absolute_url(self):
     return ('item_page', (), {
-      'item_id': self.id
+      'item_id': str(self.id),
     })
  
   def __unicode__(self):
