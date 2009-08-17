@@ -4,7 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 from django.conf import settings
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup, Comment
 
 import stripper
 
@@ -70,6 +70,7 @@ def sanitize_html(htmlSource, encoding=None):
 
     Returns the sanitized html content.
     """
+    js_regex = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript')))
     valid_tags = getattr(settings, "LIFESTREAM_VALID_TAGS", VALID_TAGS)
 
     # Sanitize html with BeautifulSoup
@@ -85,12 +86,22 @@ def sanitize_html(htmlSource, encoding=None):
                    .replace('"', '&quot;')\
                    .replace("'", '&apos;')
 
-    
+    # Remove html comments
+    for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
+        comment.extract()
+ 
     # Sanitize html text by changing bad text to entities.
     # BeautifulSoup will do this for href and src attributes
     # on anchors and image tags but not for text.
     for text in soup.findAll(text=True):
         text.replaceWith(entities(text))
+
+    for tag in soup.findAll(True):
+        if tag.name not in valid_tags:
+            tag.hidden = True
+        else:
+            tag.attrs = [(attr, js_regex.sub('', val)) for attr, val in tag.attrs
+                         if attr in valid_tags[tag.name]]
      
     # Strip disallowed tags and attributes.
-    return stripper.strip_tags(unicode(soup), valid_tags)
+    return soup.renderContents().decode('utf8') 
