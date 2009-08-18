@@ -6,8 +6,6 @@
 from django.conf import settings
 from BeautifulSoup import BeautifulSoup, Comment
 
-import stripper
-
 def get_url_domain(url):
     """
     Get a domain from the feed url. This attempts to
