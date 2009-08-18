@@ -54,11 +54,12 @@ class FeedPlugin(object):
     Return true if this entry should be added to the lifestream. Normally
     this is a check for if the item has already been added or not.
     '''
+    # Only fetch one record since it's faster.
     items_count = Item.objects.filter(
       Q(date = entry['published']) | Q(permalink = entry['link'])
     ).filter(
       feed = self.feed
-    ).count()
+    )[:1].count()
     
     return items_count == 0
     
