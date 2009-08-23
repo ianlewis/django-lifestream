@@ -8,7 +8,22 @@ import re
 from django.conf import settings
 from BeautifulSoup import BeautifulSoup, Comment
 
-import stripper
+def get_url_domain(url):
+    """
+    Get a domain from the feed url. This attempts to
+    get a clean url by ignoring know subdomains used for
+    serving feeds such as www, feeds, api etc.
+    """
+    protocol_index = url.find('://')+3 if url.find('://')!=-1 else 0
+    slash_index = url.find('/', protocol_index) if url.find('/', protocol_index)!=-1 else len(url)
+  
+    sub_url = url[protocol_index:slash_index]
+    parts = sub_url.split('.')
+  
+    if len(parts) > 2 and parts[0] in ('feeds','www','feedproxy','rss','gdata','api'):
+        return '.'.join(parts[1:])
+    else:
+        return sub_url
 
 # default settings
 # VALID_TAGS is a dictionary where the key is a tag name
@@ -44,22 +59,12 @@ VALID_TAGS = {
     'span': (),
 }
 
-def get_url_domain(url):
-    """
-    Get a domain from the feed url. This attempts to
-    get a clean url by ignoring know subdomains used for
-    serving feeds such as www, feeds, api etc.
-    """
-    protocol_index = url.find('://')+3 if url.find('://')!=-1 else 0
-    slash_index = url.find('/', protocol_index) if url.find('/', protocol_index)!=-1 else len(url)
-  
-    sub_url = url[protocol_index:slash_index]
-    parts = sub_url.split('.')
-  
-    if len(parts) > 2 and parts[0] in ('feeds','www','feedproxy','rss','gdata','api'):
-        return '.'.join(parts[1:])
-    else:
-        return sub_url
+# VALID_STYLES is a list of css style names that are
+# valid in style attributes.
+VALID_STYLES = (
+    "color",
+    "font-weight",
+)
 
 def sanitize_html(htmlSource, encoding=None):
     """
@@ -72,8 +77,11 @@ def sanitize_html(htmlSource, encoding=None):
 
     Returns the sanitized html content.
     """
-    js_regex = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript')))
     valid_tags = getattr(settings, "LIFESTREAM_VALID_TAGS", VALID_TAGS)
+    valid_tags = getattr(settings, "LIFESTREAM_VALID_STYLES", VALID_STYLES)
+
+    js_regex = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript')))
+    css_regex = re.compile(r' *(%s): *([^;]*);?' % '|'.join(valid_styles), re.IGNORECASE)
 
     # Sanitize html with BeautifulSoup
     if encoding:
@@ -104,6 +112,14 @@ def sanitize_html(htmlSource, encoding=None):
         else:
             tag.attrs = [(attr, js_regex.sub('', val)) for attr, val in tag.attrs
                          if attr in valid_tags[tag.name]]
-     
+    
+            
+    # Strip disallowed css tags.
+    for tag in soup.findAll(attrs={"style":re.compile(".*")}):
+        style = ""
+        for key,val in css_regex.findall(tag["style"]):
+            style += "%s:%s;" % (key,val.strip())
+        tag["style"] = style
+
     # Strip disallowed tags and attributes.
     return soup.renderContents().decode('utf8') 
