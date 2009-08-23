@@ -4,7 +4,7 @@
 {% block object-tools %}
 {% if has_add_permission %}
 <ul class="object-tools">
-  <li><a href="{% url admin_update_feeds %}">{% blocktrans with cl.opts.verbose_name|escape as name %}Update Items{% endblocktrans %}</a></li>
+  <li><a href="{% url admin:admin_update_feeds %}">{% blocktrans with cl.opts.verbose_name|escape as name %}Update Items{% endblocktrans %}</a></li>
   <li><a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">{% blocktrans with cl.opts.verbose_name|escape as name %}Add {{ name }}{% endblocktrans %}</a></li>
 </ul>
 {% endif %}

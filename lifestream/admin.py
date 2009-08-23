@@ -12,6 +12,7 @@ from django.shortcuts import render_to_response
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.html import strip_tags
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from lifestream.models import *
 from lifestream.util import get_url_domain
@@ -115,5 +116,25 @@ class ItemAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.clean_content = strip_tags(obj.content)
         obj.save()
-    
+
+    def admin_update_feeds(self, request):
+        from lifestream.feeds import update_feeds
+        #TODO: Add better error handling
+        update_feeds()
+        return HttpResponseRedirect(
+                reverse("admin:lifestream_item_changelist")
+        )
+
+    def get_urls(self):
+        from django.conf.urls.defaults import *
+        urls = super(ItemAdmin, self).get_urls()
+        my_urls = patterns('',
+            url(
+                r'update_feeds',
+                self.admin_site.admin_view(self.admin_update_feeds),
+                name='admin_update_feeds',
+            ),
+        )
+        return my_urls + urls
+
 admin.site.register(Item, ItemAdmin)
