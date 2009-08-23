@@ -15,22 +15,26 @@ from lifestream.util.decorators import allow_methods
 
 from lifestream.models import *
 
+DEFAULT_PAGINATION = getattr(settings, 'LIFESTREAM_DEFAULT_PAGINATION', 20)
+
 @allow_methods('GET')
 def main_page(request):
-  return object_list(request, 
-      queryset = Item.objects.published(),
-  )
+    return object_list(request, 
+        queryset = Item.objects.published(),
+        paginate_by = DEFAULT_PAGINATION,
+    )
 
 @allow_methods('GET')
 def domain_page(request, domain):
     return object_list(
         request,
         queryset=Item.objects.published().filter(feed__domain=domain),
+        paginate_by = DEFAULT_PAGINATION,
     )
 
 @allow_methods('GET', 'POST')
 def item_page(request, item_id):
-  return object_detail(
+    return object_detail(
         request,
         queryset=Item.objects.published(),
         object_id=item_id,    
