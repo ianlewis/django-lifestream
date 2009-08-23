@@ -3,6 +3,8 @@
 #:tabSize=2:indentSize=2:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
+import re
+
 from django.conf import settings
 from BeautifulSoup import BeautifulSoup, Comment
 
