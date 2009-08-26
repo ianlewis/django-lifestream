@@ -69,7 +69,9 @@ rendering a RSS feed for the lifestream.
 
 The standard lifestream views use the django's list based generic
 views so templates that work with generic views should work with
-django-lifestream.
+django-lifestream. The default views are paginated using
+a default page size of 20 but that can be overridden by setting
+the LIFESTREAM_DEFAULT_PAGINATION setting in your settings.py.
 
 Tags
 -----------------------------
