@@ -4,6 +4,7 @@
 #:folding=explicit:collapseFolds=1:
 
 import copy
+import re
 import logging
 
 from django.conf import settings
@@ -13,7 +14,11 @@ from models import *
 import plugins
 
 import feedparser
-import re
+
+logger = logging.getLogger('django-lifestream')
+def write(self, s):
+    self.error(s)
+logger.write = types.MethodType(write, logger, logger.__class__)
 
 # MonkeyPatch feedparser so we can get access to interesting parts of media
 # extentions.
@@ -101,7 +106,5 @@ def update_feeds():
                 tag_name = tag.get('term')[:30]
                 Tag.objects.add_tag(i, re.sub(r"[ ,]+", "_", tag_name))
     except:
-      #TODO: Make this work with standard python logging
-      print "Error in feed: %s" % feed
       from traceback import print_exc
-      print_exc()
+      print_exc(file=logger)
