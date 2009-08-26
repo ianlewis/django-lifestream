@@ -78,7 +78,7 @@ def sanitize_html(htmlSource, encoding=None):
     Returns the sanitized html content.
     """
     valid_tags = getattr(settings, "LIFESTREAM_VALID_TAGS", VALID_TAGS)
-    valid_tags = getattr(settings, "LIFESTREAM_VALID_STYLES", VALID_STYLES)
+    valid_styles = getattr(settings, "LIFESTREAM_VALID_STYLES", VALID_STYLES)
 
     js_regex = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript')))
     css_regex = re.compile(r' *(%s): *([^;]*);?' % '|'.join(valid_styles), re.IGNORECASE)
