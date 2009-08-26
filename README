@@ -77,7 +77,7 @@ Tags
 -----------------------------
 django-lifestream includes support for automatically importing
 tags from feeds and saving them using dango-tagging. This support
-is optional and is only turned on if you include 'tagging' in your
+is optional and is only turned on only if you include 'tagging' in your
 INSTALLED_APPS.
 
 Plugins
