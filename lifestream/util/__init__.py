@@ -6,7 +6,32 @@
 import re
 
 from django.conf import settings
+from django.core.cache import cache
+
 from BeautifulSoup import BeautifulSoup, Comment
+
+class CacheStorage(object):
+    """
+    A class implementing python's dictionary API
+    for use as a storage backend for feedcache.
+    
+    Uses django's cache framework for the backend
+    of the cache.
+
+    TODO: Use a cache timeout setting for the cache
+    time and use the same value for feedcache.
+    """
+    def get(self, key, default=None):
+        return cache.get(key, default)
+
+    def __setitem__(self, key, value):
+        cache.set(key, value)
+
+    def __getitem__(self, key):
+        return cache.get(key)
+
+    def __delitem__(self, key):
+        return cache.delete(key)
 
 def get_url_domain(url):
     """

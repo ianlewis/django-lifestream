@@ -45,18 +45,6 @@ def get_mod_class(plugin):
         return plugin, ''
     return plugin[:dot], plugin[dot+1:]
 
-class CacheStorage(object):
-    """
-    A class implementing python's dictionary API
-    for use as a storage backend for feedcache.
-    
-    Uses django's cache framework for the backend
-    of the cache.
-
-    TODO: Implement the dictionary API
-    """
-    pass
-
 try:
     from feedcache import Cache
     # TODO: Use a cache storage object.
