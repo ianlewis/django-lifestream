@@ -12,6 +12,7 @@ from django.conf import settings
 from util import sanitize_html
 from models import *
 import plugins
+import types
 
 import feedparser
 
