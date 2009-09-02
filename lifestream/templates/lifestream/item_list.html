@@ -1,5 +1,4 @@
 {% extends "lifestream/base.html" %}
-{% load truncate_chars %}
 
 {% block title %}My Lifestream{% endblock %}
 {% block content %}
@@ -13,7 +12,7 @@
         {{item.date}}
         <p>
           {% if item.clean_content %}
-            {{ item.clean_content|truncate_chars:100 }}
+            {{ item.clean_content|slice:":100" }}
           {% else %}
             &nbsp;
           {% endif %}
