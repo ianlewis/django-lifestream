@@ -36,6 +36,17 @@ class LifestreamItemNode(Node):
 
 @register.tag
 def render_item(parser, token):
+    """
+    Renders an item in an item list based on the item's type
+    (feed domain).
+    This tag first checks if there is a template in
+    lifestream/sites with the name of the feed domain
+    ('.' characters are replaced by '-' characters)
+    e.g. 'twitter-com.html'
+
+    If the template doesn't exist it falls back on the default
+    basic_detail.html
+    """
     bits = token.split_contents()
     if len(bits) != 2:
         raise TemplateSyntaxError("%r takes one argument." % bits[0])
@@ -57,6 +68,17 @@ class LifestreamItemDetailNode(Node):
 
 @register.tag
 def render_item_detail(parser, token):
+    """
+    Renders an item's detail html for an item detail page
+    based on the item's type (feed domain).
+    This tag first checks if there is a template in
+    lifestream/sites with the name of the feed domain
+    ('.' characters are replaced by '-' characters) and ending
+    _.html. e.g. 'twitter-com_detail.html'
+
+    If the template doesn't exist it falls back on the default
+    basic_detail.html
+    """
     bits = token.split_contents()
     if len(bits) != 2:
         raise TemplateSyntaxError("%r takes one argument." % bits[0])
