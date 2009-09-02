@@ -11,6 +11,15 @@ from django.template.loader import render_to_string
 
 register = Library()
 
+@register.simple_tag
+def item_class(item):
+    """
+    A template tag that is used to identify the data
+    item by domain. This is used to get the item's template
+    name when rendering. It can also be used for css classes.
+    """
+    return item.feed.domain.replace(".", "-") 
+
 class LifestreamItemNode(Node):
     def __init__(self, item_var):
         self.item_var = Variable(item_var)
