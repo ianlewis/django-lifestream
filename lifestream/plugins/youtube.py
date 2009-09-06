@@ -20,6 +20,17 @@ class YoutubePlugin(FeedPlugin):
     #Update the media player url
     if "media_player_attrs" in entry and "url" in entry["media_player_attrs"]:
         entry["media_player_attrs"]["url"] = entry["media_player_attrs"]["url"].replace("?v=", "/v/")
+    elif "id" in entry:
+        video_id = entry["id"][entry["id"].rfind("/")+1:]
+        if "media_player_attrs" not in entry: 
+            entry["media_player_attrs"] = {} 
+        entry["media_player_attrs"]["url"] = "http://www.youtube.com/watch/v/%s" % video_id
+
+    # Workaround for feedparser not including links for some
+    # items
+    if "link" not in entry and "id" in entry:
+        video_id = entry["id"][entry["id"].rfind("/")+1:]
+        entry["link"] = "http://www.youtube.com/watch/v/%s" % video_id
 
     # youtube includes a strange schema url in the tags
     for tag in entry["tags"]:
@@ -29,8 +40,4 @@ class YoutubePlugin(FeedPlugin):
            tag_term.startswith("yt:")):
             entry["tags"].remove(tag)
 
-    # Workaround for feedparser not including links for some
-    # items
-    if "link" not in entry and "id" in entry:
-        video_id = entry["id"][entry["id"].rfind("/")+1:]
-        entry["link"] = "http://www.youtube.com/watch/v/%s" % video_id
+    
