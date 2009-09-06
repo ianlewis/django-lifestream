@@ -24,17 +24,30 @@ logger.write = types.MethodType(write, logger, logger.__class__)
 # MonkeyPatch feedparser so we can get access to interesting parts of media
 # extentions.
 feedparser._StrictFeedParser_old = feedparser._StrictFeedParser
-class LifestreamFeedParser(feedparser._StrictFeedParser_old):
-  def _start_media_content(self, attrsD):
-    self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
-  def _start_media_thumbnail(self, attrsD):
-    self.entries[-1]['media_thumbnail_attrs'] = copy.deepcopy(attrsD)
-  def _start_media_description(self, attrsD):
-    self.push('media_description', 1)
-    self.entries[-1]['media_description_attrs'] = copy.deepcopy(attrsD)
-  def _start_media_player(self, attrsD):
-    self.entries[-1]['media_player_attrs'] = copy.deepcopy(attrsD)
-feedparser._StrictFeedParser = LifestreamFeedParser
+class LSStrictFeedParser(feedparser._StrictFeedParser_old):
+    def _start_media_content(self, attrsD):
+        self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
+    def _start_media_thumbnail(self, attrsD):
+        self.entries[-1]['media_thumbnail_attrs'] = copy.deepcopy(attrsD)
+    def _start_media_description(self, attrsD):
+        self.push('media_description', 1)
+        self.entries[-1]['media_description_attrs'] = copy.deepcopy(attrsD)
+    def _start_media_player(self, attrsD):
+        self.entries[-1]['media_player_attrs'] = copy.deepcopy(attrsD)
+feedparser._StrictFeedParser = LSStrictFeedParser
+
+feedparser._LooseFeedParser_old = feedparser._LooseFeedParser
+class LSLooseFeedParser(feedparser._LooseFeedParser_old):
+    def _start_media_content(self, attrsD):
+        self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
+    def _start_media_thumbnail(self, attrsD):
+        self.entries[-1]['media_thumbnail_attrs'] = copy.deepcopy(attrsD)
+    def _start_media_description(self, attrsD):
+        self.push('media_description', 1)
+        self.entries[-1]['media_description_attrs'] = copy.deepcopy(attrsD)
+    def _start_media_player(self, attrsD):
+        self.entries[-1]['media_player_attrs'] = copy.deepcopy(attrsD)
+feedparser._LooseFeedParser = LSLooseFeedParser
 
 # Change out feedparser's html sanitizer for our own based
 # on BeautifulSoup and our own tag/attribute stripper.
