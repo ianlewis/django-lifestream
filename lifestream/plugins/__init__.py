@@ -129,4 +129,4 @@ class FeedPlugin(object):
     '''
     Allows plugins to process an item model before it is saved.
     '''
-    return item
+    pass 
