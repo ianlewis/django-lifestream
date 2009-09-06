@@ -28,3 +28,9 @@ class YoutubePlugin(FeedPlugin):
           (tag_term.startswith("http://") or \
            tag_term.startswith("yt:")):
             entry["tags"].remove(tag)
+
+    # Workaround for feedparser not including links for some
+    # items
+    if "link" not in entry and "id" in entry:
+        video_id = entry["id"][entry["id"].rfind("/")+1:]
+        entry["link"] = "http://www.youtube.com/watch/v/%s" % video_id

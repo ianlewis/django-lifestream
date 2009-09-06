@@ -43,17 +43,24 @@ class FeedPlugin(object):
     
     entry['published'] = date_published
     
-    protocol_index = entry['link'].find("://")
-    if protocol_index != -1:
-      entry['link'] = entry['link'][:protocol_index+3] + urlquote(entry['link'][protocol_index+3:])
-    else:
-      entry['link'] = urlquote(entry['link'])
+    if 'link' in entry:
+        protocol_index = entry['link'].find("://")
+        if protocol_index != -1:
+          entry['link'] = entry['link'][:protocol_index+3] + urlquote(entry['link'][protocol_index+3:])
+        else:
+          entry['link'] = urlquote(entry['link'])
   
   def include_entry(self, entry):
     '''
     Return true if this entry should be added to the lifestream. Normally
     this is a check for if the item has already been added or not.
     '''
+    if "link" not in entry:
+        return False
+
+    #TODO: Use a more performance friendly way of finding out if
+    #      the item has already been processed.Maybe use some sort
+    #      of hashing algorithm?
     # Only fetch one record since it's faster.
     items_count = Item.objects.filter(
       Q(date = entry['published']) | Q(permalink = entry['link'])

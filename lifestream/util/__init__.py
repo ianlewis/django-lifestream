@@ -22,16 +22,19 @@ class CacheStorage(object):
     time and use the same value for feedcache.
     """
     def get(self, key, default=None):
-        return cache.get(key, default)
+        return cache.get(self._get_key(key), default)
 
     def __setitem__(self, key, value):
-        cache.set(key, value)
+        cache.set(self._get_key(key), value)
 
     def __getitem__(self, key):
-        return cache.get(key)
+        return cache.get(self._get_key(key))
 
     def __delitem__(self, key):
-        return cache.delete(key)
+        return cache.delete(self._get_key(key))
+
+    def _get_key(self, key):
+        return "lifestream-cache-%s" % key
 
 def get_url_domain(url):
     """
