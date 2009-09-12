@@ -16,13 +16,13 @@ class TwitterPlugin(FeedPlugin):
         return "Generic Feed"
   
     def post_process(self, item):
-        item = super(TwitterPlugin,self).post_process(item)
+        super(TwitterPlugin,self).post_process(item)
 
         #Remove the username from the title data.
         if item.title:
             index = item.title.find(":")
             if index != -1:
-                entry.title = entry.title[index+2:]
+                item.title = item.title[index+2:]
 
         if item.content:
             index = item.content.find(":")
