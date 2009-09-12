@@ -38,8 +38,10 @@ class FeedCreationForm(forms.ModelForm):
     
         # Check if the feed was not parsed correctly.
         if feed['bozo']:
+            import logging
+
             self._errors['url'] = ErrorList(["This is not a valid feed: %s" % feed['bozo_exception']])
-            print feed['bozo_exception']
+            logging.error(feed['bozo_exception'])
             # This field is no longer valid. Remove from cleaned_data
             del cleaned_data['url']
             return
@@ -77,6 +79,7 @@ class FeedAdmin(admin.ModelAdmin):
                     return self.response_add(request, new_feed)
                 else:
                     request.user.message_set.create(message=msg + ' ' + ugettext("You may edit it again below."))
+                    # TODO: use reversed url
                     return HttpResponseRedirect('../%s/' % new_feed.id)
         else:
             form = self.add_form()
@@ -122,7 +125,7 @@ class ItemAdmin(admin.ModelAdmin):
         #TODO: Add better error handling
         update_feeds()
         return HttpResponseRedirect(
-                reverse("admin:lifestream_item_changelist")
+            reverse("admin:lifestream_item_changelist")
         )
 
     def get_urls(self):
