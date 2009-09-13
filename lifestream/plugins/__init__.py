@@ -8,7 +8,7 @@ import datetime
 import dateutil.parser
 import copy
 
-from django.utils.http import urlquote
+from django.utils.encoding import iri_to_uri
 from django.db.models import Q
 from django.utils.html import strip_tags
 
@@ -46,9 +46,9 @@ class FeedPlugin(object):
     if 'link' in entry:
         protocol_index = entry['link'].find("://")
         if protocol_index != -1:
-          entry['link'] = entry['link'][:protocol_index+3] + urlquote(entry['link'][protocol_index+3:])
+          entry['link'] = entry['link'][:protocol_index+3] + iri_to_uri(entry['link'][protocol_index+3:])
         else:
-          entry['link'] = urlquote(entry['link'])
+          entry['link'] = iri_to_uri(entry['link'])
   
   def include_entry(self, entry):
     '''
