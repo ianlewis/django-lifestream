@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>django-lifestream feed</title>
+    <link>http://bitbucket.org/IanLewis/django-lifestream/overview/</link>
+    <language>en-us</language>
+    <generator>Bitbucket.org Mercurial Hosting</generator>
+    <webMaster>IanMLewis@gmail.com (Ian Lewis)</webMaster>
+    <ttl>5</ttl>
+
+	
+ 
+    <item>
+      <title>Added info about the pagination option</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/32759ea0f5ed/</link>
+      <description>
+		Added info about the pagination option
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/32759ea0f5ed/README">
+					README
+				</a> (3 lines added, 1 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Wed, 26 Aug 2009 11:29:25 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/32759ea0f5ed/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Updated wording</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/c698167a7c35/</link>
+      <description>
+		Updated wording
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/c698167a7c35/README">
+					README
+				</a> (1 lines added, 1 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Wed, 26 Aug 2009 11:30:27 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/c698167a7c35/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Fixed bug</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/767459522214/</link>
+      <description>
+		Fixed bug
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/767459522214/lifestream/feeds.py">
+					lifestream/feeds.py
+				</a> (1 lines added, 0 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sat, 29 Aug 2009 12:21:50 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/767459522214/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Removed truncate_chars since it&#39;s beyond the scope of the lifestream</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/863d2e9fdb66/</link>
+      <description>
+		Removed truncate_chars since it&#39;s beyond the scope of the lifestream
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/863d2e9fdb66/lifestream/templates/lifestream/item_detail.html">
+					lifestream/templates/lifestream/item_detail.html
+				</a> (0 lines added, 1 lines removed)</li>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/863d2e9fdb66/lifestream/templatetags/truncate_chars.py">
+					lifestream/templatetags/truncate_chars.py
+				</a> (0 lines added, 20 lines removed)</li>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/863d2e9fdb66/lifestream/templates/lifestream/item_list.html">
+					lifestream/templates/lifestream/item_list.html
+				</a> (1 lines added, 2 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Wed, 2 Sep 2009 15:24:58 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/863d2e9fdb66/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Removed extraneous template tags and filters</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/112106822f7b/</link>
+      <description>
+		Removed extraneous template tags and filters
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/112106822f7b/lifestream/templatetags/lifestream_tags.py">
+					lifestream/templatetags/lifestream_tags.py
+				</a> (0 lines added, 9 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Wed, 2 Sep 2009 15:38:53 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/112106822f7b/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Added some comments</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/0038579a63b8/</link>
+      <description>
+		Added some comments
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/0038579a63b8/lifestream/templatetags/lifestream_tags.py">
+					lifestream/templatetags/lifestream_tags.py
+				</a> (9 lines added, 0 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Wed, 2 Sep 2009 15:50:37 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/0038579a63b8/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Added some comments</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/94daf3adcb8f/</link>
+      <description>
+		Added some comments
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/94daf3adcb8f/lifestream/templatetags/lifestream_tags.py">
+					lifestream/templatetags/lifestream_tags.py
+				</a> (22 lines added, 0 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Wed, 2 Sep 2009 15:55:49 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/94daf3adcb8f/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Implemented a bit better fallback processing when individual feed items aren&#39;t parsed properly or have some sort of plugin error when being processed.</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/046c8c41ea25/</link>
+      <description>
+		Implemented a bit better fallback processing when individual feed items aren&#39;t parsed properly or have some sort of plugin error when being processed.
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/046c8c41ea25/lifestream/plugins/youtube.py">
+					lifestream/plugins/youtube.py
+				</a> (6 lines added, 0 lines removed)</li>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/046c8c41ea25/lifestream/util/__init__.py">
+					lifestream/util/__init__.py
+				</a> (7 lines added, 4 lines removed)</li>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/046c8c41ea25/lifestream/feeds.py">
+					lifestream/feeds.py
+				</a> (54 lines added, 41 lines removed)</li>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/046c8c41ea25/lifestream/plugins/__init__.py">
+					lifestream/plugins/__init__.py
+				</a> (12 lines added, 5 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sun, 6 Sep 2009 08:38:11 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/046c8c41ea25/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Added some more workarounds for times when feedparser doesn&#39;t parse youtube&#39;s gdata feed very well.</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/81a2dba18cdd/</link>
+      <description>
+		Added some more workarounds for times when feedparser doesn&#39;t parse youtube&#39;s gdata feed very well.
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/81a2dba18cdd/lifestream/plugins/youtube.py">
+					lifestream/plugins/youtube.py
+				</a> (12 lines added, 5 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sun, 6 Sep 2009 13:52:48 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/81a2dba18cdd/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Updated the twitter plugin to post process items rather than pre-processing them</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/51d2c3b3cb8f/</link>
+      <description>
+		Updated the twitter plugin to post process items rather than pre-processing them
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/51d2c3b3cb8f/lifestream/plugins/twitter.py">
+					lifestream/plugins/twitter.py
+				</a> (18 lines added, 15 lines removed)</li>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/51d2c3b3cb8f/lifestream/plugins/__init__.py">
+					lifestream/plugins/__init__.py
+				</a> (1 lines added, 1 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sun, 6 Sep 2009 14:17:34 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/51d2c3b3cb8f/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Reverted the youtube plugin since the changes I made didn&#39;t work with gdata version 2</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/93252399c329/</link>
+      <description>
+		Reverted the youtube plugin since the changes I made didn&#39;t work with gdata version 2
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/93252399c329/lifestream/plugins/youtube.py">
+					lifestream/plugins/youtube.py
+				</a> (0 lines added, 13 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sun, 6 Sep 2009 14:19:37 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/93252399c329/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Added better handling for feeds with yahoo media extensions</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/adcd74fa68fd/</link>
+      <description>
+		Added better handling for feeds with yahoo media extensions
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/adcd74fa68fd/lifestream/feeds.py">
+					lifestream/feeds.py
+				</a> (24 lines added, 11 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sun, 6 Sep 2009 14:58:32 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/adcd74fa68fd/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Fixed bugs in the twitter plugin</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/39e3a334d803/</link>
+      <description>
+		Fixed bugs in the twitter plugin
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/39e3a334d803/lifestream/plugins/twitter.py">
+					lifestream/plugins/twitter.py
+				</a> (2 lines added, 2 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sat, 12 Sep 2009 13:53:50 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/39e3a334d803/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Some cleanup</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/d48ea74bd8a9/</link>
+      <description>
+		Some cleanup
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/d48ea74bd8a9/lifestream/admin.py">
+					lifestream/admin.py
+				</a> (5 lines added, 2 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sat, 12 Sep 2009 17:09:04 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/d48ea74bd8a9/</guid>
+    </item>
+
+	
+ 
+    <item>
+      <title>Use iri_to_uri to encode urls instead of urlquote so that we don&#39;t double quote urls that are already encoded.</title>
+      <link>http://bitbucket.org/IanLewis/django-lifestream/changeset/608abee5376e/</link>
+      <description>
+		Use iri_to_uri to encode urls instead of urlquote so that we don&#39;t double quote urls that are already encoded.
+		
+			<ul>
+			
+				<li><a href="http://bitbucket.org/IanLewis/django-lifestream/src/608abee5376e/lifestream/plugins/__init__.py">
+					lifestream/plugins/__init__.py
+				</a> (3 lines added, 3 lines removed)</li>
+			
+			</ul>
+		
+	  </description>
+	  <author>IanLewis</author>
+      <pubDate>Sun, 13 Sep 2009 14:13:08 +0200</pubDate>
+      <guid isPermaLink="true">http://bitbucket.org/IanLewis/django-lifestream/changeset/608abee5376e/</guid>
+    </item>
+
+	
+ 
+  </channel>
+</rss>
