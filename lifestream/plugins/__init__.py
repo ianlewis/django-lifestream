@@ -4,7 +4,6 @@
 #:folding=explicit:collapseFolds=1:
 
 import datetime
-# TODO: make this a pip requirement
 import dateutil.parser
 import copy
 
