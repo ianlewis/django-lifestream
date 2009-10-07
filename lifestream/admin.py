@@ -29,8 +29,7 @@ class FeedCreationForm(forms.ModelForm):
         Checks to make sure a feed url is valid and gets the feed title
         and domain.
         """
-        cleaned_data = self.cleaned_data
-        feed_url = cleaned_data.get('url')
+        feed_url = self.cleaned_data.get('url')
         if not feed_url:
             # Feed url was not validated by the field validator
             return
@@ -43,18 +42,20 @@ class FeedCreationForm(forms.ModelForm):
             self._errors['url'] = ErrorList(["This is not a valid feed: %s" % feed['bozo_exception']])
             logging.error(feed['bozo_exception'])
             # This field is no longer valid. Remove from cleaned_data
-            del cleaned_data['url']
+            del self.cleaned_data['url']
             return
         # Check if the feed has a title field
         feed_info = feed.get('feed')
         if not feed_info.get('title'):
             self._errors['url'] = ErrorList(["This is not a valid feed: The feed is empty"])
             # This field is no longer valid. Remove from cleaned_data
-            del cleaned_data['url']
+            del self.cleaned_data['url']
             return
-        cleaned_data['name'] = feed_info['title']
-        cleaned_data['domain'] = get_url_domain(feed_url)
-        return cleaned_data
+        self.cleaned_data['name'] = feed_info['title']
+        self.instance.name = self.cleaned_data['name']
+        self.cleaned_data['domain'] = get_url_domain(feed_url)
+        self.instance.domain = self.cleaned_data['domain']
+        return self.cleaned_data
 
 class FeedAdmin(admin.ModelAdmin):
     list_display    = ('name', 'domain', 'fetchable')
