@@ -4,17 +4,6 @@
         "model": "lifestream.feed", 
         "fields": {
             "name": "django-lifestream feed", 
-            "url": "http://127.0.0.1:8097/feeds/rss/bitbucket.xml",
-            "domain": "bitbucket.org", 
-            "fetchable": 0, 
-            "plugin_class_name": null 
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "lifestream.feed", 
-        "fields": {
-            "name": "django-lifestream feed", 
             "url": "http://127.0.0.1:8097/feeds/rss/ianlewis.xml",
             "domain": "ianlewis.org", 
             "fetchable": 1, 

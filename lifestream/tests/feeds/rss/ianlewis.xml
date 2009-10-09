@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Ian Lewis' Blog</title><link>http://www.ianlewis.org/en</link><description>The latest blog posts from Ian Lewis' blog</description><language>en-us</language><lastBuildDate>Tue, 06 Oct 2009 11:15:29 +0900</lastBuildDate><item><title>Using Daemontools
+</title><link>http://www.ianlewis.org/en/using-daemontools</link><description>&lt;div class="section" id="introduction"&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;&lt;a class="reference external" href="http://cr.yp.to/daemontools.html"&gt;Daemontools&lt;/a&gt; is a set of programs for monitoring daemon programs and also restarts them immediately if they crash or are terminated. I generally use daemontools for daemons that are required and are always running web sites. These include webservers, mail servers, monitoring servers and fastcgi servers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="processes"&gt;
+&lt;h2&gt;Processes&lt;/h2&gt;
+&lt;p&gt;Daemons usually run in the background so they don't hold up the terminal. But Daemontools works by keeping the standard pipe to the process open so that it can monitor when the process terminates. It knows when the process terminates because the pipe to the process is closed. This means that daemons need to be set to run in the foreground. Daemons usually run as background processes so many require an option to be set to run in the foreground.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="services"&gt;
+&lt;h2&gt;Services&lt;/h2&gt;
+&lt;p&gt;Services consist of a script called 'run' which starts the application and a supervise directory. The run script is run by daemon tools in the foreground to start the process. A 'supervise' directory is created automatically but you should never have to touch it. You can also enable logging of standard output for daemon tools which is itself a daemon run by daemon tools.&lt;/p&gt;
+&lt;p&gt;Here's a simple example run script for lighttpd. The -D option here specifies that the server runs in the foreground.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class="nb"&gt;exec&lt;/span&gt; /usr/sbin/lighttpd -D -f /etc/lighttpd/lighttpd.conf 2&amp;gt;&amp;amp;1
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Available services normally reside in the /var/service directory. You put your services here. You might have a directory listing like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;[root@admin:/var/service] ls -lh
+合計 28K
+drwxr-x--- 4 root root 4.0K  8月 24 14:45 lighttpd
+drwxr-x--- 4 root root 4.0K  8月 24 14:35 memcached
+drwxr-x--- 4 root root 4.0K  8月 24 14:35 nagios
+drwxr-x--- 4 root root 4.0K  3月 24 11:39 snmpd
+drwxr-x--- 4 root root 4.0K  8月 24 14:37 myapp
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;These services aren't enabled yet as they are simply the available services  on the server. You enable services my symbolic linking them to the /service directory which is the standard location for daemontools services. Your /service directory might look like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;lrwxrwx--- 1 root root 21  3月 24 11:52 lighttpd -&amp;gt; /var/service/lighttpd
+lrwxrwx--- 1 root root 22  3月 24 11:50 memcached -&amp;gt; /var/service/memcached
+lrwxrwx--- 1 root root 19  3月 24 11:53 nagios -&amp;gt; /var/service/nagios
+lrwxrwx--- 1 root root 18  3月 24 11:39 snmpd -&amp;gt; /var/service/snmpd
+lrwxrwx--- 1 root root 18  3月 24 11:50 myapp -&amp;gt; /var/service/myapp
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="commands"&gt;
+&lt;h2&gt;Commands&lt;/h2&gt;
+&lt;div class="section" id="svstat"&gt;
+&lt;h3&gt;svstat&lt;/h3&gt;
+&lt;p&gt;Once you create these symbolic links the supervise daemon should start the daemons immediately. You can confirm that it is running by using the &lt;a class="reference external" href="http://cr.yp.to/daemontools/svstat.html"&gt;svstat&lt;/a&gt; command. svstat and the other daemontools commands take the directory as their argument for which service you are talking about you you need to give it the directory where the service resides.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;[root@admin:~] cd /var/service
+[root@admin:/service] svstat memcached
+memcached: up (pid 2226) 220460 seconds
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Sometimes however daemon tools will report the service is up but it really isn't as it is trying to continually start the process and it's failing every time. In that case daemontools will say it's up but each time you run the svstat command it will show a new pid and the uptime will have been reset.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;[root@admin:~] cd /var/service
+[root@admin:/service] svstat memcached
+memcached: up (pid 1842) 1 seconds
+[root@admin:/service] svstat memcached
+memcached: up (pid 1854) 1 seconds
+[root@admin:/service] svstat memcached
+memcached: up (pid 1859) 0 seconds
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In that case you can try to figure out why the process is not starting by examining the logs or look for a &amp;quot;readproctitle&amp;quot; error message. readproctitle is a process that is part of daemontools that shows the last 400 bytes of error messages that are produced by the svscan process. You can check it by running a command like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ps -Af | grep readproctitle
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="svc"&gt;
+&lt;h3&gt;svc&lt;/h3&gt;
+&lt;p&gt;&lt;a class="reference external" href="http://cr.yp.to/daemontools/svc.html"&gt;svc&lt;/a&gt; allows you to control services. You use svc to start, stop, and restart services. Services are specified by the directory they live in.&lt;/p&gt;
+&lt;p&gt;You can start a service using the -u option.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;svc -u &amp;lt;service dir&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You can then run svstat to make sure it's up.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ svstat memcached/
+memcached/: up (pid 3499) 1 seconds
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You can stop a service using the -d option.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ svc -d memcached/
+$ svstat memcached
+memcached/: down 3 seconds, normally up
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That wraps up a basic use of daemontools to manage processes. Using daemontools can be pretty frustrating as many processes refuse to run in the foreground and don't handle UNIX signals properly but if you get it running properly it can really improve the reliability of your services.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Tue, 06 Oct 2009 11:15:29 +0900</pubDate><guid>http://www.ianlewis.org/en/using-daemontools</guid><category>daemontools</category><category>monitoring</category><category>system admin</category></item><item><title>Parsing email with attachments in python
+</title><link>http://www.ianlewis.org/en/parsing-email-attachments-python</link><description>&lt;p&gt;Recently I needed to be able to parse out attachments and body from multipart emails and use the resulting data to post to a service. So I wrote the code below to parse out text and html portions of the email and also parse out attachments.&lt;/p&gt;
+&lt;p&gt;The code below is the result. I used a StringIO object from the python StringIO module to hold attachment data because the PIL module seemed to not be able to recognize images unless I either used a python file object or a StringIO object. Since it relies on the python StringIO module rather than the C one that portion should probably be rewritten. But it currently works as is so I'll post it for posterity.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/local/bin/python&lt;/span&gt;
+&lt;span class="c"&gt;# vim:fileencoding=utf8&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;email.Header&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;decode_header&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;email&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;base64&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;b64decode&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;email.Parser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Parser&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;EmailParser&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;email.utils&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;parseaddr&lt;/span&gt;
+&lt;span class="c"&gt;# cStringIOはダメ&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;StringIO&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;NotSupportedMailFormat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ne"&gt;Exception&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;parse_attachment&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;message_part&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;content_disposition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;message_part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Content-Disposition&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;content_disposition&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;dispositions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;content_disposition&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;bool&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content_disposition&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;dispositions&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;attachment&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+            &lt;span class="n"&gt;file_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;message_part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_payload&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;attachment&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;file_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content_type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;message_part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_content_type&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;file_data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+            &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+            &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mod_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+            &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;param&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;dispositions&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:]:&lt;/span&gt;
+                &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;param&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;=&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;filename&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;
+                &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;create-date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;  &lt;span class="c"&gt;#TODO: datetime&lt;/span&gt;
+                &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;modification-date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mod_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="c"&gt;#TODO: datetime&lt;/span&gt;
+                &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;read-date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="c"&gt;#TODO: datetime&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;attachment&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;    Eメールのコンテンツを受け取りparse,encodeして返す&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailParser&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;msgobj&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;msgobj&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Subject&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;decodefrag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;decode_header&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msgobj&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Subject&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;subj_fragments&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;enc&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;decodefrag&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;enc&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;unicode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;enc&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;replace&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;subj_fragments&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;subject&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;subj_fragments&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;subject&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+    &lt;span class="n"&gt;attachments&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+    &lt;span class="n"&gt;html&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;part&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;msgobj&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;walk&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+        &lt;span class="n"&gt;attachment&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;parse_attachment&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;attachments&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;attachment&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_content_type&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;text/plain&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+            &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="nb"&gt;unicode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+                &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_payload&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+                &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_content_charset&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+                &lt;span class="s"&gt;&amp;#39;replace&amp;#39;&lt;/span&gt;
+            &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;replace&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_content_type&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;text/html&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;html&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;html&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+            &lt;span class="n"&gt;html&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="nb"&gt;unicode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+                &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_payload&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+                &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_content_charset&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+                &lt;span class="s"&gt;&amp;#39;replace&amp;#39;&lt;/span&gt;
+            &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;utf8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;replace&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;subject&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;subject&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;body&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;body&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;html&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;html&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;from&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;parseaddr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msgobj&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;From&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))[&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="c"&gt;# 名前は除いてメールアドレスのみ抽出&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;to&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;parseaddr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msgobj&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;To&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))[&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="c"&gt;# 名前は除いてメールアドレスのみ抽出&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;attachments&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;attachments&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Mon, 21 Sep 2009 11:33:31 +0900</pubDate><guid>http://www.ianlewis.org/en/parsing-email-attachments-python</guid><category>email</category><category>parsing</category><category>python</category></item><item><title>Annoying things about Django
+</title><link>http://www.ianlewis.org/en/annoying-things-about-django</link><description>&lt;p&gt;Since I've been using it for a while now I've gotten a good idea about what is good and what is annoying about development with django. This might seem a little trite at parts since some of these gripes are with features that don't exist in other frameworks but in the spirit of perhaps making django more flexable without ruining it's ease of use I've come up with some annoying spots and possible ideas for fixing them.&lt;/p&gt;
+&lt;div class="section" id="new-password-request-time-limit"&gt;
+&lt;h2&gt;New Password Request Time Limit&lt;/h2&gt;
+&lt;p&gt;The new password request time limit can only be specified in days. This makes it impossible to use if you want to shorten the new password request time limit to less than 1 day.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="admin-users-site-users"&gt;
+&lt;h2&gt;Admin Users / Site users&lt;/h2&gt;
+&lt;p&gt;This is an issue that largely has to do with winning people over rather than any kind of technical problem but generally people see admin users and users of the site differently. This means they get really scared when they log into the admin and they are automatically logged into the site and vise-versa.&lt;/p&gt;
+&lt;p&gt;&amp;quot;You mean if you accidentally flip the staff flag (and allow access to the admin from internet ips) then a regular user could just log into the admin?&amp;quot;. And I have to answer: Yup. This for some reason scares the shit out of people. I even have other developers who this scares let alone managers for websites and customers. They see admins and site users as completely different identities and they expect the login to the admin and the login to the site to be completely separate.&lt;/p&gt;
+&lt;p&gt;I know this really messes up django's design and application philosophy. For instance, with the contrib.auth module you couldn't be logged into the admin and the site unless you could specify a session cookie on a per application basis. But isn't there something that could be done? I'm forced by other folks to basically reimplement the auth module for every project because there is only one users table.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="genericforeignkeys-look-awful-in-the-admin"&gt;
+&lt;h2&gt;GenericForeignKeys Look Awful in the Admin.&lt;/h2&gt;
+&lt;p&gt;Generic foreign keys actually consist of two fields, a link to the content type and the actual key. But these look like crap
+in the admin because they are rendered separately and are shown as a dropdown for the content type and a integer field. It would be nicer if you could specify which kinds of models were possible as content type targets and provide a better widget for them.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="send-mail-uses-the-default-encoding-setting"&gt;
+&lt;h2&gt;send_mail Uses the DEFAULT_ENCODING Setting&lt;/h2&gt;
+&lt;p&gt;We have had to subclass the EmailMessage object with our own message format to get it to work with encodings other than the DEFAULT_ENCODING. Email headers are also always encoded in utf8 regardless of the DEFAULT_ENCODING. This is especially annoying when sending email to Japanese cellphones, which sometimes expect iso-2022-jp or ShiftJIS rather than whatever your DEFAULT_ENCODING is. And changing the DEFAULT_ENCODING just because you have to send some one off emails is out of the question.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="can-t-filter-an-admin-list-via-a-join-eg-user-group"&gt;
+&lt;h2&gt;Can't Filter an Admin List via a JOIN. eg. user__group&lt;/h2&gt;
+&lt;p&gt;It would be cool if you could filter an admin list via a join. Something like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MyAdmin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModelAdmin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;list_display&lt;/span&gt;    &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;list_filter&lt;/span&gt;     &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;user__group&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt;
+    &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MyModel&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That way you could filter MyModel records by group.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="there-is-no-good-way-to-simply-view-data-fields-in-the-admin"&gt;
+&lt;h2&gt;There is no Good Way to Simply View Data/Fields in the Admin&lt;/h2&gt;
+&lt;p&gt;In the admin there is no good way to have view/read only fields on a form. There are many instances where you would like to show data in the admin but not allow it to be edited. Create time fields come to mind. Right now there are workarounds which show the field and add it as a hidden field in the form. This mostly works but is a crappy workaround and potential security problem if you have people using the admin who aren't fully trusted.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="applications-don-t-have-their-own-settings"&gt;
+&lt;h2&gt;Applications Don't Have Their Own Settings.&lt;/h2&gt;
+&lt;p&gt;This means that other applications can't easily add settings (types etc.) to other applications. This results in situations like django-notifications where notification types are stored in the database and need to be added via syncdb. django-notifications does this because they want other applications to be able to add notification types easily. They could do that by providing their own settings for things like notifications.&lt;/p&gt;
+&lt;/div&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Sun, 30 Aug 2009 13:08:00 +0900</pubDate><guid>http://www.ianlewis.org/en/annoying-things-about-django</guid><category>admin</category><category>annoying</category><category>django</category><category>forms</category><category>models</category></item><item><title>Custom Admin Views and Reversing Django Admin URLs
+</title><link>http://www.ianlewis.org/en/reversing-django-admin-urls</link><description>&lt;p&gt;I recently used the new feature in Django 1.1 for &lt;a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/contrib/admin/#reversing-admin-urls"&gt;reversing django admin urls&lt;/a&gt; and &lt;a class="reference external" href="http://docs.djangoproject.com/en/dev/ref/contrib/admin/#adding-views-to-admin-sites"&gt;specifying custom admin views&lt;/a&gt; in my project &lt;a class="reference external" href="http://code.google.com/p/django-lifestream-2/"&gt;django-lifestream&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;django-lifestream has a &lt;a class="reference external" href="http://bitbucket.org/IanLewis/django-lifestream/src/5c632eae0574/lifestream/admin.py#cl-120"&gt;custom admin view&lt;/a&gt; which allows users to update the lifestream manually. The code looks like the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;ItemAdmin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ModelAdmin&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;list_display&lt;/span&gt;    &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;date&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;published&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;exclude&lt;/span&gt;         &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;clean_content&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,]&lt;/span&gt;
+    &lt;span class="n"&gt;list_filter&lt;/span&gt;     &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;feed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt;
+    &lt;span class="n"&gt;search_fields&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;clean_content&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;list_per_page&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;20&lt;/span&gt;
+
+    &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Item&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;save_model&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;change&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clean_content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strip_tags&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;admin_update_feeds&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;lifestream.feeds&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;update_feeds&lt;/span&gt;
+        &lt;span class="c"&gt;#TODO: Add better error handling&lt;/span&gt;
+        &lt;span class="n"&gt;update_feeds&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;HttpResponseRedirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+                &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;admin:lifestream_item_changelist&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_urls&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf.urls.defaults&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+        &lt;span class="n"&gt;urls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ItemAdmin&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_urls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;my_urls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;patterns&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+                &lt;span class="s"&gt;r&amp;#39;update_feeds&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;admin_site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;admin_view&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;admin_update_feeds&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+                &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;admin_update_feeds&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="p"&gt;),&lt;/span&gt;
+        &lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;my_urls&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;urls&lt;/span&gt;
+
+&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Item&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ItemAdmin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The key parts are the get_urls function and the admin_update_feeds view. The get_urls method returns the urls for this admin to which we are adding our custom view. The custom view does the updating of the lifestream feeds and returns the user to the Item model's changelist view. We get the url for that view by calling reverse with the pattern &amp;quot;&amp;lt;namespace&amp;gt;:&amp;lt;app&amp;gt;_&amp;lt;model&amp;gt;_changelist&amp;quot; which in our case is &amp;quot;admin:lifestream_item_changelist&amp;quot; since the django admin uses the admin namespace.&lt;/p&gt;
+&lt;p&gt;I created the button for updating the feeds by overriding the default admin template with my own &lt;a class="reference external" href="http://bitbucket.org/IanLewis/django-lifestream/src/tip/lifestream/templates/admin/lifestream/item/change_list.html"&gt;subclassed template&lt;/a&gt;. The template like the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;extends&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;admin/change_list.html&amp;quot;&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;
+&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;load&lt;/span&gt; &lt;span class="nv"&gt;adminmedia&lt;/span&gt; &lt;span class="nv"&gt;admin_list&lt;/span&gt; &lt;span class="nv"&gt;i18n&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;
+
+&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;object&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;tools&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;
+&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nv"&gt;has_add_permission&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;ul&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;object-tools&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;li&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;url&lt;/span&gt; &lt;span class="nv"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;admin_update_feeds&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;blocktrans&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nv"&gt;cl.opts.verbose_name&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="nf"&gt;escape&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;Update Items&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;endblocktrans&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;li&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;add/&lt;/span&gt;&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nv"&gt;is_popup&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;&lt;span class="s"&gt;?_popup=1&lt;/span&gt;&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;endif&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;addlink&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;blocktrans&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nv"&gt;cl.opts.verbose_name&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="nf"&gt;escape&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;Add &lt;span class="cp"&gt;{{&lt;/span&gt; &lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="cp"&gt;}}{%&lt;/span&gt; &lt;span class="k"&gt;endblocktrans&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;endif&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;
+&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;endblock&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here I'm getting the url for my custom admin view with the code {% url admin:admin_update_feeds %}, &amp;quot;admin_update_feeds&amp;quot; being the name I supplied in the get_urls method above.&lt;/p&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Wed, 26 Aug 2009 18:08:29 +0900</pubDate><guid>http://www.ianlewis.org/en/reversing-django-admin-urls</guid><category>admin</category><category>django</category><category>reverse</category><category>urls</category></item><item><title>Recent EC2 Problems
+</title><link>http://www.ianlewis.org/en/recent-ec2-problems</link><description>&lt;p&gt;Over the weekend we had some some problems with EC2 in which some instances could not be connected to via a network. This happened to us for a nginx load balancing server on Friday and a database master on Saturday for two different web services. Several posts in the forums also indicated &lt;a class="reference external" href="http://developer.amazonwebservices.com/connect/thread.jspa?threadID=35468&amp;amp;tstart=30"&gt;similar&lt;/a&gt; &lt;a class="reference external" href="http://developer.amazonwebservices.com/connect/thread.jspa?threadID=35466&amp;amp;tstart=30"&gt;problems&lt;/a&gt; though rebooting the instance did not work for us. &lt;a class="reference external" href="http://www.bitbucket.org"&gt;Bitbucket&lt;/a&gt; also went down on Saturday which I assume is related. I figured I would document what happened as Amazon didn't release any information about it over the weekend and it wasn't immediately clear what we should do but it turned out to be fastest for us to replace the offending instance.&lt;/p&gt;
+&lt;p&gt;Connecting via ssh or any other means was impossible. Manipulating the instance via the dashboard seemed to work but connecting via ssh internally or externally was impossible rendering the instance useless. This situation continued indefinitely as the instances in question were never restored to the network.&lt;/p&gt;
+&lt;p&gt;We ultimately decided to replace our instances with new ones using the same image and migrating the data on them to the new instance. This required several hours of downtime for both sites. Migrating the data and getting mysql replication restarted for the database master was particularly annoying. The ebs volume holding the data could not be detached (I assume) because it was still mounted to the offending instance. I attempted to shut down the instance to get it to unmount the drive but this didn't work either as the instance got stuck (and is still stuck as of this writing) in a &amp;quot;shutting down&amp;quot; state. This meant that I couldn't reattach the volume to another instance.&lt;/p&gt;
+&lt;p&gt;I was eventually able to take a consistent snapshot from the master since it only held mysql data and wasn't being written to at the time. If it had log data or other data on it I probably wouldn't have been able to take a consistent snapshot. If I wasn't able to take a snapshot I would have had to take data from one of the slaves which were in different stages of replication (their replication log positions were different) or used a daily backup. Neither of which felt good. Daily backup means loosing the day's worth of data which sucks. I eventually discarded the replicated data which was at various positions and took the safe route and copied it from the master.&lt;/p&gt;
+&lt;p&gt;I created new volumes based on the snapshot for each slave and attached them, ran RESET MASTER to reset the binary log data, ran CHANGE MASTER on the slaves to reset the binary log position and master server host, and then eventually SLAVE START to restart replication.&lt;/p&gt;
+&lt;p&gt;This episode makes me rethink ec2 as a provider. They still provide the best virtualization service for the money but not being able to connect to the instances directly via a console in emergencies like you would be able to if you had your own Xen server is frustrating. There is no way of knowing the state of the dead server. The forums are pretty much useless for time sensitive issues, and it's hard to consider paying Amazon for a support plan when their service is acting up.&lt;/p&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Mon, 24 Aug 2009 15:33:36 +0900</pubDate><guid>http://www.ianlewis.org/en/recent-ec2-problems</guid><category>ec2</category><category>instance</category><category>problems</category></item><item><title>Using Mercurial MQ
+</title><link>http://www.ianlewis.org/en/using-mercurial-mq</link><description>&lt;p&gt;I recently started using mercurial's &lt;a class="reference external" href="http://mercurial.selenic.com/wiki/MqExtension"&gt;mq extension&lt;/a&gt; at work as I found myself switching between changes a lot. I often had to set changes I was currently working on aside to do a merge or fix something that was more urgent. The mq extension makes that possible by managing patches and allowing you to put away changes into the patch queue.&lt;/p&gt;
+&lt;p&gt;mq is included in mercurial's distribution by default but you need to enable it in your .hgrc&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;[extensions]
+mq =
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ok, so now I'll run through the most used commands.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qinit
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;When you want to create a new patch you use the qnew command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qnew
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;My original use case for mq was as a place to put my current changes so I could do back to a normal state and do some work without actually having to commit it to the repository. Originally I thought that because qnew spit out errors when I tried to create a new patch, I figured I would have do the following in order to get it back to a normal state and create my patch.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg diff -U &amp;gt; my.diff
+hg revert --all
+hg qnew mypatch
+patch -p1 &amp;lt; my.diff
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;But a friend informed me that the -f option to qnew does exactly what I needed. It takes your current changes and then rolls them into the new patch.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qnew -f mypatch
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The patch shows in your revision history while it's applied but it's not really committed.&lt;/p&gt;
+&lt;p&gt;After you make some more changes you can update the patch by running qrefresh.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qrefresh
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You run qrefresh with the -e option to set the commit message that is used later when you actually commit to the repository.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qrefresh -e
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once you set it you can just run qrefresh without the -e and it will retain the message.&lt;/p&gt;
+&lt;p&gt;Here's the fun part. If you need to put the changes away you can unapply them off by running qpop with the name of your patch&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qpop mypatch
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;or qpop -a which unapplies all the patches.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qpop -a
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will bring you back to the normal repository version. You can then merge or fix a bug or do what you need to do. After you are done and you want to work on your changes again you can reapply them with qpush.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qpush mypatch
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;or&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qpush -a
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Mq doesn't care about the revision history so you can try to apply the patch anywhere in the revision history. Be careful though since the patch might not apply if there were changes to the files updated by the patch.&lt;/p&gt;
+&lt;p&gt;Once you are done with all your changes you can run qfinish to commit them to the regular repository.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qfinish mypatch
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You can call it with a range also. MQ gives you qbase and qtip labels which are attached to the base patch and the tip patch. This effectively finishes all the patches.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;hg qfinish qbase:qtip
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That's it!&lt;/p&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Tue, 18 Aug 2009 10:04:44 +0900</pubDate><guid>http://www.ianlewis.org/en/using-mercurial-mq</guid><category>diff</category><category>hg</category><category>mercurial</category><category>mq</category><category>patch</category></item><item><title>Django and nginx settings
+</title><link>http://www.ianlewis.org/en/django-nginx</link><description>&lt;p&gt;One problem I keep encountering with setting up fastcgi with Django is that the default nginx fastcgi parameters cause django to load the top url no matter what url you try to go to. This is because the default nginx fastcgi parameters pass the SCRIPT_NAME parameter to the django instance which Django interprets incorrectly. In order to fix this you need to rename the SCRIPT_NAME parameter to PATH_INFO.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;fastcgi_param&lt;/span&gt; &lt;span class="s"&gt;PATH_INFO&lt;/span&gt; &lt;span class="nv"&gt;$fastcgi_script_name&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;fastcgi_param&lt;/span&gt; &lt;span class="s"&gt;REQUEST_METHOD&lt;/span&gt; &lt;span class="nv"&gt;$request_method&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;fastcgi_param&lt;/span&gt; &lt;span class="s"&gt;QUERY_STRING&lt;/span&gt; &lt;span class="nv"&gt;$query_string&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;fastcgi_param&lt;/span&gt; &lt;span class="s"&gt;CONTENT_TYPE&lt;/span&gt; &lt;span class="nv"&gt;$content_type&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;fastcgi_param&lt;/span&gt; &lt;span class="s"&gt;CONTENT_LENGTH&lt;/span&gt; &lt;span class="nv"&gt;$content_length&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Fri, 03 Jul 2009 17:00:13 +0900</pubDate><guid>http://www.ianlewis.org/en/django-nginx</guid><category>django</category><category>fastcgi</category><category>nginx</category><category>path_info</category><category>script_name</category></item><item><title>Smipple
+</title><link>http://www.ianlewis.org/en/Smipple</link><description>&lt;img alt="http://www.smipple.net/static/img/smipple_header.png" src="http://www.smipple.net/static/img/smipple_header.png" /&gt;
+&lt;p&gt;Yesterday I released a pet project I had been working on called &lt;a class="reference external" href="http://www.smipple.net/"&gt;Smipple&lt;/a&gt;. Smipple is a service for saving, organizing, and sharing snippets of code. I originally decided to create it because I was a user of &lt;a class="reference external" href="http://www.snipplr.com/"&gt;Snipplr&lt;/a&gt; but I was frustrated because it was slow and hard to use and the XML-RPC api was buggy. There didn't seem to be much response from the author or changes to the website either.&lt;/p&gt;
+&lt;p&gt;So from there I decided that I would create it as a challenge because I had wanted to create an actual website that people could use including implementation and marketing (there's no point to creating it if people don't use it) on &lt;a class="reference external" href="http://code.google.com/intl/en/appengine/"&gt;appengine&lt;/a&gt;. I thought that there weren't many sites utilizing appengine that were used broadly and wanted to try and create one.&lt;/p&gt;
+&lt;p&gt;Smipple is the result of about of about two months of solid part-time development in my free time streched over about 6 months. Much of that was attempting to design the website myself, eventually giving up and having a proper designer design the site, and reintegrating the new design. This was also my first real appengine project so there were many things I had to learn along the way such as how to denormalize the data but at the same time be able to keep it in a somewhat consistent state in the case of failures. Dealing with how to save the the social network and create the dashboard were also interesting. I'll talk about these in later blog posts.&lt;/p&gt;
+&lt;p&gt;Smipple was originally conceptualized as a social code sharing site that would utilize &lt;a class="reference external" href="http://code.google.com/apis/opensocial/"&gt;Open-Social&lt;/a&gt; application with my friend &lt;a class="reference external" href="http://twitter.com/tmatsuo"&gt;Takashi Matsuo&lt;/a&gt;. But it became hard to visualize how we would integrate users from different networks and whether what I wanted to achieve could really be done with Open Social. After that an Open Social application was put on hold and the site itself was created which would eventually allow users from various sites by virtue of Smipple having it's own social network and importing their contacts from existing sites (a feature that wasn't actually finished at launch).&lt;/p&gt;
+&lt;p&gt;Smipple is still missing many features that I thought needed to be on the site but I had already taken too much time with it and wanted to release it early to get user feedback. Wasting more time on what I thought was important wasn't an option anymore. So far that has worked out I think as there is some good feedback on Smipple's &lt;a class="reference external" href="http://smipple.uservoice.com/"&gt;feedback forum&lt;/a&gt;. Smipple so far has recieved a fair amount of criticism for it's lack of features but I hope to resolve those quickly as I know what features people are wanting and what priority to attach to them.&lt;/p&gt;
+&lt;p&gt;I'll be updating Smipple often as it has been pretty exciting to get feedback about the service. I didn't really put a &amp;quot;beta&amp;quot; label on Smipple but it can certainly be though of as &amp;quot;beta&amp;quot; in terms of number of features and how much work needs to be done on the site. I hope you stick around as Smipple grows.&lt;/p&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Tue, 30 Jun 2009 12:20:06 +0900</pubDate><guid>http://www.ianlewis.org/en/Smipple</guid><category>appengine</category><category>code</category><category>service</category><category>smipple</category><category>snippets</category></item><item><title>Windows Vista SuperFetch
+</title><link>http://www.ianlewis.org/en/superfetch</link><description>&lt;p&gt;I don't use Windows Vista that often but when I do it would thrash at the hard drive constantly for hours. Not knowing what the problem is I looked it up and it is aparently the &amp;quot;SuperFetch&amp;quot; service. Using the following steps to disabled it stops the thrashing on the hard drive almost immediately.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Go to control panel &amp;gt; administrative tools &amp;gt; services.&lt;/li&gt;
+&lt;li&gt;Right click on the &amp;quot;SuperFetch&amp;quot; service and click Properties.&lt;/li&gt;
+&lt;li&gt;Set the service to disabled and hit Ok.&lt;/li&gt;
+&lt;li&gt;Right click on the service again and click &amp;quot;Stop&amp;quot; to stop it.&lt;/li&gt;
+&lt;/ul&gt;
+
+</description><author>ianmlewis@gmail.com</author><pubDate>Mon, 29 Jun 2009 00:11:25 +0900</pubDate><guid>http://www.ianlewis.org/en/superfetch</guid><category>harddrive</category><category>superfetch</category><category>thrashing</category><category>vista</category><category>windows</category></item><item><title>Relaxing weekend
+</title><link>http://www.ianlewis.org/en/relaxing-weekend</link><description>&lt;p&gt;Reiko and her dog Lala came over and we had a pretty relaxing weekend. On Saturday we went to Kita no maru park which is very close to the Emporer's palace in Tokyo. I like Kita no Maru because it's fairly open and generally doesn't have a lot of people around.&lt;/p&gt;
+&lt;p&gt;There were a number of people there making bubbles. They used two long plastic rods with string attached to the ends. The string connected the ends of the two rods formed a loop. When you hold the rods together the string hangs together but when you move the rods away from each other the string forms a loop so you can dip the string in soap, lift the string in the air and open it. The breeze fills the loop and creates a large half bubble. If you open and close the loop properly you can create very large bubbles.&lt;/p&gt;
+&lt;div class="lightbox-img"&gt;&lt;a title="Making bubbles" rel="lightbox" href="http://farm3.static.flickr.com/2006/3642637345_1f284ef67b.jpg"&gt;&lt;img src="http://farm3.static.flickr.com/2006/3642637345_1f284ef67b_m.jpg" title="Making bubbles" alt=""/&gt;&lt;/a&gt;&lt;/div&gt;&lt;p&gt;After going home I made some spicy chicken and chicken/gobou salad. Gobou is a type of root which in English is called &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Taproot"&gt;Taproot&lt;/a&gt;. When boiled and eaten it has a very nutty flavor, and goes very well with sesame seeds.&lt;/p&gt;
+&lt;div class="lightbox-img"&gt;&lt;a title="" rel="lightbox" href="http://ianlewis.org/gallery2/d/11370-2/IMG_3265.JPG"&gt;&lt;img src="http://ianlewis.org/gallery2/d/11369-2/IMG_3265.JPG" title="" alt=""/&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class="lightbox-img"&gt;&lt;a title="" rel="lightbox" href="http://ianlewis.org/gallery2/d/11374-2/IMG_3266.JPG"&gt;&lt;img src="http://ianlewis.org/gallery2/d/11373-2/IMG_3266.JPG" title="" alt=""/&gt;&lt;/a&gt;&lt;/div&gt;&lt;p&gt;On Sunday, Reiko cooked and made saba. The Japanese form is &amp;quot;&lt;a class="reference external" href="http://en.wikipedia.org/wiki/Chub_mackerel"&gt;Chub mackerel&lt;/a&gt;&amp;quot; in English. The way she cooked it is called Miso nikomi (味噌煮込み) which means boiled in miso. &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Miso"&gt;Miso&lt;/a&gt; which is a fermented paste. It's unbelievably good and versatile and my favorite Japanese food/seasoning. You can make soup out of it, boil things in it, make noodles using it, and even just use it as dip for vegetables or crackers.&lt;/p&gt;
+&lt;p&gt;Reiko also made meatball soup from iwashi. Iwashi are a type of Sardine called &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Sardinops_sagax"&gt;South American Pilchard&lt;/a&gt; in English.&lt;/p&gt;
+&lt;div class="lightbox-img"&gt;&lt;a title="Dinner on Sunday. Mackerel cooked in miso and iwashi meatball soup." rel="lightbox" href="http://ianlewis.org/gallery2/d/11377-2/IMG_3267.JPG"&gt;&lt;img src="http://ianlewis.org/gallery2/d/11376-2/IMG_3267.JPG" title="Dinner on Sunday. Mackerel cooked in miso and iwashi meatball soup." alt=""/&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class="lightbox-img"&gt;&lt;a title="Mackerel cooked in miso." rel="lightbox" href="http://ianlewis.org/gallery2/d/11380-2/IMG_3268.JPG"&gt;&lt;img src="http://ianlewis.org/gallery2/d/11379-2/IMG_3268.JPG" title="Mackerel cooked in miso." alt=""/&gt;&lt;/a&gt;&lt;/div&gt;&lt;div class="lightbox-img"&gt;&lt;a title="Iwashi meatball soup." rel="lightbox" href="http://ianlewis.org/gallery2/d/11383-2/IMG_3269.JPG"&gt;&lt;img src="http://ianlewis.org/gallery2/d/11382-2/IMG_3269.JPG" title="Iwashi meatball soup." alt=""/&gt;&lt;/a&gt;&lt;/div&gt;
+</description><author>ianmlewis@gmail.com</author><pubDate>Mon, 22 Jun 2009 16:29:04 +0900</pubDate><guid>http://www.ianlewis.org/en/relaxing-weekend</guid><category>bubbles</category><category>kita no maru</category><category>tokyo</category></item></channel></rss>

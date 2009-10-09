@@ -1,6 +1,6 @@
 [
     {
-        "pk": 2, 
+        "pk": 100, 
         "model": "lifestream.feed", 
         "fields": {
             "name": "django-lifestream feed", 
@@ -11,7 +11,7 @@
         }
     },
     {
-        "pk": 3, 
+        "pk": 101, 
         "model": "lifestream.feed", 
         "fields": {
             "name": "Favorites of IanLewisInJapan", 
