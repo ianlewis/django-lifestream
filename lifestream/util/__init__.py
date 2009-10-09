@@ -128,12 +128,6 @@ def sanitize_html(htmlSource, encoding=None):
     for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
         comment.extract()
  
-    # Sanitize html text by changing bad text to entities.
-    # BeautifulSoup will do this for href and src attributes
-    # on anchors and image tags but not for text.
-    for text in soup.findAll(text=True):
-        text.replaceWith(entities(text))
-
     for tag in soup.findAll(True):
         if tag.name not in valid_tags:
             tag.hidden = True
@@ -141,7 +135,6 @@ def sanitize_html(htmlSource, encoding=None):
             tag.attrs = [(attr, js_regex.sub('', val)) for attr, val in tag.attrs
                          if attr in valid_tags[tag.name]]
     
-            
     # Strip disallowed css tags.
     for tag in soup.findAll(attrs={"style":re.compile(".*")}):
         style = ""
@@ -149,5 +142,11 @@ def sanitize_html(htmlSource, encoding=None):
             style += "%s:%s;" % (key,val.strip())
         tag["style"] = style
 
+    # Sanitize html text by changing bad text to entities.
+    # BeautifulSoup will do this for href and src attributes
+    # on anchors and image tags but not for text.
+    for text in soup.findAll(text=True):
+        text.replaceWith(entities(text))
+   
     # Strip disallowed tags and attributes.
     return soup.renderContents().decode('utf8') 
