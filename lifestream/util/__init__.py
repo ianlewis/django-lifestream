@@ -94,7 +94,7 @@ VALID_STYLES = (
     "font-weight",
 )
 
-def sanitize_html(htmlSource, encoding=None):
+def sanitize_html(htmlSource, encoding=None, valid_tags=None, valid_styles=None):
     """
     Clean bad html content. Currently this simply strips tags that
     are not in the VALID_TAGS setting.
@@ -105,8 +105,11 @@ def sanitize_html(htmlSource, encoding=None):
 
     Returns the sanitized html content.
     """
-    valid_tags = getattr(settings, "LIFESTREAM_VALID_TAGS", VALID_TAGS)
-    valid_styles = getattr(settings, "LIFESTREAM_VALID_STYLES", VALID_STYLES)
+    if valid_tags is None:
+        valid_tags = getattr(settings, "LIFESTREAM_VALID_TAGS", VALID_TAGS)
+    if valid_styles is None:
+        valid_styles = getattr(settings, "LIFESTREAM_VALID_STYLES", VALID_STYLES)
+
 
     js_regex = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript')))
     css_regex = re.compile(r' *(%s): *([^;]*);?' % '|'.join(valid_styles), re.IGNORECASE)
