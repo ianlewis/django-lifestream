@@ -5,9 +5,11 @@ import urllib
 import threading
 import logging
 
-from django.test import TransactionTestCase as DjangoTestCase
+from django.test import TestCase as DjangoTestCase
 
 from testserver import PORT,FeedParserTestServer,stop_server
+
+from lifestream.util import *
 
 class FeedTest(DjangoTestCase):
     base_url = "http://127.0.0.1:%s/%s"
@@ -37,3 +39,13 @@ class FeedTest(DjangoTestCase):
     def tearDown(self):
         self.server = None
         stop_server(PORT)
+
+class HTMLSanitizationTest(DjangoTestCase):
+    valid_tags = VALID_TAGS
+    valid_styles = VALID_STYLES
+    test_html = () 
+
+    def test_html_sanitization(self):
+        for html in self.test_html:
+            sanitized_html = sanitize_html(html[0], valid_tags=self.valid_tags)
+            self.assertEqual(sanitized_html, html[1])
