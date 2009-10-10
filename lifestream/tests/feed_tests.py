@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #:coding=utf-8:
 
-from base import BaseTest
+from base import FeedTest
 from lifestream.models import *
 
 from lifestream.feeds import update_feeds
 
-class RssFeedTest(BaseTest):
+class RssFeedTest(FeedTest):
     fixtures = ["rss.json"]
 
     def test_bitbucket_feed(self):
@@ -18,7 +18,7 @@ class RssFeedTest(BaseTest):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=2).count(), 10)
 
-class AtomFeedTest(BaseTest):
+class AtomFeedTest(FeedTest):
     fixtures = ["atom.json"]
 
     #TODO: test fails.
@@ -30,7 +30,7 @@ class AtomFeedTest(BaseTest):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=101).count(), 25)
 
-class RegressionTest(BaseTest):
+class RegressionFeedTest(FeedTest):
     fixtures = ["regressions.json"]
 
     def assertNotEmpty(self, v):

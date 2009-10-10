@@ -9,7 +9,7 @@ from django.test import TransactionTestCase as DjangoTestCase
 
 from testserver import PORT,FeedParserTestServer,stop_server
 
-class BaseTest(DjangoTestCase):
+class FeedTest(DjangoTestCase):
     base_url = "http://127.0.0.1:%s/%s"
 
     def setUp(self):
