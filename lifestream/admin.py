@@ -19,6 +19,16 @@ from lifestream.util import get_url_domain
 
 import feedparser
 
+class LifestreamAdmin(admin.ModelAdmin):
+    list_display    = ('title', 'user', 'slug', 'site')
+    list_filter     = ('user', 'site')
+    prepopulated_fields = {"slug": ("title",)}
+
+    model = Lifestream 
+
+
+admin.site.register(Lifestream, LifestreamAdmin)
+
 class FeedCreationForm(forms.ModelForm):
     class Meta:
         model = Feed
@@ -58,8 +68,8 @@ class FeedCreationForm(forms.ModelForm):
         return self.cleaned_data
 
 class FeedAdmin(admin.ModelAdmin):
-    list_display    = ('name', 'domain', 'fetchable')
-    list_filter     = ('domain',)
+    list_display    = ('name', 'lifestream', 'domain', 'fetchable')
+    list_filter     = ('domain', 'lifestream')
   
     add_form = FeedCreationForm
     model = Feed
@@ -84,6 +94,7 @@ class FeedAdmin(admin.ModelAdmin):
                     return HttpResponseRedirect('../%s/' % new_feed.id)
         else:
             form = self.add_form()
+
         return render_to_response('admin/lifestream/feed/add_form.html', {
             'title': _('Add feed'),
             'form': form,

@@ -1,7 +1,9 @@
 {% extends "lifestream/base.html" %}
 
-{% block title %}My Lifestream{% endblock %}
+{% block title %}{{ lifestream.title }}{% endblock %}
+
 {% block content %}
+<h1>{{ lifestream.title }}</h1>
 <table>
   {% if object_list %}
   <tbody>

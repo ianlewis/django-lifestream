@@ -5,19 +5,30 @@
 
 {% trans "Enter a feed url and plugin." %}
 
-<fieldset class="module aligned">
+{% if form.errors %}
+    <p class="errornote">
+    {% blocktrans count form.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+    </p>
+    <ul class="errorlist">{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+{% endif %}
 
-<div class="form-row">
+<fieldset class="module aligned">
+<div class="form-row{% if form.lifestream.errors %} errors{% endif %} {{ form.lifestream.name }}">
+
+  {{ form.lifestream.errors }}
+  <label for="id_lifestream"{% if form.lifestream.field.required %} class="required"{% endif %}>{{ form.lifestream.field.label }}</label>{{ form.lifestream }}
+</div>
+<div class="form-row{% if form.url.errors %} errors{% endif %} {{ form.url.name }}">
   {{ form.url.errors }}
   {# TODO: get required class on label_tag #}
-  <label for="id_url" class="required">{% trans 'Feed url' %}:</label> <input type="text" id="id_url" maxlength="1000" class="vURLField" value="{% if form.url.data %}{{ form.url.data }}{% endif %}" name="url"/>{#{{ form.url }}#}
+  <label for="id_url"{% if form.url.field.required %} class="required"{% endif %}>{{ form.url.field.label }}</label><input type="text" id="id_url" maxlength="1000" class="vURLField" value="{% if form.url.data %}{{ form.url.data }}{% endif %}" name="url"/>{#{{ form.url }}#}
   <p class="help">{{ form.url.help_text }}</p>
 </div>
 
-<div class="form-row">
+<div class="form-row{% if form.plugin_class_name.errors %} errors{% endif %} {{ form.plugin_class_name.name }}">
   {{ form.plugin_class_name.errors }}
   {# TODO: get required class on label_tag #}
-  <label for="id_plugin_class_name" class="required">{% trans 'Plugin name' %}:</label> {{ form.plugin_class_name }}
+  <label for="id_plugin_class_name"{% if form.plugin_class_name.field.required %} class="required"{% endif %}>{{ form.plugin_class_name.field.label }}</label>{{ form.plugin_class_name }}
 </div>
 
 <script type="text/javascript">document.getElementById("id_url").focus();</script>
