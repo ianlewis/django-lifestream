@@ -26,7 +26,6 @@ class LifestreamAdmin(admin.ModelAdmin):
 
     model = Lifestream 
 
-
 admin.site.register(Lifestream, LifestreamAdmin)
 
 class FeedCreationForm(forms.ModelForm):
@@ -70,10 +69,19 @@ class FeedCreationForm(forms.ModelForm):
 class FeedAdmin(admin.ModelAdmin):
     list_display    = ('name', 'lifestream', 'domain', 'fetchable')
     list_filter     = ('domain', 'lifestream')
+    actions         = ['make_fetchable', 'make_unfetchable']
   
     add_form = FeedCreationForm
     model = Feed
   
+    def make_unfetchable(self, request, queryset):
+        queryset.update(fetchable=False)
+    make_unfetchable.short_description = _(u"Mark as unfetchable")
+    
+    def make_fetchable(self, request, queryset):
+        queryset.update(fetchable=True)
+    make_fetchable.short_description = _(u"Mark as fetchable")
+    
     def add_view(self, request):
         if not self.has_change_permission(request):
             raise PermissionDenied
@@ -124,10 +132,19 @@ class ItemAdmin(admin.ModelAdmin):
     exclude         = ['clean_content',]
     list_filter     = ('feed',)
     search_fields   = ('title','clean_content')
+    actions         = ['make_published', 'make_unpublished']
     list_per_page   = 20
   
     model = Item
   
+    def make_unpublished(self, request, queryset):
+        queryset.update(published=False)
+    make_unpublished.short_description = _(u"Unpublish items")
+    
+    def make_published(self, request, queryset):
+        queryset.update(published=True)
+    make_published.short_description = _(u"Publish items")
+    
     def save_model(self, request, obj, form, change):
         obj.clean_content = strip_tags(obj.content)
         obj.save()
