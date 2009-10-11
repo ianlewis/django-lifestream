@@ -32,8 +32,8 @@ class EntitiesTest(HTMLSanitizationTest):
             u'<b>Ian&apos;s Homepage</b>',
         ),
         (
-            u'"I CaN HaZ SoMe <TeXt"',
-            u'&quot;I CaN HaZ SoMe &lt;TeXt&gt;&quot;',
+            u'"I CaN HaZ SoMe < TeXt"',
+            u'&quot;I CaN HaZ SoMe &lt; TeXt&quot;',
         ),
     )
 
