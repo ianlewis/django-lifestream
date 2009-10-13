@@ -3,6 +3,7 @@
         "pk": 1, 
         "model": "lifestream.feed", 
         "fields": {
+            "lifestream": 1, 
             "name": "django-lifestream feed", 
             "url": "http://127.0.0.1:8097/feeds/rss/bitbucket.xml",
             "domain": "bitbucket.org", 
@@ -14,6 +15,7 @@
         "pk": 2, 
         "model": "lifestream.feed", 
         "fields": {
+            "lifestream": 1, 
             "name": "django-lifestream feed", 
             "url": "http://127.0.0.1:8097/feeds/rss/ianlewis.xml",
             "domain": "ianlewis.org", 

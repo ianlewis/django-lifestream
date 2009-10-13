@@ -7,7 +7,7 @@ from lifestream.models import *
 from lifestream.feeds import update_feeds
 
 class RssFeedTest(FeedTest):
-    fixtures = ["rss.json"]
+    fixtures = FeedTest.fixtures + ["rss.json"]
 
     def test_bitbucket_feed(self):
         update_feeds()
@@ -19,7 +19,7 @@ class RssFeedTest(FeedTest):
         self.assertEqual(Item.objects.filter(feed__pk=2).count(), 10)
 
 class AtomFeedTest(FeedTest):
-    fixtures = ["atom.json"]
+    fixtures = FeedTest.fixtures + ["atom.json"]
 
     #TODO: test fails.
     def test_bitbucket_atom_feed(self):
@@ -31,7 +31,7 @@ class AtomFeedTest(FeedTest):
         self.assertEqual(Item.objects.filter(feed__pk=101).count(), 25)
 
 class RegressionFeedTest(FeedTest):
-    fixtures = ["regressions.json"]
+    fixtures = FeedTest.fixtures + ["regressions.json"]
 
     def assertNotEmpty(self, v):
         self.assertNotEqual(v, None)

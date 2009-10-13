@@ -13,6 +13,7 @@ from lifestream.util import *
 
 class FeedTest(DjangoTestCase):
     base_url = "http://127.0.0.1:%s/%s"
+    fixtures = ["base.json"]
 
     def setUp(self):
         # Disable logging to the console
