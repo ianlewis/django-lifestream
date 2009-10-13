@@ -39,6 +39,10 @@ class EntitiesTest(HTMLSanitizationTest):
             u'"I CaN HaZ SoMe <TeXt>?"',
             u'&quot;I CaN HaZ SoMe ?&quot;',
         ),
+        (
+            u'Ice Cream & &quot;Chocolate&quot;',
+            u'Ice Cream &amp; &quot;Chocolate&quot;',
+        )
     )
 
 class CSSSanitizationTest(HTMLSanitizationTest):

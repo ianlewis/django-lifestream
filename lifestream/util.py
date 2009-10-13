@@ -120,13 +120,6 @@ def sanitize_html(htmlSource, encoding=None, valid_tags=None, valid_styles=None)
     else:
         soup = BeautifulSoup(htmlSource)
     
-
-    def entities(text):
-        return text.replace('<','&lt;')\
-                   .replace('>', '&gt;')\
-                   .replace('"', '&quot;')\
-                   .replace("'", '&apos;')
-
     # Remove html comments
     for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
         comment.extract()
@@ -144,6 +137,13 @@ def sanitize_html(htmlSource, encoding=None, valid_tags=None, valid_styles=None)
         for key,val in css_regex.findall(tag["style"]):
             style += "%s:%s;" % (key,val.strip())
         tag["style"] = style
+
+    def entities(text):
+        return re.sub(r'&(?![A-Za-z]+;)', '&amp;', text)\
+                 .replace('<','&lt;')\
+                 .replace('>', '&gt;')\
+                 .replace('"', '&quot;')\
+                 .replace("'", '&apos;')
 
     # Sanitize html text by changing bad text to entities.
     # BeautifulSoup will do this for href and src attributes
