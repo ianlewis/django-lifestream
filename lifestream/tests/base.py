@@ -50,3 +50,11 @@ class HTMLSanitizationTest(DjangoTestCase):
         for html in self.test_html:
             sanitized_html = sanitize_html(html[0], valid_tags=self.valid_tags)
             self.assertEqual(sanitized_html, html[1])
+
+class EntityConversionTest(DjangoTestCase):
+    test_html = ()
+
+    def test_convert_entities(self):
+        for html in self.test_html:
+            converted = convert_entities(html[0])
+            self.assertEqual(converted, html[1])

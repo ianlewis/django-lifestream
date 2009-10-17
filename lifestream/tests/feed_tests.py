@@ -13,7 +13,6 @@ class RssFeedTest(FeedTest):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=1).count(), 15)
 
-    #TODO: test fails.
     def test_ianlewis_feed(self):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=2).count(), 10)
@@ -21,11 +20,12 @@ class RssFeedTest(FeedTest):
 class AtomFeedTest(FeedTest):
     fixtures = FeedTest.fixtures + ["atom.json"]
 
-    #TODO: test fails.
+    #TODO: test fails. feedparser broken
     def test_bitbucket_atom_feed(self):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=100).count(), 15)
 
+    #TODO: test fails. feedparser broken
     def test_youtube(self):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=101).count(), 25)

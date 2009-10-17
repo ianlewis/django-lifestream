@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #:coding=utf-8:
 
-from base import HTMLSanitizationTest
+from base import *
 
 from lifestream.util import * 
 
@@ -74,5 +74,21 @@ class CSSSanitizationTest(HTMLSanitizationTest):
         (
             u'<span style="  color:#FFF;  position:absolute;\tfont-weight:bold;  aaaaa">My Homepage</span>', 
             u'<span style="color:#FFF;font-weight:bold;">My Homepage</span>', 
+        ),
+    )
+
+class EntityTest(EntityConversionTest):
+    test_html = (
+        (
+            u'&quot;Ian&apos;s Homepage&quot;',
+            u'"Ian\'s Homepage"',
+        ),
+        (
+            u'&lt;Ian&apos;s Homepage&gt;',
+            u'<Ian\'s Homepage>',
+        ),
+        (
+            u'"Ian\'s Homepage"',
+            u'"Ian\'s Homepage"',
         ),
     )
