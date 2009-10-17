@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
 from lifestream.models import *
-from lifestream.util import get_url_domain
+from lifestream.util import get_url_domain,convert_entities
 
 import feedparser
 
@@ -146,7 +146,7 @@ class ItemAdmin(admin.ModelAdmin):
     make_published.short_description = _(u"Publish items")
     
     def save_model(self, request, obj, form, change):
-        obj.clean_content = strip_tags(obj.content)
+        obj.clean_content = convert_entities(strip_tags(obj.content))
         obj.save()
 
     def admin_update_feeds(self, request):

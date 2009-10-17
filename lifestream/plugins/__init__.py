@@ -80,11 +80,11 @@ class FeedPlugin(object):
     if feed_contents:
         content_type = feed_contents[0]['type']
         content = force_unicode(feed_contents[0]['value'])
-        clean_content = strip_tags(content)
+        clean_content = convert_entities(strip_tags(content))
     elif feed_description:
         content_type = "text/html"
         content = force_unicode(feed_description)
-        clean_content = strip_tags(content)
+        clean_content = convert_entities(strip_tags(content))
     else:
       content_type = None
       content = None
