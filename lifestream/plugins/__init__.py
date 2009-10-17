@@ -7,11 +7,12 @@ import datetime
 import dateutil.parser
 import copy
 
-from django.utils.encoding import iri_to_uri
+from django.utils.encoding import iri_to_uri,force_unicode
 from django.db.models import Q
 from django.utils.html import strip_tags
 
 from lifestream.models import *
+from lifestream.util import convert_entities
 
 class FeedPlugin(object):
   
@@ -78,16 +79,19 @@ class FeedPlugin(object):
     feed_description = entry.get('description')
     if feed_contents:
         content_type = feed_contents[0]['type']
-        content = feed_contents[0]['value']
+        content = force_unicode(feed_contents[0]['value'])
         clean_content = strip_tags(content)
     elif feed_description:
         content_type = "text/html"
-        content = feed_description
-        clean_content = strip_tags(feed_description)
+        content = force_unicode(feed_description)
+        clean_content = strip_tags(content)
     else:
       content_type = None
       content = None
       clean_content = None
+
+    # Make sure the title is clean too.
+    title = convert_entities(strip_tags(force_unicode(entry.get('title'))))
     
     media_url = None
     media_content_attrs = entry.get('media_content_attrs')
@@ -108,9 +112,11 @@ class FeedPlugin(object):
     if media_player_attrs:
       media_player_url = media_player_attrs.get('url')
 
+    media_description = force_unicode(entry.get("media_description"))
+
     item = Item(feed = self.feed,
              date = entry.get('published'),
-             title = entry.get('title'),
+             title = title,
              content = content,
              content_type = content_type,
              clean_content = clean_content,
@@ -119,7 +125,7 @@ class FeedPlugin(object):
              media_url = media_url,
              media_thumbnail_url = thumbnail_url,
              media_player_url = media_player_url,
-             media_description = entry.get("media_description"),
+             media_description = media_description,
              media_description_type = media_description_type,
     )
     return item

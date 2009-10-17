@@ -94,6 +94,27 @@ VALID_STYLES = (
     "font-weight",
 )
 
+def escape_entities(text):
+        return re.sub(r'&(?![A-Za-z]+;)', '&amp;', text)\
+                 .replace('<','&lt;')\
+                 .replace('>', '&gt;')\
+                 .replace('"', '&quot;')\
+                 .replace("'", '&apos;')
+
+def convert_entities(text):
+    if text is None:
+        return None
+    entities = {
+        u'&amp;': u'&',
+        u'&lt;': u'<',
+        u'&gt;': u'>',
+        u'&quot;': u'"',
+        u'&apos;': u"'",
+    }
+    for entity in entities:
+        text = text.replace(entity, entities[entity])
+    return text
+
 def sanitize_html(htmlSource, encoding=None, valid_tags=None, valid_styles=None):
     """
     Clean bad html content. Currently this simply strips tags that
@@ -138,18 +159,11 @@ def sanitize_html(htmlSource, encoding=None, valid_tags=None, valid_styles=None)
             style += "%s:%s;" % (key,val.strip())
         tag["style"] = style
 
-    def entities(text):
-        return re.sub(r'&(?![A-Za-z]+;)', '&amp;', text)\
-                 .replace('<','&lt;')\
-                 .replace('>', '&gt;')\
-                 .replace('"', '&quot;')\
-                 .replace("'", '&apos;')
-
-    # Sanitize html text by changing bad text to entities.
+        # Sanitize html text by changing bad text to entities.
     # BeautifulSoup will do this for href and src attributes
     # on anchors and image tags but not for text.
     for text in soup.findAll(text=True):
-        text.replaceWith(entities(text))
+        text.replaceWith(escape_entities(text))
    
     # Strip disallowed tags and attributes.
     return soup.renderContents().decode('utf8') 
