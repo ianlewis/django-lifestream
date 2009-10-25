@@ -32,9 +32,6 @@ class Lifestream(models.Model):
 class FeedManager(models.Manager):
     ''' Query only normal feeds. '''
   
-    def feeds(self):
-        return super(FeedManager, self).get_query_set()
-  
     def fetchable(self):
         return self.feeds().filter(fetchable=True)
 

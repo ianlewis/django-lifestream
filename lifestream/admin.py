@@ -26,6 +26,18 @@ class LifestreamAdmin(admin.ModelAdmin):
 
     model = Lifestream 
 
+    def queryset(self, request):
+        queryset = super(LifestreamAdmin, self).queryset(request)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(user=request.user)
+        return queryset
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'user' and not request.user.is_superuser:
+            kwargs["queryset"] = User.objects.filter(pk=request.user.pk)
+            return db_field.formfield(**kwargs)
+        return super(LifestreamAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs) 
+
 admin.site.register(Lifestream, LifestreamAdmin)
 
 class FeedCreationForm(forms.ModelForm):
@@ -74,6 +86,18 @@ class FeedAdmin(admin.ModelAdmin):
     add_form = FeedCreationForm
     model = Feed
   
+    def queryset(self, request):
+        queryset = super(FeedAdmin, self).queryset(request)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(lifestream__user=request.user)
+        return queryset 
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'lifestream' and not request.user.is_superuser:
+            kwargs["queryset"] = Lifestream.objects.filter(user=request.user)
+            return db_field.formfield(**kwargs)
+        return super(FeedAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs) 
+
     def make_unfetchable(self, request, queryset):
         queryset.update(fetchable=False)
     make_unfetchable.short_description = _(u"Mark as unfetchable")
@@ -122,9 +146,6 @@ class FeedAdmin(admin.ModelAdmin):
             'app_label': self.model._meta.app_label,            
         }, context_instance=template.RequestContext(request))
 
-    def queryset(self, request):
-        return self.model.objects.feeds()
-
 admin.site.register(Feed, FeedAdmin)
 
 class ItemAdmin(admin.ModelAdmin):
@@ -136,7 +157,19 @@ class ItemAdmin(admin.ModelAdmin):
     list_per_page   = 20
   
     model = Item
+
+    def queryset(self, request):
+        queryset = super(ItemAdmin, self).queryset(request)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(feed__lifestream__user=request.user)
+        return queryset
   
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'feed' and not request.user.is_superuser:
+            kwargs["queryset"] = Feed.objects.filter(lifestream__user=request.user)
+            return db_field.formfield(**kwargs)
+        return super(ItemAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
     def make_unpublished(self, request, queryset):
         queryset.update(published=False)
     make_unpublished.short_description = _(u"Unpublish items")
