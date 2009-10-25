@@ -112,7 +112,9 @@ class FeedPlugin(object):
     if media_player_attrs:
       media_player_url = media_player_attrs.get('url')
 
-    media_description = force_unicode(entry.get("media_description"))
+    media_description = entry.get("media_description")
+    if media_description
+        media_description = force_unicode(media_description)
 
     item = Item(feed = self.feed,
              date = entry.get('published'),
