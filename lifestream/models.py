@@ -33,7 +33,7 @@ class FeedManager(models.Manager):
     ''' Query only normal feeds. '''
   
     def fetchable(self):
-        return self.feeds().filter(fetchable=True)
+        return self.filter(fetchable=True)
 
 class Feed(models.Model):
     '''A feed for gathering data.'''
