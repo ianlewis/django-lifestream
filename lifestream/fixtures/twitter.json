@@ -1,0 +1,14 @@
+[
+    {
+        "pk": 401, 
+        "model": "lifestream.feed", 
+        "fields": {
+            "lifestream": 1, 
+            "name": "Twitter / IanMLewis", 
+            "url": "http://127.0.0.1:8097/feeds/rss/twitter_user.xml",
+            "domain": "twitter.com", 
+            "fetchable": 1, 
+            "plugin_class_name": "lifestream.plugins.twitter.TwitterPlugin" 
+        }
+    }
+] 
