@@ -51,6 +51,17 @@ class TwitterTest(FeedTest):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=401).count(), 20)
 
+class BloggerTest(FeedTest):
+    fixtures = FeedTest.fixtures + ["blogger.json"]
+
+    def test_blogger_blog_atom(self):
+        update_feeds()
+        self.assertEqual(Item.objects.filter(feed__pk=501).count(), 25)
+
+    def test_blogger_blog_rss(self):
+        update_feeds()
+        self.assertEqual(Item.objects.filter(feed__pk=502).count(), 25)
+
 class RegressionFeedTest(FeedTest):
     fixtures = FeedTest.fixtures + ["regressions.json"]
 

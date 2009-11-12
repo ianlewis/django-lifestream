@@ -1,0 +1,26 @@
+[
+    {
+        "pk": 501, 
+        "model": "lifestream.feed", 
+        "fields": {
+            "lifestream": 1, 
+            "name": "Agile Testing", 
+            "url": "http://127.0.0.1:8097/feeds/atom/blogger_blog.xml",
+            "domain": "blogspot.com", 
+            "fetchable": 1, 
+            "plugin_class_name": null 
+        }
+    },
+    {
+        "pk": 502, 
+        "model": "lifestream.feed", 
+        "fields": {
+            "lifestream": 1, 
+            "name": "Agile Testing", 
+            "url": "http://127.0.0.1:8097/feeds/rss/blogger_blog.xml",
+            "domain": "blogspot.com", 
+            "fetchable": 1, 
+            "plugin_class_name": null 
+        }
+    }
+] 
