@@ -6,29 +6,31 @@ from lifestream.models import *
 
 from lifestream.feeds import update_feeds
 
-class RssFeedTest(FeedTest):
-    fixtures = FeedTest.fixtures + ["rss.json"]
+class IanLewisFeedTest(FeedTest):
+    fixtures = FeedTest.fixtures + ["ianlewis.json"]
 
-    def test_bitbucket_feed(self):
+    def test_ianlewis_rss(self):
+        update_feeds()
+        self.assertEqual(Item.objects.filter(feed__pk=1).count(), 10)
+
+class BitbucketFeedTest(FeedTest):
+    fixtures = FeedTest.fixtures + ["bitbucket.json"]
+
+    #TODO: test fails. feedparser broken
+    def test_bitbucket_atom(self):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=1).count(), 15)
 
-    def test_ianlewis_feed(self):
+    def test_bitbucket_rss(self):
         update_feeds()
-        self.assertEqual(Item.objects.filter(feed__pk=2).count(), 10)
+        self.assertEqual(Item.objects.filter(feed__pk=2).count(), 15)
 
-class AtomFeedTest(FeedTest):
-    fixtures = FeedTest.fixtures + ["atom.json"]
+def YoutubeTest(FeedTest):
+    fixtures = FeedTest.fixtures + ["youtube.json"]
 
-    #TODO: test fails. feedparser broken
-    def test_bitbucket_atom_feed(self):
+    def test_youtube_atom(self):
         update_feeds()
-        self.assertEqual(Item.objects.filter(feed__pk=100).count(), 15)
-
-    #TODO: test fails. feedparser broken
-    def test_youtube(self):
-        update_feeds()
-        self.assertEqual(Item.objects.filter(feed__pk=101).count(), 25)
+        self.assertEqual(Item.objects.filter(feed__pk=1).count(), 25)
 
 class RegressionFeedTest(FeedTest):
     fixtures = FeedTest.fixtures + ["regressions.json"]
