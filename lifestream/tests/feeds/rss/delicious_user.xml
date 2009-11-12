@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/">
+  <channel>
+    <title>Delicious/IanMLewis</title>
+    <link>http://delicious.com/IanMLewis</link>
+    <description>bookmarks posted by IanMLewis</description>
+    <atom:link rel="self" type="application/rss+xml" href="http://feeds.delicious.com/v2/rss/IanMLewis?count=15"/>
+    <item>
+      <title>Haystack - Search for Django</title>
+      <pubDate>Thu, 12 Nov 2009 09:01:35 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/75136f97152fa2cb830b344580c3241b#IanMLewis</guid>
+      <link>http://haystacksearch.org/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/75136f97152fa2cb830b344580c3241b</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/75136f97152fa2cb830b344580c3241b</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>Search doesn&amp;#039;t have to be hard. Haystack lets you write your search code once and choose the search engine you want it to run on. With a familiar API that should make any Djangonaut feel right at home and an architecture that allows you to swap things in and out as you need to, it&amp;#039;s how search ought to be.</description>
+      <category domain="http://delicious.com/IanMLewis/">search</category>
+      <category domain="http://delicious.com/IanMLewis/">django</category>
+      <category domain="http://delicious.com/IanMLewis/">haystack</category>
+    </item>
+    <item>
+      <title>Home | OpenCalais</title>
+      <pubDate>Wed, 11 Nov 2009 16:02:44 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/7b62a4673480a942dfdcec6f9d1ecb2d#IanMLewis</guid>
+      <link>http://www.opencalais.com/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/7b62a4673480a942dfdcec6f9d1ecb2d</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/7b62a4673480a942dfdcec6f9d1ecb2d</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>Calais is a rapidly growing toolkit of capabilities that allow you to readily incorporate state-of-the-art semantic functionality within your blog, content management system, website or application.</description>
+      <category domain="http://delicious.com/IanMLewis/">api</category>
+      <category domain="http://delicious.com/IanMLewis/">metadata</category>
+      <category domain="http://delicious.com/IanMLewis/">webservices</category>
+      <category domain="http://delicious.com/IanMLewis/">semanticweb</category>
+      <category domain="http://delicious.com/IanMLewis/">semantic</category>
+      <category domain="http://delicious.com/IanMLewis/">tagging</category>
+      <category domain="http://delicious.com/IanMLewis/">tools</category>
+      <category domain="http://delicious.com/IanMLewis/">calais</category>
+    </item>
+    <item>
+      <title>The Go Programming Language</title>
+      <pubDate>Wed, 11 Nov 2009 02:30:08 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/ac48772220bc32723807032f9a262b68#IanMLewis</guid>
+      <link>http://golang.org/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/ac48772220bc32723807032f9a262b68</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/ac48772220bc32723807032f9a262b68</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>Go is …
+… simple
+
+package main
+
+import &amp;quot;fmt&amp;quot;
+
+func main() {
+  fmt.Printf(&amp;quot;Hello, 世界\n&amp;quot;)
+}
+
+… fast
+
+Go compilers produce fast code fast. Typical builds take a fraction of a second yet the resulting programs run nearly as quickly as comparable C or C++ code.
+… safe
+
+Go is type safe and memory safe. Go has pointers but no pointer arithmetic. For random access, use slices, which know their limits.
+… concurrent
+
+Go promotes writing systems and servers as sets of lightweight communicating processes, called goroutines, with strong support from the language. Run thousands of goroutines if you want—and say good-bye to stack overflows.
+… fun
+
+Go has fast builds, clean syntax, garbage collection, methods for any type, and run-time reflection. It feels like a dynamic language but has the speed and safety of a static language. It&amp;#039;s a joy to use.
+… open source
+
+Go for it.</description>
+      <category domain="http://delicious.com/IanMLewis/">programming</category>
+      <category domain="http://delicious.com/IanMLewis/">google</category>
+      <category domain="http://delicious.com/IanMLewis/">language</category>
+      <category domain="http://delicious.com/IanMLewis/">development</category>
+      <category domain="http://delicious.com/IanMLewis/">go</category>
+      <category domain="http://delicious.com/IanMLewis/">languages</category>
+    </item>
+    <item>
+      <title>Overview | LDAP Account Manager</title>
+      <pubDate>Mon, 09 Nov 2009 09:52:37 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/2b12398211b6439f4177c39e5f37ba9c#IanMLewis</guid>
+      <link>http://www.ldap-account-manager.org/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/2b12398211b6439f4177c39e5f37ba9c</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/2b12398211b6439f4177c39e5f37ba9c</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>LDAP Account Manager (LAM) is a webfrontend for managing accounts stored in an LDAP directory. You can use templates for account creation and use multiple configuration profiles. Account information can be exported as PDF file. It also features an external script for managing quotas and home directories.</description>
+      <category domain="http://delicious.com/IanMLewis/">ldap</category>
+      <category domain="http://delicious.com/IanMLewis/">linux</category>
+      <category domain="http://delicious.com/IanMLewis/">software</category>
+      <category domain="http://delicious.com/IanMLewis/">web</category>
+      <category domain="http://delicious.com/IanMLewis/">management</category>
+    </item>
+    <item>
+      <title>MySQL Master-Slave Replication</title>
+      <pubDate>Mon, 09 Nov 2009 07:57:50 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/d2f4f368f39da5200613cb2088dbed1c#IanMLewis</guid>
+      <link>http://members.cox.net/midian/howto/mysqlReplication.htm</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/d2f4f368f39da5200613cb2088dbed1c</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/d2f4f368f39da5200613cb2088dbed1c</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>When you have a MySQL database and want to spread the load across multiple servers, you can setup replication. What this does is in almost-realtime copy all commands from the master server to the slave server, keeping the data the same on both servers so both servers can serve requests simultaneously, sharing the load.</description>
+      <category domain="http://delicious.com/IanMLewis/">mysql</category>
+      <category domain="http://delicious.com/IanMLewis/">slave</category>
+      <category domain="http://delicious.com/IanMLewis/">master</category>
+      <category domain="http://delicious.com/IanMLewis/">replication</category>
+      <category domain="http://delicious.com/IanMLewis/">database</category>
+      <category domain="http://delicious.com/IanMLewis/">db</category>
+    </item>
+    <item>
+      <title>Closure Compiler - Google Code</title>
+      <pubDate>Fri, 06 Nov 2009 07:00:34 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/c782c3da090c44f91381069ed9f56516#IanMLewis</guid>
+      <link>http://code.google.com/intl/ja/closure/compiler/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/c782c3da090c44f91381069ed9f56516</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/c782c3da090c44f91381069ed9f56516</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>The Closure Compiler is a tool for making JavaScript download and run faster. It is a true compiler for JavaScript. Instead of compiling from a source language to machine code, it compiles from JavaScript to better JavaScript. It parses your JavaScript, analyzes it, removes dead code and rewrites and minimizes what&amp;#039;s left. It also checks syntax, variable references, and types, and warns about common JavaScript pitfalls.</description>
+      <category domain="http://delicious.com/IanMLewis/">javascript</category>
+      <category domain="http://delicious.com/IanMLewis/">google</category>
+      <category domain="http://delicious.com/IanMLewis/">tools</category>
+      <category domain="http://delicious.com/IanMLewis/">closure</category>
+    </item>
+    <item>
+      <title>defunkt's resque at master - GitHub</title>
+      <pubDate>Thu, 05 Nov 2009 04:05:16 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/c526e60050e1e0090766e1d09bef450f#IanMLewis</guid>
+      <link>http://github.com/defunkt/resque</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/c526e60050e1e0090766e1d09bef450f</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/c526e60050e1e0090766e1d09bef450f</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>A simple Redis-based queue.</description>
+      <category domain="http://delicious.com/IanMLewis/">ruby</category>
+      <category domain="http://delicious.com/IanMLewis/">queue</category>
+      <category domain="http://delicious.com/IanMLewis/">redis</category>
+      <category domain="http://delicious.com/IanMLewis/">rails</category>
+      <category domain="http://delicious.com/IanMLewis/">github</category>
+      <category domain="http://delicious.com/IanMLewis/">background</category>
+      <category domain="http://delicious.com/IanMLewis/">asynchronous</category>
+      <category domain="http://delicious.com/IanMLewis/">messaging</category>
+    </item>
+    <item>
+      <title>TracModWSGI – The Trac Project</title>
+      <pubDate>Wed, 04 Nov 2009 11:43:24 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/2a0b9a5b2faf9f35e4e3e1895e8f36e3#IanMLewis</guid>
+      <link>http://trac.edgewall.org/wiki/TracModWSGI</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/2a0b9a5b2faf9f35e4e3e1895e8f36e3</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/2a0b9a5b2faf9f35e4e3e1895e8f36e3</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>mod_wsgi is an Apache module for running WSGI-compatible Python applications directly on top of Apache. The mod_wsgi adapter is written completely in C and provides significantly better performance than using existing WSGI adapters for mod_python or CGI.
+
+Trac can be run on top of mod_wsgi with the help of the following application script, which is just a Python file, though usually saved with a .wsgi extension). This file can be created using trac-admin &amp;lt;env&amp;gt; deploy &amp;lt;dir&amp;gt; command which automatically substitutes required paths.</description>
+      <category domain="http://delicious.com/IanMLewis/">trac</category>
+      <category domain="http://delicious.com/IanMLewis/">wsgi</category>
+      <category domain="http://delicious.com/IanMLewis/">apache</category>
+      <category domain="http://delicious.com/IanMLewis/">mod_wsgi</category>
+      <category domain="http://delicious.com/IanMLewis/">python</category>
+      <category domain="http://delicious.com/IanMLewis/">server</category>
+    </item>
+    <item>
+      <title>Twitter API Wiki / FrontPage</title>
+      <pubDate>Mon, 02 Nov 2009 03:01:12 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/b4fc80374ec2d75d2adfcbeda03feba1#IanMLewis</guid>
+      <link>http://apiwiki.twitter.com/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/b4fc80374ec2d75d2adfcbeda03feba1</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/b4fc80374ec2d75d2adfcbeda03feba1</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <category domain="http://delicious.com/IanMLewis/">twitter</category>
+      <category domain="http://delicious.com/IanMLewis/">api</category>
+      <category domain="http://delicious.com/IanMLewis/">wiki</category>
+      <category domain="http://delicious.com/IanMLewis/">reference</category>
+    </item>
+    <item>
+      <title>KeyError: ‘processName’ – python-multiprocessing</title>
+      <pubDate>Fri, 30 Oct 2009 08:02:35 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/81d42eaacecc16a23f6316fd737d5bb6#IanMLewis</guid>
+      <link>http://www.dilella.org/?p=74</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/81d42eaacecc16a23f6316fd737d5bb6</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/81d42eaacecc16a23f6316fd737d5bb6</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>If you get this error, than you have a problem with your python-multiprocessing package. There are two possibile ways to solve this problem. You can install the backport or you can patch the latest version of python-multiprocessing.</description>
+      <category domain="http://delicious.com/IanMLewis/">python</category>
+      <category domain="http://delicious.com/IanMLewis/">multiprocessing</category>
+      <category domain="http://delicious.com/IanMLewis/">logging</category>
+    </item>
+    <item>
+      <title>Version1.2Features - Django - Trac</title>
+      <pubDate>Wed, 28 Oct 2009 04:06:39 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/b3d1658370a5bb6e6ced0f8186507e7e#IanMLewis</guid>
+      <link>http://code.djangoproject.com/wiki/Version1.2Features</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/b3d1658370a5bb6e6ced0f8186507e7e</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/b3d1658370a5bb6e6ced0f8186507e7e</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>These are the features proposed for inclusion in Django 1.2, broken into high, medium, and low priorities. For more details, see Version1.2Roadmap.
+
+Each feature lists which committer(s) are involved, and who&amp;#039;s the primary implementor (aka lieutenant aka &amp;quot;LT&amp;quot;). This is a wiki, so if you&amp;#039;re the primary on a feature below and don&amp;#039;t see yourself, please fix it.
+
+These links are from the 1.2 Voting Spreadsheet, which includes comments and concerns from the committers.</description>
+      <category domain="http://delicious.com/IanMLewis/">django</category>
+      <category domain="http://delicious.com/IanMLewis/">features</category>
+    </item>
+    <item>
+      <title>zain's jogging at master - GitHub</title>
+      <pubDate>Wed, 28 Oct 2009 04:02:17 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/1ccf84d09f6be08d62f25cfe8f7ed601#IanMLewis</guid>
+      <link>http://github.com/zain/jogging</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/1ccf84d09f6be08d62f25cfe8f7ed601</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/1ccf84d09f6be08d62f25cfe8f7ed601</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>Jogging is a thin wrapper around Python&amp;#039;s logging functionality to make Django logging easier. It provides a central place to configure all your loggers, a standard location to import loggers, and makes common logging use cases simpler.
+
+With Jogging, you can control the destination, format, and verbosity of logs with fine granularity. Configuring module-level logging is just as easy as configuring logging for specific functions.
+
+To use it, you add a few configurations to settings.py, import Jogging&amp;#039;s log functions instead of Python&amp;#039;s, and then log away like you normally do.
+
+Python&amp;#039;s logging module does all the heavy lifting. As a result, you can use Jogging to configure logging for code that already exists. And great care has been taken to make sure logging&amp;#039;s power isn&amp;#039;t hidden away behind abstractions.</description>
+      <category domain="http://delicious.com/IanMLewis/">django</category>
+      <category domain="http://delicious.com/IanMLewis/">logging</category>
+      <category domain="http://delicious.com/IanMLewis/">python</category>
+    </item>
+    <item>
+      <title>Amazon Relational Database Service (Amazon RDS)</title>
+      <pubDate>Tue, 27 Oct 2009 05:11:39 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/9b552c05531d21ea8b8b3193110ed543#IanMLewis</guid>
+      <link>http://aws.amazon.com/rds/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/9b552c05531d21ea8b8b3193110ed543</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/9b552c05531d21ea8b8b3193110ed543</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>Amazon Relational Database Service (Amazon RDS) is a web service that makes it easy to set up, operate, and scale a relational database in the cloud. It provides cost-efficient and resizable capacity while managing time-consuming database administration tasks, freeing you up to focus on your applications and business.</description>
+      <category domain="http://delicious.com/IanMLewis/">amazon</category>
+      <category domain="http://delicious.com/IanMLewis/">mysql</category>
+      <category domain="http://delicious.com/IanMLewis/">database</category>
+      <category domain="http://delicious.com/IanMLewis/">aws</category>
+      <category domain="http://delicious.com/IanMLewis/">EC2</category>
+      <category domain="http://delicious.com/IanMLewis/">rds</category>
+    </item>
+    <item>
+      <title>Add Full-Text Search to your Django project with Whoosh</title>
+      <pubDate>Mon, 26 Oct 2009 08:03:44 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/93d8eee67093c86ea57bd5bcfc6d4be0#IanMLewis</guid>
+      <link>http://www.arnebrodowski.de/blog/add-full-text-search-to-your-django-project-with-whoosh.html</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/93d8eee67093c86ea57bd5bcfc6d4be0</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/93d8eee67093c86ea57bd5bcfc6d4be0</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>Whoosh is a pure-python full-text indexing and searching library. Whoosh was opensourced recently and makes it easy to add a fulltext search to your site without any external services like Lucene or Solr for example.</description>
+      <category domain="http://delicious.com/IanMLewis/">django</category>
+      <category domain="http://delicious.com/IanMLewis/">search</category>
+      <category domain="http://delicious.com/IanMLewis/">python</category>
+      <category domain="http://delicious.com/IanMLewis/">fulltext</category>
+      <category domain="http://delicious.com/IanMLewis/">whoosh</category>
+    </item>
+    <item>
+      <title>tokyohackerspace | Don't Try This At Home, That's What The Hackerspace is For!</title>
+      <pubDate>Sun, 25 Oct 2009 04:01:56 +0000</pubDate>
+      <guid isPermaLink="false">http://delicious.com/url/a0b7ea2ade4c91ccbd9e1ce7f16eb5ec#IanMLewis</guid>
+      <link>http://www.tokyohackerspace.org/</link>
+      <dc:creator><![CDATA[IanMLewis]]></dc:creator>
+      <comments>http://delicious.com/url/a0b7ea2ade4c91ccbd9e1ce7f16eb5ec</comments>
+      <wfw:commentRss>http://feeds.delicious.com/v2/rss/url/a0b7ea2ade4c91ccbd9e1ce7f16eb5ec</wfw:commentRss>
+      <source url="http://feeds.delicious.com/v2/rss/IanMLewis">IanMLewis's bookmarks</source>
+      <description>Tokyo HackerSpace is an open community lab, studio, workbench, sewing circle, machine shop+, where people with common interests in technology, building things, gardening, cooking, science, sewing, digital art, gaming+, can find the space, the like-minded people, and the infrastructure needed for these activities.</description>
+      <category domain="http://delicious.com/IanMLewis/">tokyo</category>
+      <category domain="http://delicious.com/IanMLewis/">japan</category>
+      <category domain="http://delicious.com/IanMLewis/">office</category>
+      <category domain="http://delicious.com/IanMLewis/">creative</category>
+      <category domain="http://delicious.com/IanMLewis/">events</category>
+      <category domain="http://delicious.com/IanMLewis/">hackerspace</category>
+    </item>
+  </channel>
+</rss>

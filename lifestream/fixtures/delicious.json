@@ -1,24 +1,24 @@
 [
     {
-        "pk": 101, 
+        "pk": 301, 
         "model": "lifestream.feed", 
         "fields": {
             "lifestream": 1, 
-            "name": "django-lifestream feed", 
-            "url": "http://127.0.0.1:8097/feeds/atom/bitbucket.xml",
-            "domain": "bitbucket.org", 
+            "name": "Delicious hotlist", 
+            "url": "http://127.0.0.1:8097/feeds/rss/delicious_top.xml",
+            "domain": "delicious.com", 
             "fetchable": 1, 
             "plugin_class_name": null 
         }
     },
     {
-        "pk": 102, 
+        "pk": 302, 
         "model": "lifestream.feed", 
         "fields": {
             "lifestream": 1, 
-            "name": "django-lifestream feed", 
-            "url": "http://127.0.0.1:8097/feeds/rss/bitbucket.xml",
-            "domain": "bitbucket.org", 
+            "name": "Delicious/IanMLewis", 
+            "url": "http://127.0.0.1:8097/feeds/rss/delicious_user.xml",
+            "domain": "delicious.com", 
             "fetchable": 0, 
             "plugin_class_name": null 
         }

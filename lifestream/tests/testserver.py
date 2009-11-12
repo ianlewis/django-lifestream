@@ -26,16 +26,20 @@ class FeedParserTestRequestHandler(SimpleHTTPRequestHandler):
         -->
         """
         #path = self.translate_path(self.path)
-        #path = os.path.join(ROOT_PATH, self.path)
-
-        # For some reason os.path.join doesn't work.
-        path = "%s/%s" % (ROOT_PATH, self.path)
-        headers = dict(self.headers_re.findall(open(path).read()))
+        path = os.path.abspath(
+            os.path.join(
+                ROOT_PATH, 
+                self.path[1:] if self.path.startswith('/') else self.path,
+            )
+        )
         f = open(path, 'rb')
+
+        headers = dict(self.headers_re.findall(f.read()))
         headers.setdefault('Status', 200)
         self.send_response(int(headers['Status']))
         headers.setdefault('Content-type', self.guess_type(path))
         self.send_header("Content-type", headers['Content-type'])
+        f.seek(0)
         self.send_header("Content-Length", str(os.fstat(f.fileno())[6]))
         for k, v in headers.items():
             if k not in ('Status', 'Content-type'):
