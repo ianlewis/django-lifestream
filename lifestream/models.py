@@ -21,9 +21,9 @@ class Lifestream(models.Model):
     """
     A lifestream. Lifestreams can be created per user.
     """
-    site = models.ForeignKey(Site, verbose_name=_(u"site"))
-    user = models.ForeignKey(User, verbose_name=_(u"user"))
-    slug = models.SlugField(_("slug"), help_text=_('Slug for use in urls (Autopopulated from the title).')) 
+    site = models.ForeignKey(Site, verbose_name=_(u"site"), db_index=True)
+    user = models.ForeignKey(User, verbose_name=_(u"user"), db_index=True)
+    slug = models.SlugField(_("slug"), help_text=_('Slug for use in urls (Autopopulated from the title).'), db_index=True) 
     title = models.CharField(_("title"), max_length=255)
 
     def __unicode__(self):
@@ -37,11 +37,11 @@ class FeedManager(models.Manager):
 
 class Feed(models.Model):
     '''A feed for gathering data.'''
-    lifestream = models.ForeignKey(Lifestream, verbose_name=_('lifestream'))
+    lifestream = models.ForeignKey(Lifestream, verbose_name=_('lifestream'), db_index=True)
     name = models.CharField(_("feed name"), max_length=255)
     url = models.URLField(_("feed url"), help_text=_("Must be a valid url."), verify_exists=True, max_length=1000)
-    domain = models.CharField(_("feed domain"), max_length=255)
-    fetchable = models.BooleanField(_("fetchable"), default=True)
+    domain = models.CharField(_("feed domain"), max_length=255, db_index=True)
+    fetchable = models.BooleanField(_("fetchable"), default=True, db_index=True)
     
     # The feed plugin name used to process the incoming feed data.
     plugin_class_name = models.CharField(_("plugin name"), max_length=255, null=True, blank=True, choices=getattr(settings, "PLUGINS", PLUGINS))
@@ -65,8 +65,8 @@ class ItemManager(models.Manager):
 
 class Item(models.Model):
     '''A feed item'''
-    feed = models.ForeignKey(Feed, verbose_name=_("feed"))
-    date = models.DateTimeField(_("date"))
+    feed = models.ForeignKey(Feed, verbose_name=_("feed"), db_index=True)
+    date = models.DateTimeField(_("date"), db_index=True)
     title = models.CharField(_("title"), max_length=255)
     content = models.TextField(_("content"), null=True, blank=True, help_text=_("Rich item content. Could be html based on the content type. This html is escaped."))
     content_type = models.CharField(_("content type"), max_length=255, null=True, blank=True)
@@ -79,7 +79,7 @@ class Item(models.Model):
     media_description = models.TextField(_("media description"), null=True, blank=True)
     media_description_type = models.CharField(_("media description type"), max_length=50, null=True, blank=True)
   
-    published = models.BooleanField(_("published"), default=True)
+    published = models.BooleanField(_("published"), default=True, db_index=True)
   
     objects = ItemManager()
     
