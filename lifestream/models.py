@@ -67,7 +67,7 @@ class Item(models.Model):
     '''A feed item'''
     feed = models.ForeignKey(Feed, verbose_name=_("feed"), db_index=True)
     date = models.DateTimeField(_("date"), db_index=True)
-    title = models.CharField(_("title"), max_length=255)
+    title = models.CharField(_("title"), max_length=255, help_text=_("The title of the item. Could be html."))
     content = models.TextField(_("content"), null=True, blank=True, help_text=_("Rich item content. Could be html based on the content type. This html is escaped."))
     content_type = models.CharField(_("content type"), max_length=255, null=True, blank=True)
     clean_content = models.TextField(null=True, blank=True, help_text=_("Cleaned, plain text version of the item content."))
