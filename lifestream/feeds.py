@@ -17,9 +17,11 @@ import types
 import feedparser
 
 logger = logging.getLogger('django-lifestream')
-def write(self, s):
-    self.error(s)
-logger.write = types.MethodType(write, logger, logger.__class__)
+def log_exception(msg):
+    import traceback,sys
+    tb = ''.join(traceback.format_exception(sys.exc_info()[0],
+                    sys.exc_info()[1], sys.exc_info()[2]))
+    logger.exception(msg + "\n" + tb) 
 
 # MonkeyPatch feedparser so we can get access to interesting parts of media
 # extentions.
@@ -85,6 +87,7 @@ def update_feeds():
     feeds = Feed.objects.fetchable()
     for feed in feeds:
         try:
+            raise Exception("Test error")
             feed_items = parse_feed(feed.url)
             
             # Get the required plugin
@@ -106,9 +109,7 @@ def update_feeds():
                     if feed_plugin.include_entry(entry):
                       included_entries.append(entry)
                 except:
-                    from traceback import print_exc
-                    logger.error(u"Error importing item from feed '%s'" % feed.url)
-                    print_exc(file=logger)
+                    log_exception(u"Error importing item from feed '%s'" % feed.url)
                     
             for entry in included_entries:
                 try:
@@ -127,11 +128,7 @@ def update_feeds():
                             tag_name = tag.get('term')[:30]
                             Tag.objects.add_tag(i, re.sub(r"[ ,]+", "_", tag_name))
                 except:
-                    from traceback import print_exc
-                    logger.error(u"Error importing item from feed '%s'" % feed.url)
-                    print_exc(file=logger)
+                    log_exception(u"Error importing item from feed '%s'" % feed.url)
                  
         except:
-            from traceback import print_exc
-            logger.error(u"Error importing feed: %s" % feed)  
-            print_exc(file=logger)
+            log_exception(u"Error importing feed: %s" % feed)  
