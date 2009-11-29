@@ -87,7 +87,6 @@ def update_feeds():
     feeds = Feed.objects.fetchable()
     for feed in feeds:
         try:
-            raise Exception("Test error")
             feed_items = parse_feed(feed.url)
             
             # Get the required plugin
