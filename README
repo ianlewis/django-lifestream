@@ -94,6 +94,12 @@ Plugins can be registered with the application by adding them to the
 PLUGINS list in your site's settings.py. The PLUGINS is a two tuple
 which contains the module path to the plugin class and the plugin name.
 
+Caching
+-----------------------------
+django-lifestream will use feedcache if it can be imported otherwise
+it will use feedparser normally. Feed data will be cached using
+django's cache backend.
+
 Updating Your Lifestream
 -----------------------------
 django-lifestream includes a django command, update_feeds, for
