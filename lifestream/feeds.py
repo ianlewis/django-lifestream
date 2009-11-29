@@ -21,7 +21,7 @@ def log_exception(msg):
     import traceback,sys
     tb = ''.join(traceback.format_exception(sys.exc_info()[0],
                     sys.exc_info()[1], sys.exc_info()[2]))
-    logger.exception(msg + "\n" + tb) 
+    logger.exception(msg + "\n" + tb)
 
 # MonkeyPatch feedparser so we can get access to interesting parts of media
 # extentions.
@@ -114,7 +114,7 @@ def update_feeds():
                 try:
                     i = feed_plugin.process(entry)
 
-                    feed_plugin.post_process(i) 
+                    feed_plugin.post_process(i)
 
                     i.save()
                     
@@ -130,4 +130,4 @@ def update_feeds():
                     log_exception(u"Error importing item from feed '%s'" % feed.url)
                  
         except:
-            log_exception(u"Error importing feed: %s" % feed)  
+            log_exception(u"Error importing feed: %s" % feed)

@@ -23,7 +23,7 @@ class Lifestream(models.Model):
     """
     site = models.ForeignKey(Site, verbose_name=_(u"site"), db_index=True)
     user = models.ForeignKey(User, verbose_name=_(u"user"), db_index=True)
-    slug = models.SlugField(_("slug"), help_text=_('Slug for use in urls (Autopopulated from the title).'), db_index=True) 
+    slug = models.SlugField(_("slug"), help_text=_('Slug for use in urls (Autopopulated from the title).'), db_index=True)
     title = models.CharField(_("title"), max_length=255)
 
     def __unicode__(self):
@@ -86,7 +86,7 @@ class Item(models.Model):
     @model_permalink
     def get_absolute_url(self):
         return ('lifestream_item_page', (), {
-            'lifestream_slug': self.feed.lifestream.slug, 
+            'lifestream_slug': self.feed.lifestream.slug,
             'item_id': str(self.id),
         })
    
