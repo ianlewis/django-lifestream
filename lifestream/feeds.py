@@ -90,7 +90,7 @@ def update_feeds():
             feed_items = parse_feed(feed.url)
 
             if "bozo_exception" in feed_items:
-                u"Error occurred during parsing of feed '%s'\n" % feed.url)
+                msg = u"Error occurred during parsing of feed '%s'\n" % feed.url
                 logger.warning("%s%s" % (msg, feed_items["bozo_exception"]))
             
             # Get the required plugin
