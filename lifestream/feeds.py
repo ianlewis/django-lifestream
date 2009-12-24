@@ -101,6 +101,7 @@ def update_feeds():
                 else:
                     # TODO: log warning.
                     feed_plugin = plugins.FeedPlugin(feed)
+                    logger.warning("Feed Plugin was empty. Using default plugin for feed '%s'" % feed.url)
             else:
                 feed_plugin = plugins.FeedPlugin(feed)
             
