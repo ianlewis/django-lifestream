@@ -77,10 +77,16 @@ try:
         using django's cache framework as storage for
         feedcache.
         """
+        logger.info("Using feedcache to parse feed '%s'" % url)
+        if not feedparser._XML_AVAILABLE:
+            logger.warning("XML parser is not available. Feedparser will use a non-strict xml parser")
         return feed_cache.fetch(url)
 except ImportError:
     # Fall back to using feedparser
     def parse_feed(url):
+        logger.info("Using feedparser (no feedcache) to parse feed '%s'" % url)
+        if not feedparser._XML_AVAILABLE:
+            logger.warning("XML parser is not available. Feedparser will use a non-strict xml parser")
         return feedparser.parse(url)
 
 def update_feeds():
