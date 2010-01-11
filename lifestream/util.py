@@ -115,7 +115,7 @@ def convert_entities(text):
         text = text.replace(entity, entities[entity])
     return text
 
-def sanitize_html(htmlSource, encoding=None, valid_tags=None, valid_styles=None):
+def sanitize_html(htmlSource, encoding=None, type="text/html", valid_tags=None, valid_styles=None):
     """
     Clean bad html content. Currently this simply strips tags that
     are not in the VALID_TAGS setting.
