@@ -39,8 +39,11 @@ class Feed(models.Model):
     '''A feed for gathering data.'''
     lifestream = models.ForeignKey(Lifestream, verbose_name=_('lifestream'), db_index=True)
     name = models.CharField(_("feed name"), max_length=255)
-    url = models.URLField(_("feed url"), help_text=_("Must be a valid url."), verify_exists=True, max_length=1000)
+    url = models.URLField(_("feed url"), verify_exists=True, max_length=1000,
+            help_text=_("Must be a valid url."))
     domain = models.CharField(_("feed domain"), max_length=255, db_index=True)
+    permalink = models.URLField(_("permalink"), max_length=1000, blank=True, null=True
+            help_text=_("Permalink to the feed page."))
     fetchable = models.BooleanField(_("fetchable"), default=True, db_index=True)
     
     # The feed plugin name used to process the incoming feed data.

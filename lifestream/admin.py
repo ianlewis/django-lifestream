@@ -80,6 +80,7 @@ class FeedCreationForm(forms.ModelForm):
         self.instance.name = self.cleaned_data['name']
         self.cleaned_data['domain'] = get_url_domain(feed_url)
         self.instance.domain = self.cleaned_data['domain']
+        self.instance.permalink = self.cleaned_data.get("href")
         return self.cleaned_data
 
 class FeedAdmin(admin.ModelAdmin):
