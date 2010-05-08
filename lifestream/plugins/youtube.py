@@ -20,6 +20,7 @@ class YoutubePlugin(FeedPlugin):
     #Update the media player url
     if "media_player_attrs" in entry and "url" in entry["media_player_attrs"]:
         entry["media_player_attrs"]["url"] = entry["media_player_attrs"]["url"].replace("?v=", "/v/")
+        entry["media_player_attrs"]["url"] = re.sub(r"^(https?)://([^\.]+)\.youtube.com/watch/", r"\1://\2.youtube.com/", entry["media_player_attrs"]["url"])
 
     # youtube includes a strange schema url in the tags
     for tag in entry["tags"]:
