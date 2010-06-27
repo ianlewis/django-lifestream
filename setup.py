@@ -20,4 +20,5 @@ setup (
       'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages=find_packages(),
+    test_suite='tests.main',
 )
