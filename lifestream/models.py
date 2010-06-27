@@ -42,7 +42,7 @@ class Feed(models.Model):
     url = models.URLField(_("feed url"), verify_exists=True, max_length=1000,
             help_text=_("Must be a valid url."))
     domain = models.CharField(_("feed domain"), max_length=255, db_index=True)
-    permalink = models.URLField(_("permalink"), max_length=1000, blank=True, null=True
+    permalink = models.URLField(_("permalink"), max_length=1000, blank=True, null=True,
             help_text=_("Permalink to the feed page."))
     fetchable = models.BooleanField(_("fetchable"), default=True, db_index=True)
     
