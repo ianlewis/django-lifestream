@@ -196,7 +196,7 @@ class ItemAdmin(admin.ModelAdmin):
         )
 
     def get_urls(self):
-        from django.conf.urls.defaults import *
+        from django.conf.urls.defaults import patterns,url
         urls = super(ItemAdmin, self).get_urls()
         my_urls = patterns('',
             url(
