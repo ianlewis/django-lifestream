@@ -1,7 +1,4 @@
-#!/usr/bin/env python
 #:coding=utf-8:
-#:tabSize=2:indentSize=2:noTabs=true:
-#:folding=explicit:collapseFolds=1:
 
 from django.views.generic.list_detail import object_list,object_detail
 from django.conf import settings

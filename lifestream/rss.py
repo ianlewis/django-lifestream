@@ -1,7 +1,4 @@
-#!/usr/bin/env python
 #:coding=utf-8:
-#:mode=python:tabSize=2:indentSize=2:
-#:noTabs=true:folding=explicit:collapseFolds=1:
 
 # This file written by Ian Lewis (IanLewis@member.fsf.org)
 # Copyright 2009 by Ian Lewis
