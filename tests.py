@@ -21,7 +21,7 @@ def main():
         'django.contrib.contenttypes',
         APP_MODULE,
     )
-    global_settings.DATABASE_ENGINE = "sqlite3"
+    global_settings.DATABASE_ENGINE = "django.db.backends.sqlite3"
     global_settings.DATABASE_NAME = ":memory:"
     global_settings.ROOT_URLCONF = 'lifestream.urls'
 

@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 from django.db.models import permalink as model_permalink
 from django.utils.translation import ugettext_lazy as _
 
-PLUGINS = (
+DEFAULT_PLUGINS = (
   ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
   ('lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
   ('lifestream.plugins.youtube.YoutubePlugin', 'Youtube Plugin'),
@@ -44,7 +44,9 @@ class Feed(models.Model):
     fetchable = models.BooleanField(_("fetchable"), default=True, db_index=True)
     
     # The feed plugin name used to process the incoming feed data.
-    plugin_class_name = models.CharField(_("plugin name"), max_length=255, null=True, blank=True, choices=getattr(settings, "PLUGINS", PLUGINS))
+    plugin_class_name = models.CharField(_("plugin name"), max_length=255,
+        null=True, blank=True, choices=getattr(settings, "LIFESTREAM_PLUGINS", 
+            getattr(settings, "PLUGINS", DEFAULT_PLUGINS)))
     
     objects = FeedManager()
     

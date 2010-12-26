@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Blog</title>
+    <link>http://www.example.com/</link>
+    <description>Test Blog</description>
+    <language>en-us</language>
+    <item>
+      <title>Some Title</title>
+      <link>http://www.example.com</link>
+      <description>Some Content</description>
+      <author>example@example.com</author>
+      <pubDate>Tue, 06 Oct 2009 11:15:29 +0900</pubDate>
+      <guid>http://www.example.com/</guid>
+    </item>
