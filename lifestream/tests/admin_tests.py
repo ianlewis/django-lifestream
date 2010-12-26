@@ -41,8 +41,7 @@ class FeedCreateTest(DjangoTestCase):
             'url': 'http://127.0.0.1:8097/feeds/rss/bad_xml.xml',
             'plugin_class_name': '',
         })
-        self.assertTrue(not form.is_valid())
-        self.assertTrue('url' in form.errors)
+        self.assertTrue(form.is_valid())
 
     def test_no_title(self):
         form = FeedCreationForm({

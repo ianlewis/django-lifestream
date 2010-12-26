@@ -56,8 +56,10 @@ class FeedCreationForm(forms.ModelForm):
         # Check if the feed was not parsed correctly.
         if feed['bozo']:
             import logging
-            if isinstance(feed["bozo_exception"], feedparser.ThingsNobodyCaresAboutButMe):
-                # This isn't so bad. Just warnings really.
+            if (isinstance(feed["bozo_exception"], feedparser.ThingsNobodyCaresAboutButMe) or
+              feed["entries"]):
+                # This isn't so bad. Just warnings or only some entries weren't parsed
+                # properly.
                 logging.warning(feed['bozo_exception'])
             else:
                 # XML Error etc.
@@ -69,7 +71,7 @@ class FeedCreationForm(forms.ModelForm):
         # Check if the feed has a title field
         feed_info = feed.get('feed')
         if not feed_info.get('title'):
-            self._errors['url'] = ErrorList(["This is not a valid feed: The feed is empty"])
+            self._errors['url'] = ErrorList(["This is not a valid feed: The feed title is empty"])
             # This field is no longer valid. Remove from cleaned_data
             del self.cleaned_data['url']
             return self.cleaned_data
