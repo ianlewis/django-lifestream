@@ -19,7 +19,6 @@ class BitbucketFeedTest(FeedTest):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=101).count(), 15)
 
-    #TODO: test fails. feedparser broken
     def test_bitbucket_rss(self):
         update_feeds()
         self.assertEqual(Item.objects.filter(feed__pk=102).count(), 15)
@@ -27,10 +26,16 @@ class BitbucketFeedTest(FeedTest):
 class YoutubeTest(FeedTest):
     fixtures = FeedTest.fixtures + ["youtube.json"]
 
-    #TODO: test fails. feedparser broken
     def test_youtube_atom(self):
         update_feeds()
-        self.assertEqual(Item.objects.filter(feed__pk=201).count(), 25)
+        youtube_items = list(Item.objects.filter(feed__pk=201))
+        self.assertEqual(len(youtube_items), 25)
+        for item in youtube_items: 
+            self.assertTrue(item.media_url, 'Item "%s" has no media_url' % item.title)
+            self.assertTrue(item.media_thumbnail_url, 'Item "%s" has no media_thumbnail_url' % item.title)
+            self.assertTrue(item.media_player_url, 'Item "%s" has no media_player_url' % item.title)
+            self.assertTrue(item.media_description, 'Item "%s" has no media_description' % item.title)
+            self.assertTrue(item.media_description_type)
 
 class DeliciousTest(FeedTest):
     fixtures = FeedTest.fixtures + ["delicious.json"]

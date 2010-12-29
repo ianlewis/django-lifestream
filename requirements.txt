@@ -2,4 +2,4 @@ Django>=1.1
 BeautifulSoup==3.1.0.1
 dateutils==0.4.1
 
--e svn+http://feedparser.googlecode.com/svn/trunk/feedparser@303#egg=feedparser
+-e svn+http://feedparser.googlecode.com/svn/trunk/feedparser@350#egg=feedparser

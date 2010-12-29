@@ -1,7 +1,4 @@
-#!/usr/bin/env python
 #:coding=utf-8:
-#:tabSize=2:indentSize=2:noTabs=true:
-#:folding=explicit:collapseFolds=1:
 
 import copy
 import re
@@ -23,33 +20,34 @@ def log_exception(msg):
                     sys.exc_info()[1], sys.exc_info()[2]))
     logger.exception(msg + "\n" + tb)
 
-# MonkeyPatch feedparser so we can get access to interesting parts of media
-# extentions.
-feedparser._StrictFeedParser_old = feedparser._StrictFeedParser
-class LSStrictFeedParser(feedparser._StrictFeedParser_old):
-    def _start_media_content(self, attrsD):
-        self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
-    def _start_media_thumbnail(self, attrsD):
-        self.entries[-1]['media_thumbnail_attrs'] = copy.deepcopy(attrsD)
-    def _start_media_description(self, attrsD):
-        self.push('media_description', 1)
-        self.entries[-1]['media_description_attrs'] = copy.deepcopy(attrsD)
-    def _start_media_player(self, attrsD):
-        self.entries[-1]['media_player_attrs'] = copy.deepcopy(attrsD)
-feedparser._StrictFeedParser = LSStrictFeedParser
+# MonkeyPatch feedparser to get the media:description type attribute.
+def _start_media_description(self, attrsD):
+    self.push('media_description', 0)
+    self._getContext()['media_description'] = feedparser.FeedParserDict(attrsD)
 
-feedparser._LooseFeedParser_old = feedparser._LooseFeedParser
-class LSLooseFeedParser(feedparser._LooseFeedParser_old):
-    def _start_media_content(self, attrsD):
-        self.entries[-1]['media_content_attrs'] = copy.deepcopy(attrsD)
-    def _start_media_thumbnail(self, attrsD):
-        self.entries[-1]['media_thumbnail_attrs'] = copy.deepcopy(attrsD)
-    def _start_media_description(self, attrsD):
-        self.push('media_description', 1)
-        self.entries[-1]['media_description_attrs'] = copy.deepcopy(attrsD)
-    def _start_media_player(self, attrsD):
-        self.entries[-1]['media_player_attrs'] = copy.deepcopy(attrsD)
-feedparser._LooseFeedParser = LSLooseFeedParser
+def _end_media_description(self):
+    value = self.pop('media_description')
+    context = self._getContext()
+    context['media_description']['content'] = value
+
+if hasattr(feedparser, '_StrictFeedParser'):
+    feedparser._StrictFeedParser._start_media_description = (
+        types.MethodType(
+            _start_media_description, 
+            None, feedparser._StrictFeedParser))
+    feedparser._StrictFeedParser._end_media_description = (
+        types.MethodType(
+            _end_media_description, 
+            None, feedparser._StrictFeedParser))
+
+feedparser._LooseFeedParser._start_media_description = (
+    types.MethodType(
+        _start_media_description, 
+        None, feedparser._LooseFeedParser))
+feedparser._LooseFeedParser._end_media_description = (
+    types.MethodType(
+        _end_media_description, 
+        None, feedparser._LooseFeedParser))
 
 # Change out feedparser's html sanitizer for our own based
 # on BeautifulSoup and our own tag/attribute stripper.
