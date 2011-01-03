@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #:coding=utf-8:
 
 import re
@@ -18,13 +17,13 @@ class YoutubePlugin(FeedPlugin):
     def pre_process(self, entry):
         super(YoutubePlugin, self).pre_process(entry)
         #Update the media player url
-        if "media_player_attrs" in entry and "url" in entry["media_player_attrs"]:
-            entry["media_player_attrs"]["url"] = (
-                entry["media_player_attrs"]["url"].replace("?v=", "/v/"))
-            entry["media_player_attrs"]["url"] = (
+        if "media_player" in entry and "url" in entry["media_player"]:
+            entry["media_player"]["url"] = (
+                entry["media_player"]["url"].replace("?v=", "/v/"))
+            entry["media_player"]["url"] = (
                 re.sub(r"^(https?)://([^\.]+)\.youtube.com/watch/",
                        r"\1://\2.youtube.com/",
-                       entry["media_player_attrs"]["url"]))
+                       entry["media_player"]["url"]))
   
         # youtube includes a strange schema url in the tags
         for tag in entry["tags"]:
