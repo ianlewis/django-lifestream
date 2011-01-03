@@ -20,34 +20,43 @@ def log_exception(msg):
                     sys.exc_info()[1], sys.exc_info()[2]))
     logger.exception(msg + "\n" + tb)
 
-# MonkeyPatch feedparser to get the media:description type attribute.
+# MonkeyPatch feedparser to get the media:description type attribute and
+# map the 'plain' content type properly.
 def _start_media_description(self, attrsD):
-    self.push('media_description', 0)
-    self._getContext()['media_description'] = feedparser.FeedParserDict(attrsD)
+    self.pushContent('media_description', attrsD, 'text/html', 1)
 
 def _end_media_description(self):
-    value = self.pop('media_description')
+    contentType = self.contentparams.get('type', 'text/html')
+    value = self.popContent('media_description')
     context = self._getContext()
+    context['media_description'] = feedparser.FeedParserDict({'type': contentType})
     context['media_description']['content'] = value
 
-if hasattr(feedparser, '_StrictFeedParser'):
-    feedparser._StrictFeedParser._start_media_description = (
-        types.MethodType(
-            _start_media_description, 
-            None, feedparser._StrictFeedParser))
-    feedparser._StrictFeedParser._end_media_description = (
-        types.MethodType(
-            _end_media_description, 
-            None, feedparser._StrictFeedParser))
+def _mapContentType(self, contentType):
+    contentType = feedparser._FeedParserMixin.mapContentType(self, contentType)
+    if contentType == 'plain':
+        contentType = 'text/plain'
+    return contentType
 
-feedparser._LooseFeedParser._start_media_description = (
+feedparser._FeedParserMixin._start_media_description = (
     types.MethodType(
         _start_media_description, 
-        None, feedparser._LooseFeedParser))
-feedparser._LooseFeedParser._end_media_description = (
+        None, feedparser._FeedParserMixin))
+feedparser._FeedParserMixin._end_media_description = (
     types.MethodType(
         _end_media_description, 
-        None, feedparser._LooseFeedParser))
+        None, feedparser._FeedParserMixin))
+
+if hasattr(feedparser, '_StrictFeedParser'):
+    feedparser._StrictFeedParser.mapContentType = (
+        types.MethodType(
+            _mapContentType, 
+            None, feedparser._StrictFeedParser))
+
+feedparser._LooseFeedParser.mapContentType = (
+        types.MethodType(
+            _mapContentType, 
+            None, feedparser._LooseFeedParser))
 
 # Change out feedparser's html sanitizer for our own based
 # on BeautifulSoup and our own tag/attribute stripper.
