@@ -2,6 +2,7 @@
 
 import copy
 import re
+import socket
 import logging
 
 from django.conf import settings
@@ -78,7 +79,7 @@ try:
     from util import CacheStorage
     # TODO: Use a cache storage object.
     feed_cache = Cache(CacheStorage())
-    def parse_feed(url):
+    def _parse_feed(url):
         """
         Parses a feed. Uses feedcache if it is available
         using django's cache framework as storage for
@@ -90,11 +91,19 @@ try:
         return feed_cache.fetch(url)
 except ImportError:
     # Fall back to using feedparser
-    def parse_feed(url):
+    def _parse_feed(url):
         logger.info("Using feedparser (no feedcache) to parse feed '%s'" % url)
         if not feedparser._XML_AVAILABLE:
             logger.warning("XML parser is not available. Feedparser will use a non-strict xml parser")
         return feedparser.parse(url)
+
+def parse_feed(url):
+    old_timeout = socket.getdefaulttimeout()
+    try:
+        socket.setdefaulttimeout(getattr(settings, 'LIFESTREAM_FEED_TIMEOUT', 30))
+        return _parse_feed(url)
+    finally:
+        socket.setdefaulttimeout(old_timeout)
 
 def update_feeds():
     feeds = Feed.objects.fetchable()
