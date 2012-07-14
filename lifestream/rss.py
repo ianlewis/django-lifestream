@@ -3,11 +3,11 @@
 # This file written by Ian Lewis (IanLewis@member.fsf.org)
 # Copyright 2009 by Ian Lewis
 
-from django.contrib.syndication.feeds import Feed as SyndicationFeed
+from django.contrib.syndication.views import Feed as SyndicationFeed
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from lifestream.models import *
+from lifestream.models import Lifestream, Item
 
 class RecentItemsFeed(SyndicationFeed):
     title = "Recent Items"
