@@ -19,6 +19,12 @@ setup (
       'Programming Language :: Python',
       'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    install_requires = [
+        'Django>=1.1',
+        'BeautifulSoup==3.2.0',
+        'dateutils==0.4.1',
+        'feedparser>=5.0',
+    ],
     packages=find_packages(),
     test_suite='tests.main',
 )

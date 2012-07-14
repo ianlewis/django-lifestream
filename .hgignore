@@ -7,6 +7,9 @@ syntax: glob
 *.o
 *.pyc
 *.swp
+*.egg
+
+.tox
 django_lifestream.egg-info
 settings_local.py
 dlife.egg-info

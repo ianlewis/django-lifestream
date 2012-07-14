@@ -1,9 +1,6 @@
 import os
 import sys
-import unittest
-import doctest
 import django
-import logging
 
 APP_MODULE = 'lifestream'
 
@@ -18,12 +15,16 @@ def main():
 
     global_settings.INSTALLED_APPS = (
         'django.contrib.auth',
+        'django.contrib.sites',
         'django.contrib.contenttypes',
         APP_MODULE,
     )
-    global_settings.DATABASE_ENGINE = "django.db.backends.sqlite3"
-    global_settings.DATABASE_NAME = ":memory:"
-    global_settings.ROOT_URLCONF = 'lifestream.urls'
+    global_settings.DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
 
     global_settings.MIDDLEWARE_CLASSES = (
         'django.middleware.common.CommonMiddleware',
