@@ -2,16 +2,14 @@
 
 from django.contrib import admin
 from django import forms
-from django import template
 from django.forms.util import ErrorList
-from django.contrib.contenttypes import generic
-from django.shortcuts import render_to_response
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
-from lifestream.models import *
+from lifestream.models import Lifestream, Feed, Item
 from lifestream.util import get_url_domain,convert_entities
 
 import feedparser
@@ -88,6 +86,7 @@ class FeedAdmin(admin.ModelAdmin):
     actions         = ['make_fetchable', 'make_unfetchable']
   
     add_form = FeedCreationForm
+    add_form_template = 'admin/lifestream/feed/add_form.html'
     model = Feed
   
     def queryset(self, request):
@@ -109,47 +108,19 @@ class FeedAdmin(admin.ModelAdmin):
     def make_fetchable(self, request, queryset):
         queryset.update(fetchable=True)
     make_fetchable.short_description = _(u"Mark as fetchable")
+
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Use special form during feed creation
+        """
+        defaults = {}
+        if obj is None:
+            defaults.update({
+                'form': self.add_form,
+            })
+        defaults.update(kwargs)
+        return super(FeedAdmin, self).get_form(request, obj, **defaults)
     
-    def add_view(self, request):
-        if not self.has_change_permission(request):
-            raise PermissionDenied
-        if request.method == 'POST':
-            form = self.add_form(request.POST)
-            if form.is_valid():
-                new_feed = form.save()
-                msg = _('The %(name)s "%(obj)s" was added successfully.') % {'name': 'user', 'obj': new_feed}
-                self.log_addition(request, new_feed)
-                if "_addanother" in request.POST:
-                    request.user.message_set.create(message=msg)
-                    return HttpResponseRedirect(request.path)
-                elif '_popup' in request.REQUEST:
-                    return self.response_add(request, new_feed)
-                else:
-                    request.user.message_set.create(message=msg + ' ' + ugettext("You may edit it again below."))
-                    # TODO: use reversed url
-                    return HttpResponseRedirect('../%s/' % new_feed.id)
-        else:
-            form = self.add_form()
-
-        return render_to_response('admin/lifestream/feed/add_form.html', {
-            'title': _('Add feed'),
-            'form': form,
-            'is_popup': '_popup' in request.REQUEST,
-            'add': True,
-            'change': False,
-            'has_add_permission': True,
-            'has_delete_permission': False,
-            'has_change_permission': True,
-            'has_file_field': False,
-            'has_absolute_url': False,
-            'auto_populated_fields': (),
-            'opts': self.model._meta,
-            'save_as': False,
-            #'username_help_text': self.model._meta.get_field('username').help_text,
-            'root_path': self.admin_site.root_path,
-            'app_label': self.model._meta.app_label,            
-        }, context_instance=template.RequestContext(request))
-
 admin.site.register(Feed, FeedAdmin)
 
 class ItemAdmin(admin.ModelAdmin):
