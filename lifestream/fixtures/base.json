@@ -1,6 +1,20 @@
 [
     {
         "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "user",
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "john@example.com",
+            "password": "!",
+            "is_staff": false,
+            "is_active": true,
+            "is_superuser": false
+        }
+    },
+    {
+        "pk": 1, 
         "model": "lifestream.lifestream", 
         "fields": {
             "site": 1,
