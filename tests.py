@@ -25,6 +25,7 @@ def main():
             'NAME': ':memory:',
         }
     }
+    global_settings.SECRET_KEY = 'NOT-SO-SECRET'
 
     global_settings.MIDDLEWARE_CLASSES = (
         'django.middleware.common.CommonMiddleware',
@@ -44,3 +45,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

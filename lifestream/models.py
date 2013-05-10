@@ -28,7 +28,7 @@ class Lifestream(models.Model):
 
 class FeedManager(models.Manager):
     ''' Query only normal feeds. '''
-  
+
     def fetchable(self):
         return self.filter(fetchable=True)
 
@@ -36,23 +36,23 @@ class Feed(models.Model):
     '''A feed for gathering data.'''
     lifestream = models.ForeignKey(Lifestream, verbose_name=_('lifestream'), db_index=True)
     name = models.CharField(_("feed name"), max_length=255)
-    url = models.URLField(_("feed url"), verify_exists=True, max_length=1000,
+    url = models.URLField(_("feed url"), max_length=1000,
             help_text=_("Must be a valid url."))
     domain = models.CharField(_("feed domain"), max_length=255, db_index=True)
     permalink = models.URLField(_("permalink"), max_length=1000, blank=True, null=True,
             help_text=_("Permalink to the feed page."))
     fetchable = models.BooleanField(_("fetchable"), default=True, db_index=True)
-    
+
     # The feed plugin name used to process the incoming feed data.
     plugin_class_name = models.CharField(_("plugin name"), max_length=255,
-        null=True, blank=True, choices=getattr(settings, "LIFESTREAM_PLUGINS", 
+        null=True, blank=True, choices=getattr(settings, "LIFESTREAM_PLUGINS",
             getattr(settings, "PLUGINS", DEFAULT_PLUGINS)))
-    
+
     objects = FeedManager()
-    
+
     def __unicode__(self):
         return self.name
-    
+
 class ItemManager(models.Manager):
     """Manager for querying Items"""
 
@@ -80,20 +80,20 @@ class Item(models.Model):
     media_player_url = models.URLField(_("media player url"), max_length=1000, null=True, blank=True)
     media_description = models.TextField(_("media description"), null=True, blank=True)
     media_description_type = models.CharField(_("media description type"), max_length=50, null=True, blank=True)
-  
+
     published = models.BooleanField(_("published"), default=True, db_index=True)
-  
+
     objects = ItemManager()
-    
+
     @model_permalink
     def get_absolute_url(self):
         return ('lifestream_item_page', (), {
             'lifestream_slug': self.feed.lifestream.slug,
             'item_id': str(self.id),
         })
-   
+
     def __unicode__(self):
         return self.title
-      
+
     class Meta:
         ordering=["-date", "feed"]

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from setuptools import setup, find_packages
- 
+
 setup (
     name='django-lifestream',
-    version='0.1',
+    version='0.2',
     description='A lifestream application for Django.',
     author='Ian Lewis',
     author_email='IanMLewis@gmail.com',
@@ -20,9 +20,9 @@ setup (
       'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     install_requires = [
-        'Django>=1.1',
+        'Django>=1.4',
         'BeautifulSoup==3.2.0',
-        'dateutils==0.4.1',
+        'dateutils>=0.4.1',
         'feedparser>=5.0',
     ],
     packages=find_packages(),
