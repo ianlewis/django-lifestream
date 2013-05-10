@@ -5,6 +5,15 @@ from base import FeedTest
 from lifestream.models import *
 from lifestream.feeds import update_feeds
 
+
+class FilteredFeedTest(FeedTest):
+    fixtures = FeedTest.fixtures + ["ianlewis.json", "bitbucket.json"]
+
+    def test_filtered_updated_feeds(self):
+        update_feeds(Feed.objects.fetchable().filter(pk=1))
+        self.assertEqual(Item.objects.filter().count(), 10)
+
+
 class IanLewisFeedTest(FeedTest):
     fixtures = FeedTest.fixtures + ["ianlewis.json"]
 

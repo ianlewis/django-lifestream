@@ -105,8 +105,8 @@ def parse_feed(url):
     finally:
         socket.setdefaulttimeout(old_timeout)
 
-def update_feeds():
-    feeds = Feed.objects.fetchable()
+def update_feeds(queryset=None):
+    feeds = queryset or Feed.objects.fetchable()
     for feed in feeds:
         try:
             feed_items = parse_feed(feed.url)
