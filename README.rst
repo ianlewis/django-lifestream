@@ -49,17 +49,16 @@ the same name but is given a '_detail' suffix
 (i.e. flickr-com_detail.html).
 
 The item is rendered in templates using the 'render_item' template
-tag. You might have a template like so:
+tag. You might have a template like so::
 
-...
-{% load lifestream_tags %}
+    {% load lifestream_tags %}
 
-{% for object in object_list %}
-<div class="item">
-{% render_item object %}
-</div>
-{% endfor %}
-...
+    {% for object in object_list %}
+    <div class="item">
+    {% render_item object %}
+    </div>
+    {% endfor %}
+
 
 Views
 -----------------------------
@@ -107,7 +106,9 @@ updating all feeds which can be run using manage.py. This can be
 run as a cron job that will update your lifestream periodically. It
 can be run simply by invoking manage.py with the update_feeds command.
 
-python manage.py update_feeds
+::
+
+    python manage.py update_feeds
 
 This will import all new items from all feeds that are specified as
 fetchable.
