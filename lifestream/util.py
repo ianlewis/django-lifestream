@@ -7,11 +7,13 @@ from django.core.cache import cache
 
 from BeautifulSoup import BeautifulSoup, Comment
 
+
 class CacheStorage(object):
+
     """
     A class implementing python's dictionary API
     for use as a storage backend for feedcache.
-    
+
     Uses django's cache framework for the backend
     of the cache.
 
@@ -33,19 +35,21 @@ class CacheStorage(object):
     def _get_key(self, key):
         return "lifestream-cache-%s" % key
 
+
 def get_url_domain(url):
     """
     Get a domain from the feed url. This attempts to
     get a clean url by ignoring know subdomains used for
     serving feeds such as www, feeds, api etc.
     """
-    protocol_index = url.find('://')+3 if url.find('://')!=-1 else 0
-    slash_index = url.find('/', protocol_index) if url.find('/', protocol_index)!=-1 else len(url)
-  
+    protocol_index = url.find('://') + 3 if url.find('://') != -1 else 0
+    slash_index = url.find('/', protocol_index) if url.find(
+        '/', protocol_index) != -1 else len(url)
+
     sub_url = url[protocol_index:slash_index]
     parts = sub_url.split('.')
-  
-    if len(parts) > 2 and parts[0] in ('feeds','www','feedproxy','rss','gdata','api'):
+
+    if len(parts) > 2 and parts[0] in ('feeds', 'www', 'feedproxy', 'rss', 'gdata', 'api'):
         return '.'.join(parts[1:])
     else:
         return sub_url
@@ -91,12 +95,14 @@ VALID_STYLES = (
     "font-weight",
 )
 
+
 def escape_entities(text):
         return re.sub(r'&(?![A-Za-z]+;)', '&amp;', text)\
-                 .replace('<','&lt;')\
+                 .replace('<', '&lt;')\
                  .replace('>', '&gt;')\
                  .replace('"', '&quot;')\
                  .replace("'", '&apos;')
+
 
 def convert_entities(text):
     if text is None:
@@ -112,11 +118,12 @@ def convert_entities(text):
         text = text.replace(entity, entities[entity])
     return text
 
+
 def sanitize_html(htmlSource, encoding=None, type="text/html", valid_tags=None, valid_styles=None):
     """
     Clean bad html content. Currently this simply strips tags that
     are not in the VALID_TAGS setting.
-    
+
     This function is used as a replacement for feedparser's _sanitizeHTML
     and fixes problems like unclosed tags and gives finer grained control
     over what attributes can appear in what tags.
@@ -126,34 +133,35 @@ def sanitize_html(htmlSource, encoding=None, type="text/html", valid_tags=None, 
     if valid_tags is None:
         valid_tags = getattr(settings, "LIFESTREAM_VALID_TAGS", VALID_TAGS)
     if valid_styles is None:
-        valid_styles = getattr(settings, "LIFESTREAM_VALID_STYLES", VALID_STYLES)
-
+        valid_styles = getattr(
+            settings, "LIFESTREAM_VALID_STYLES", VALID_STYLES)
 
     js_regex = re.compile(r'[\s]*(&#x.{1,7})?'.join(list('javascript')))
-    css_regex = re.compile(r' *(%s): *([^;]*);?' % '|'.join(valid_styles), re.IGNORECASE)
+    css_regex = re.compile(r' *(%s): *([^;]*);?' % '|'.join(
+        valid_styles), re.IGNORECASE)
 
     # Sanitize html with BeautifulSoup
     if encoding:
         soup = BeautifulSoup(htmlSource, fromEncoding=encoding)
     else:
         soup = BeautifulSoup(htmlSource)
-    
+
     # Remove html comments
     for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
         comment.extract()
- 
+
     for tag in soup.findAll(True):
         if tag.name not in valid_tags:
             tag.hidden = True
         else:
             tag.attrs = [(attr, js_regex.sub('', val)) for attr, val in tag.attrs
                          if attr in valid_tags[tag.name]]
-    
+
     # Strip disallowed css tags.
-    for tag in soup.findAll(attrs={"style":re.compile(".*")}):
+    for tag in soup.findAll(attrs={"style": re.compile(".*")}):
         style = ""
-        for key,val in css_regex.findall(tag["style"]):
-            style += "%s:%s;" % (key,val.strip())
+        for key, val in css_regex.findall(tag["style"]):
+            style += "%s:%s;" % (key, val.strip())
         tag["style"] = style
 
     # Sanitize html text by changing bad text to entities.
@@ -161,6 +169,6 @@ def sanitize_html(htmlSource, encoding=None, type="text/html", valid_tags=None, 
     # on anchors and image tags but not for text.
     for text in soup.findAll(text=True):
         text.replaceWith(escape_entities(text))
-   
+
     # Strip disallowed tags and attributes.
-    return soup.renderContents().decode('utf8') 
+    return soup.renderContents().decode('utf8')

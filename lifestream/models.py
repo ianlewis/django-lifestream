@@ -1,11 +1,10 @@
 #:coding=utf-8:
-
-from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.db.models import permalink as model_permalink
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+
+
+AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 DEFAULT_PLUGINS = (
   ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
@@ -18,13 +17,18 @@ class Lifestream(models.Model):
     """
     A lifestream. Lifestreams can be created per user.
     """
-    site = models.ForeignKey(Site, verbose_name=_(u"site"), db_index=True)
-    user = models.ForeignKey(User, verbose_name=_(u"user"), db_index=True)
+    site = models.ForeignKey('sites.Site', verbose_name=_(u"site"), db_index=True)
+    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_(u"user"), db_index=True)
     slug = models.SlugField(_("slug"), help_text=_('Slug for use in urls (Autopopulated from the title).'), db_index=True)
     title = models.CharField(_("title"), max_length=255)
 
     def __unicode__(self):
         return self.title
+
+    @models.permalink
+    def get_absolute_url(self):
+        return 'lifestream.views.main_page', (), {'lifestream_slug': self.slug}
+
 
 class FeedManager(models.Manager):
     ''' Query only normal feeds. '''
@@ -85,9 +89,9 @@ class Item(models.Model):
 
     objects = ItemManager()
 
-    @model_permalink
+    @models.permalink
     def get_absolute_url(self):
-        return ('lifestream_item_page', (), {
+        return ('lifestream.views.item_page', (), {
             'lifestream_slug': self.feed.lifestream.slug,
             'item_id': str(self.id),
         })

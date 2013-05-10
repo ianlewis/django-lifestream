@@ -21,7 +21,8 @@ class MainPage(ListView):
         return Item.objects.published_items(self.lifestream)
 
     def get_context_data(self, object_list):
-        context = super(MainPage, self).get_context_data(object_list=object_list)
+        context = super(MainPage, self).get_context_data(
+            object_list=object_list)
         context['lifestream'] = self.lifestream
         return context
 
@@ -58,9 +59,9 @@ class DomainPage(ListView):
         return Item.objects.published_items(self.lifestream).filter(feed__domain=self.domain)
 
     def get_context_data(self, object_list):
-        context = super(DomainPage, self).get_context_data(object_list=object_list)
+        context = super(DomainPage, self).get_context_data(
+            object_list=object_list)
         context['lifestream'] = self.lifestream
         return context
 
 domain_page = DomainPage.as_view()
-
