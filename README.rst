@@ -2,6 +2,12 @@
 django-lifestream
 ==============================
 
+|travis|_
+
+.. |travis| image:: https://travis-ci.org/witoi/django-lifestream.png
+.. _travis: https://travis-ci.org/witoi/django-lifestream
+
+
 django-lifestream is a lifestream application for django. It allows
 you to create a lifestream on your site easily.
 
