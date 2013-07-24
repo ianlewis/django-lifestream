@@ -172,3 +172,15 @@ def sanitize_html(htmlSource, encoding=None, type="text/html", valid_tags=None, 
 
     # Strip disallowed tags and attributes.
     return soup.renderContents().decode('utf8')
+
+
+def get_mod_class(plugin):
+    """
+    Converts 'lifestream.plugins.FeedPlugin' to
+    ['lifestream.plugins', 'FeedPlugin']
+    """
+    try:
+        dot = plugin.rindex('.')
+    except ValueError:
+        return plugin, ''
+    return plugin[:dot], plugin[dot + 1:]

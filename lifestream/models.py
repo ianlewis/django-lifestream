@@ -1,25 +1,35 @@
 #:coding=utf-8:
+import logging
+
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from .util import get_mod_class
+
+logger = logging.getLogger(__name__)
 
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 DEFAULT_PLUGINS = (
-  ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
-  ('lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
-  ('lifestream.plugins.youtube.YoutubePlugin', 'Youtube Plugin'),
-  ('lifestream.plugins.flickr.FlickrPlugin', 'Flickr Plugin'),
+    ('lifestream.plugins.FeedPlugin', 'Generic Feed'),
+    ('lifestream.plugins.twitter.TwitterPlugin', 'Twitter Plugin'),
+    ('lifestream.plugins.youtube.YoutubePlugin', 'Youtube Plugin'),
+    ('lifestream.plugins.flickr.FlickrPlugin', 'Flickr Plugin'),
 )
+
 
 class Lifestream(models.Model):
     """
     A lifestream. Lifestreams can be created per user.
     """
-    site = models.ForeignKey('sites.Site', verbose_name=_(u"site"), db_index=True)
-    user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_(u"user"), db_index=True)
-    slug = models.SlugField(_("slug"), help_text=_('Slug for use in urls (Autopopulated from the title).'), db_index=True)
+
+    site = models.ForeignKey(
+        'sites.Site', verbose_name=_(u"site"), db_index=True)
+    user = models.ForeignKey(
+        AUTH_USER_MODEL, verbose_name=_(u"user"), db_index=True)
+    slug = models.SlugField(_("slug"), help_text=_(
+        'Slug for use in urls (Autopopulated from the title).'), db_index=True)
     title = models.CharField(_("title"), max_length=255)
 
     def __unicode__(self):
@@ -36,26 +46,48 @@ class FeedManager(models.Manager):
     def fetchable(self):
         return self.filter(fetchable=True)
 
+
 class Feed(models.Model):
     '''A feed for gathering data.'''
-    lifestream = models.ForeignKey(Lifestream, verbose_name=_('lifestream'), db_index=True)
+
+    lifestream = models.ForeignKey(
+        Lifestream, verbose_name=_('lifestream'), db_index=True)
     name = models.CharField(_("feed name"), max_length=255)
     url = models.URLField(_("feed url"), max_length=1000,
-            help_text=_("Must be a valid url."))
+                          help_text=_("Must be a valid url."))
     domain = models.CharField(_("feed domain"), max_length=255, db_index=True)
-    permalink = models.URLField(_("permalink"), max_length=1000, blank=True, null=True,
-            help_text=_("Permalink to the feed page."))
-    fetchable = models.BooleanField(_("fetchable"), default=True, db_index=True)
+    permalink = models.URLField(
+        _("permalink"), max_length=1000, blank=True, null=True,
+        help_text=_("Permalink to the feed page."))
+    fetchable = models.BooleanField(
+        _("fetchable"), default=True, db_index=True)
 
     # The feed plugin name used to process the incoming feed data.
     plugin_class_name = models.CharField(_("plugin name"), max_length=255,
-        null=True, blank=True, choices=getattr(settings, "LIFESTREAM_PLUGINS",
-            getattr(settings, "PLUGINS", DEFAULT_PLUGINS)))
+                                         null=True, blank=True, choices=getattr(
+                                             settings, "LIFESTREAM_PLUGINS",
+                                         getattr(settings, "PLUGINS", DEFAULT_PLUGINS)))
 
     objects = FeedManager()
 
+    def get_plugin(self):
+        default_plugin = 'lifestream.plugins.FeedPlugin'
+        if self.plugin_class_name:
+            plugin_mod, plugin_class = get_mod_class(self.plugin_class_name)
+            if plugin_class != '':
+                feed_plugin = getattr(__import__(plugin_mod, {}, {}, ['']), plugin_class)(self)
+            else:
+                plugin_mod, plugin_class = get_mod_class(default_plugin)
+                feed_plugin = getattr(__import__(plugin_mod, {}, {}, ['']), plugin_class)(self)
+                logger.warning("Feed Plugin was empty. Using default plugin for feed '%s'", self.url)
+        else:
+            plugin_mod, plugin_class = get_mod_class(default_plugin)
+            feed_plugin = getattr(__import__(plugin_mod, {}, {}, ['']), plugin_class)(self)
+        return feed_plugin
+
     def __unicode__(self):
         return self.name
+
 
 class ItemManager(models.Manager):
     """Manager for querying Items"""
@@ -69,17 +101,24 @@ class ItemManager(models.Manager):
     def published(self):
         return self.filter(published=True).order_by("-date")
 
+
 class Item(models.Model):
     '''A feed item'''
+
+    CLEAN_CONTENT_HELP_TEXT = _("Cleaned, plain text version of the item content.")
+    PERMALINK_HELP_TEXT = _("Permalink to the original item.")
+    CONTENT_HELP_TEXT = _("Rich item content. Could be html based on the content type. This html is escaped.")
+    TITLE_HELP_TEXT = _("The title of the item. Could be html.")
+
     feed = models.ForeignKey(Feed, verbose_name=_("feed"), db_index=True)
     date = models.DateTimeField(_("date"), db_index=True)
-    title = models.CharField(_("title"), max_length=255, help_text=_("The title of the item. Could be html."))
-    content = models.TextField(_("content"), null=True, blank=True, help_text=_("Rich item content. Could be html based on the content type. This html is escaped."))
+    title = models.CharField(_("title"), max_length=255, help_text=TITLE_HELP_TEXT)
+    content = models.TextField(_("content"), null=True, blank=True, help_text=CONTENT_HELP_TEXT)
     content_type = models.CharField(_("content type"), max_length=255, null=True, blank=True)
-    clean_content = models.TextField(null=True, blank=True, help_text=_("Cleaned, plain text version of the item content."))
+    clean_content = models.TextField(null=True, blank=True, help_text=CLEAN_CONTENT_HELP_TEXT)
     author = models.CharField(_("author"), max_length=255, null=True, blank=True)
-    permalink = models.URLField(_("permalink"),max_length=1000, help_text=_("Permalink to the original item."))
-    media_url = models.URLField(_("media url"),max_length=1000, null=True, blank=True)
+    permalink = models.URLField(_("permalink"), max_length=1000, help_text=PERMALINK_HELP_TEXT)
+    media_url = models.URLField(_("media url"), max_length=1000, null=True, blank=True)
     media_thumbnail_url = models.URLField(_("media thumbnail url"), max_length=1000, null=True, blank=True)
     media_player_url = models.URLField(_("media player url"), max_length=1000, null=True, blank=True)
     media_description = models.TextField(_("media description"), null=True, blank=True)
@@ -100,4 +139,4 @@ class Item(models.Model):
         return self.title
 
     class Meta:
-        ordering=["-date", "feed"]
+        ordering = ["-date", "feed"]

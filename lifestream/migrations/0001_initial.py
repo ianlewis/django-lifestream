@@ -8,7 +8,7 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'Lifestream'
+        # Adding model 'lifestream'
         db.create_table('lifestream_lifestream', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['sites.Site'])),
@@ -16,7 +16,7 @@ class Migration(SchemaMigration):
             ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50, db_index=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=255)),
         ))
-        db.send_create_signal('lifestream', ['Lifestream'])
+        db.send_create_signal('lifestream', ['lifestream'])
 
         # Adding model 'Feed'
         db.create_table('lifestream_feed', (
@@ -54,7 +54,7 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         
-        # Deleting model 'Lifestream'
+        # Deleting model 'lifestream'
         db.delete_table('lifestream_lifestream')
 
         # Deleting model 'Feed'
@@ -131,7 +131,7 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
         'lifestream.lifestream': {
-            'Meta': {'object_name': 'Lifestream'},
+            'Meta': {'object_name': 'lifestream'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sites.Site']"}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
